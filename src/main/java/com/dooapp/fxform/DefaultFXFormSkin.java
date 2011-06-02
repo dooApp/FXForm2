@@ -13,10 +13,12 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.model.FormFieldController;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 import javax.validation.ConstraintViolation;
@@ -27,6 +29,8 @@ import javax.validation.ConstraintViolation;
  * Time: 21:56
  */
 public class DefaultFXFormSkin extends FXFormSkin {
+
+    private final static Image WARNING = new Image(DefaultFXFormSkin.class.getResource("warning.png").toExternalForm());
 
     public DefaultFXFormSkin(FXForm fxForm) {
         super(fxForm);
@@ -41,14 +45,29 @@ public class DefaultFXFormSkin extends FXFormSkin {
         contentBox.getStyleClass().add("form-content-box");
         titleBox.getChildren().add(contentBox);
         contentBox.setSpacing(5.0);
-        for (FormFieldController controller : fxForm.getElements()) {
+        for (final FormFieldController controller : fxForm.getElements()) {
             VBox controllerBox = new VBox();
-            ListView<ConstraintViolation<? extends Object>> constraints = new ListView(controller.getConstraintViolations());
-            controllerBox.getChildren().addAll(controller.getView().getLabelNode(), controller.getView().getEditorNode(), constraints);
+            final VBox constraintsBox = new VBox();
+            controller.getConstraintViolations().addListener(new ListChangeListener() {
+
+                public void onChanged(Change change) {
+                    constraintsBox.getChildren().clear();
+                    for (ConstraintViolation constraintViolation : controller.getConstraintViolations()) {
+                        Label errorLabel = new Label(constraintViolation.getMessage());
+                        ImageView warningView = new ImageView(WARNING);
+                        warningView.setFitHeight(15);
+                        warningView.setPreserveRatio(true);
+                        warningView.setSmooth(true);
+                        errorLabel.setGraphic(warningView);
+                        constraintsBox.getChildren().add(errorLabel);
+                    }
+                }
+            });
+            controllerBox.getChildren().addAll(controller.getView().getLabelNode(), controller.getView().getEditorNode());
             if (controller.getView().getTooltipNode() != null) {
                 controllerBox.getChildren().add(controller.getView().getTooltipNode());
             }
-            contentBox.getChildren().add(controllerBox);
+            contentBox.getChildren().addAll(controllerBox, constraintsBox);
         }
         return titleBox;
     }

@@ -36,11 +36,13 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         final TextBox textBox = new TextBox();
         textBox.textProperty().addListener(new InvalidationListener<String>() {
             public void invalidated(ObservableValue<? extends String> observableValue) {
-                try {
-                    Number parsed = parse(textBox.getText());
-                    numberProperty.setValue((T) parsed);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                if (textBox.getText().trim().length() > 0) {
+                    try {
+                        Number parsed = parse(textBox.getText());
+                        numberProperty.setValue((T) parsed);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

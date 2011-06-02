@@ -10,47 +10,19 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform;
+package com.dooapp.fxform.annotation;
 
-import javafx.application.Application;
-import javafx.application.Launcher;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import java.lang.annotation.*;
 
 /**
  * User: Antoine Mischler
- * Date: 09/04/11
- * Time: 21:44
- * FXForm demo
+ * Date: 02/06/11
+ * Time: 17:19
+ * <p/>
+ * Annotation describing members that shouldn't be included in the form.
  */
-public class Demo extends Application {
-
-    public static void main(String[] args) {
-        Launcher.launch(Demo.class, args);
-    }
-
-    @Override
-    public void start(Stage stage) {
-        VBox root = new VBox();
-        root.setPadding(new Insets(10, 10, 10, 10));
-        Node fxForm = createFXForm();
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(Demo.class.getResource("style.css").toExternalForm());
-        root.getChildren().add(fxForm);
-        stage.setScene(scene);
-        stage.setVisible(true);
-
-    }
-
-    private FXForm createFXForm() {
-        DemoObject demoObject = new DemoObject();
-        demoObject.setName("John Hudson");
-        new ObjectPropertyObserver(demoObject);
-        FXForm fxForm = new FXForm(demoObject);
-        fxForm.setTitle("Dude, where is my form?");
-        return fxForm;
-    }
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface NonVisual {
 }

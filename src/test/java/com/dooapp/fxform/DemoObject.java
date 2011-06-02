@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.annotation.NonVisual;
 import com.dooapp.fxform.model.EnumProperty;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -32,6 +33,9 @@ public class DemoObject {
     private StringProperty name = new StringProperty();
 
     private StringProperty mail = new StringProperty();
+
+    @NonVisual
+    private StringProperty shouldNoBeInTheForm = new StringProperty();
 
     private BooleanProperty lucky = new BooleanProperty();
 

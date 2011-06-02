@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.model.impl;
 
+import com.dooapp.fxform.annotation.NonVisual;
 import com.dooapp.fxform.model.FieldProvider;
 import javafx.beans.value.ObservableValue;
 
@@ -31,10 +32,12 @@ public class ReflectionFieldProvider implements FieldProvider {
         if (source != null) {
             Class clazz = source.getClass();
             for (Field field : clazz.getDeclaredFields()) {
-                if (ObservableValue.class.isAssignableFrom(field.getType())) {
-                    result.add(field);
-                } else if (field.getType().isEnum()) {
-                    result.add(field);
+                if (field.getAnnotation(NonVisual.class) == null) {
+                    if (ObservableValue.class.isAssignableFrom(field.getType())) {
+                        result.add(field);
+                    } else if (field.getType().isEnum()) {
+                        result.add(field);
+                    }
                 }
             }
         }
