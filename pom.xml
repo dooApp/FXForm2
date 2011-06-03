@@ -15,7 +15,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
     <groupId>com.dooapp.fxform2</groupId>
     <artifactId>FXForm2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -24,12 +28,15 @@
     <url>http://dooapp.github.com/FXForm2/</url>
     <licenses>
         <license>
-            <name>LGPL</name>
-            <url>http://www.gnu.org/copyleft/lesser.html</url>
+            <name>GNU Library or Lesser General Public License (LGPL)</name>
+            <url>http://www.gnu.org/licenses/lgpl.html</url>
             <distribution>repo</distribution>
-            <comments>GNU Lesser General Public License</comments>
         </license>
     </licenses>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/dooApp/FXForm2/issues</url>
+    </issueManagement>
     <scm>
         <url>git@github.com:dooapp/FXForm2.git</url>
         <connection>scm:git:git@github.com:dooapp/FXForm2.git</connection>
