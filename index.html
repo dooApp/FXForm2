@@ -40,6 +40,7 @@
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
   </style>
+  <link rel="stylesheet" type="text/css" href="style.css" />	
 </head>
 
 <body>
@@ -63,11 +64,33 @@
 
     <p>FXForm2 is a library providing automatic JavaFX 2.0 form generation.</p>
     <p>How does it work?</p>
-      <pre>Node fxForm = new FXForm(myBean); // create the FXForm for your bean
-[...]
-root.getChildren.add(fxForm); // add it to your scene graph</pre>
-    <p>That's it!</p>
-    <img alt="Form example" src="fxform_capture.png"/>
+    <div id="works">
+	
+		<div class="work">
+			<div id="bean">1</div>
+			<hr />
+			<img src="write.png" alt="write" />
+			<h4>Write your model bean</h4>
+			<p>The model bean that should be edited in your interface</p>
+		</div>
+		<div class="work">
+			<div id="form_raw">2</div>
+			<hr />
+			<img src="generate.png" alt="write" />
+			<h4>Generate Form</h4>
+			<p>FXForm creates the form and bind it to your bean properties</p>
+		</div>
+		<div class="work">
+			<div id="form_style">3</div>
+			<hr />
+			<img src="style.png" alt="write" />
+			<h4>Style it!</h4>
+			<p>Use css and resouce bundle</p>
+			
+		</div>
+	</div>  
+	<hr style="visibility:hidden;clear:both" />  
+	  
     <p>Main features include:</p>
     <ul>
         <li>CSS support</li>

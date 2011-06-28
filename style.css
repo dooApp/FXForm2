@@ -1,0 +1,54 @@
+.work{
+	width:210px;
+	height:254px;
+	background : url("cell_background.png") no-repeat;
+	float:left;
+	margin-right:20px;
+}
+
+
+.work img{
+	float:left;
+	height:38px;
+	margin-left:9px;
+	margin-right:4px;
+	margin-top:2px;
+}.work div{
+	text-align:right;
+	margin:5px;
+	font-size:64px;
+	color: rgba(96, 167, 208,0.5);
+	height:190px;
+}
+
+.work div#bean{
+		background : url("bean.png") no-repeat center center;
+}
+.work div#form_raw{
+		background : url("form_raw.png") no-repeat center center;
+}
+.work div#form_style{
+		background : url("form_style.png") no-repeat center center;
+}
+
+.work  hr{
+	width:198px;
+	color:#808080;
+	border-bottom:1;
+	margin-bottom :2px;
+	margin-top :2px;
+	padding:0;
+}
+
+.work h4{
+	font-size:13px;
+	margin:0;
+	padding:0;
+}
+
+.work p{
+	font-size:11px;
+	margin:0;
+	padding:0;
+	color:#808080;
+}
