@@ -1,7 +1,7 @@
 .work{
-	width:210px;
+	width:205px;
 	height:254px;
-	background : url("cell_background.png") no-repeat;
+	background : url("cell_background.png") no-repeat center center;
 	float:left;
 	margin-right:20px;
 }
