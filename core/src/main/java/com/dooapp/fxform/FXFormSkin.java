@@ -47,4 +47,8 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     public void dispose() {
         fxForm = null;
     }
+
+    public FXForm getSkinnable() {
+        return fxForm;
+    }
 }
