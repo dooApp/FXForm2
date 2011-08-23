@@ -21,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * This default implementations retrieves all fields of the given source object, including inherited fields.
+ * <p/>
  * User: Antoine Mischler
  * Date: 09/04/11
  * Time: 22:31
@@ -31,21 +33,30 @@ public class ReflectionFieldProvider implements FieldProvider {
         List<Field> result = new LinkedList<Field>();
         if (source != null) {
             Class clazz = source.getClass();
-            for (Field field : clazz.getDeclaredFields()) {
-                if (field.getAnnotation(NonVisual.class) == null) {
-                    if (ObservableValue.class.isAssignableFrom(field.getType())) {
-                        result.add(field);
-                    } else if (field.getType().isEnum()) {
-                        result.add(field);
-                    }
+            fillFields(clazz, result);
+        }
+        return result;
+    }
+
+    private void fillFields(Class clazz, List<Field> result) {
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.getAnnotation(NonVisual.class) == null) {
+                if (ObservableValue.class.isAssignableFrom(field.getType())) {
+                    result.add(field);
+                } else if (field.getType().isEnum()) {
+                    result.add(field);
                 }
             }
         }
+
         for (Field field : result) {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
         }
-        return result;
+        if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
+            fillFields(clazz.getSuperclass(), result);
+        }
     }
 }
+

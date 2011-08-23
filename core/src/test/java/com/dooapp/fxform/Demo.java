@@ -45,7 +45,7 @@ public class Demo extends Application {
     }
 
     private FXForm createFXForm() {
-        DemoObject demoObject = new DemoObject();
+        DemoObject demoObject = new SubDemoObject();
         demoObject.setName("John Hudson");
         demoObject.setLetter(TestEnum.B);
         new ObjectPropertyObserver(demoObject);
