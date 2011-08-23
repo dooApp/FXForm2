@@ -13,7 +13,6 @@
 package com.dooapp.fxform;
 
 import javafx.application.Application;
-import javafx.application.Launcher;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -29,7 +28,7 @@ import javafx.stage.Stage;
 public class Demo extends Application {
 
     public static void main(String[] args) {
-        Launcher.launch(Demo.class, args);
+        Application.launch(Demo.class, args);
     }
 
     @Override

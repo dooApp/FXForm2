@@ -15,10 +15,10 @@ package com.dooapp.fxform.view.delegate;
 import com.dooapp.fxform.model.impl.ObservableAndWritableFormFieldController;
 import com.dooapp.fxform.view.EditorFactory;
 import com.dooapp.fxform.view.NodeCreationException;
-import javafx.beans.value.InvalidationListener;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
-import javafx.scene.control.TextBox;
+import javafx.scene.control.TextField;
 
 /**
  * User: Antoine Mischler
@@ -28,12 +28,15 @@ import javafx.scene.control.TextBox;
 public class StringPropertyDelegate implements EditorFactory<ObservableAndWritableFormFieldController<String>> {
 
     public Node createNode(ObservableAndWritableFormFieldController<String> formFieldController) throws NodeCreationException {
-        final TextBox text = new TextBox();
-        text.setText(formFieldController.getFormField().getObservable().getValue());
+        final TextField text = new TextField();
+        String value = formFieldController.getFormField().getObservable().getValue();
+        if (value != null) {
+            text.setText(value);
+        }
         text.textProperty().addListener(formFieldController);
-        formFieldController.getFormField().getObservable().addListener(new InvalidationListener<String>() {
-            public void invalidated(ObservableValue<? extends String> observableValue) {
-                text.setText(observableValue.getValue());
+        formFieldController.getFormField().getObservable().addListener(new ChangeListener<String>() {
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
+                text.setText(s1);
             }
         });
         return text;

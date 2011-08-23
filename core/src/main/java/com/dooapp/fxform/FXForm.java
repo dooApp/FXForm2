@@ -18,8 +18,9 @@ import com.dooapp.fxform.model.FormFieldController;
 import com.dooapp.fxform.model.FormFieldControllerFactory;
 import com.dooapp.fxform.model.impl.FormFieldControllerFactoryImpl;
 import com.dooapp.fxform.model.impl.ReflectionFieldProvider;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.InvalidationListener;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,7 +42,7 @@ public class FXForm extends Control implements FormAPI {
 
     private final Object source;
 
-    private StringProperty title = new StringProperty();
+    private StringProperty title = new SimpleStringProperty();
 
     private final ObservableList<Field> fields;
 
@@ -82,8 +83,8 @@ public class FXForm extends Control implements FormAPI {
             final StackTraceElement element = e.getStackTrace()[2];
             String bundle = element.getClassName();
             ResourceBundleHelper.init(bundle);
-            sceneProperty().addListener(new InvalidationListener<Scene>() {
-                public void invalidated(ObservableValue<? extends Scene> observableValue) {
+            sceneProperty().addListener(new ChangeListener<Scene>() {
+                public void changed(ObservableValue<? extends Scene> observableValue, Scene scene, Scene scene1) {
                     URL css = FXForm.class.getResource(element.getFileName().substring(0, element.getFileName().indexOf(".")) + ".css");
                     if (css != null && observableValue.getValue() != null) {
                         System.out.println("Registering " + css + " in " + observableValue.getValue());

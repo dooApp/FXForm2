@@ -14,6 +14,7 @@ package com.dooapp.fxform.i18n;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler
@@ -22,10 +23,16 @@ import java.util.ResourceBundle;
  */
 public class ResourceBundleHelper {
 
+    private final static Logger logger = Logger.getLogger(ResourceBundleHelper.class.getName());
+
     private static ResourceBundle bundle;
 
     public static void init(String bundle) {
-        ResourceBundleHelper.bundle = ResourceBundle.getBundle(bundle);
+        try {
+             ResourceBundleHelper.bundle = ResourceBundle.getBundle(bundle);
+        } catch (MissingResourceException e) {
+            logger.info("Form resource bundle not found. You should create a bundle called " + bundle);
+        }
     }
 
     public static String $(String key) throws MissingResourceException {

@@ -15,7 +15,7 @@ package com.dooapp.fxform.model.impl;
 import com.dooapp.fxform.model.AbstractFormFieldController;
 import com.dooapp.fxform.model.FormFieldController;
 import com.dooapp.fxform.model.FormFieldView;
-import javafx.beans.value.InvalidationListener;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,7 +31,7 @@ import java.util.Set;
  * Date: 26/04/11
  * Time: 11:24
  */
-public class ObservableAndWritableFormFieldController<T> extends AbstractFormFieldController<ObservableAndWritableFormField<T>> implements FormFieldController, InvalidationListener {
+public class ObservableAndWritableFormFieldController<T> extends AbstractFormFieldController<ObservableAndWritableFormField<T>> implements FormFieldController, ChangeListener {
 
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
@@ -47,16 +47,16 @@ public class ObservableAndWritableFormFieldController<T> extends AbstractFormFie
         return new ObservableAndWritableFormFieldView(this, formField);
     }
 
-    public void invalidated(ObservableValue observableValue) {
+    public ObservableList<ConstraintViolation<? extends Object>> getConstraintViolations() {
+        return constraintViolations;
+    }
+
+    public void changed(ObservableValue observableValue, Object o, Object o1) {
         Set<ConstraintViolation<Object>> constraintViolationSet = validator.validateValue((Class<Object>) ((formField).getSource().getClass()), formField.getField().getName(), observableValue.getValue());
         constraintViolations.clear();
         constraintViolations.addAll(constraintViolationSet);
         if (constraintViolations.size() == 0) {
             formField.getWritable().setValue((T) observableValue.getValue());
         }
-    }
-
-    public ObservableList<ConstraintViolation<? extends Object>> getConstraintViolations() {
-        return constraintViolations;
     }
 }

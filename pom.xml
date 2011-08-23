@@ -18,7 +18,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>core</module>
-        <module>editor</module>
     </modules>
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -57,9 +56,15 @@
     </developers>
     <dependencies>
         <dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>jfxrt</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <groupId>com.dooapp</groupId>
+            <artifactId>javafx</artifactId>
+            <version>2.0.40</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.1</version>
         </dependency>
     </dependencies>
     <repositories>

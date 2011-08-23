@@ -14,10 +14,7 @@ package com.dooapp.fxform;
 
 import com.dooapp.fxform.annotation.NonVisual;
 import com.dooapp.fxform.model.EnumProperty;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.Min;
@@ -30,20 +27,20 @@ import javax.validation.constraints.Min;
  */
 public class DemoObject {
 
-    private StringProperty name = new StringProperty();
+    private StringProperty name = new SimpleStringProperty();
 
-    private StringProperty mail = new StringProperty();
+    private StringProperty mail = new SimpleStringProperty();
 
     @NonVisual
-    private StringProperty shouldNoBeInTheForm = new StringProperty();
+    private StringProperty shouldNoBeInTheForm = new SimpleStringProperty();
 
-    private BooleanProperty lucky = new BooleanProperty();
+    private BooleanProperty lucky = new SimpleBooleanProperty();
 
     private EnumProperty<TestEnum> letter = new EnumProperty(TestEnum.class);
 
-    private IntegerProperty age = new IntegerProperty();
+    private IntegerProperty age = new SimpleIntegerProperty();
 
-    private DoubleProperty height = new DoubleProperty();
+    private DoubleProperty height = new SimpleDoubleProperty();
 
     public String getName() {
         return name.get();

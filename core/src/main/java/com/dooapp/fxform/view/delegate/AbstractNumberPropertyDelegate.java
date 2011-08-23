@@ -15,10 +15,11 @@ package com.dooapp.fxform.view.delegate;
 import com.dooapp.fxform.model.impl.ObservableAndWritableFormFieldController;
 import com.dooapp.fxform.view.EditorFactory;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.value.InvalidationListener;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
-import javafx.scene.control.TextBox;
+import javafx.scene.control.TextField;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -30,12 +31,13 @@ import java.text.ParseException;
  */
 public abstract class AbstractNumberPropertyDelegate<T extends Number> implements EditorFactory<ObservableAndWritableFormFieldController<T>> {
 
-    protected ObjectProperty<T> numberProperty = new ObjectProperty<T>();
+    protected ObjectProperty<T> numberProperty = new SimpleObjectProperty<T>();
 
     public Node createNode(final ObservableAndWritableFormFieldController<T> controller) {
-        final TextBox textBox = new TextBox();
-        textBox.textProperty().addListener(new InvalidationListener<String>() {
-            public void invalidated(ObservableValue<? extends String> observableValue) {
+        final TextField textBox = new TextField();
+        textBox.textProperty().addListener(new ChangeListener<String>() {
+
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
                 if (textBox.getText().trim().length() > 0) {
                     try {
                         Number parsed = parse(textBox.getText());
@@ -46,8 +48,8 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
                 }
             }
         });
-        controller.getFormField().getObservable().addListener(new InvalidationListener() {
-            public void invalidated(ObservableValue observableValue) {
+        controller.getFormField().getObservable().addListener(new ChangeListener() {
+            public void changed(ObservableValue observableValue, Object o, Object o1) {
                 textBox.textProperty().setValue(getFormat().format(controller.getFormField().getObservable().getValue()));
             }
         });

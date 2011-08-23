@@ -12,7 +12,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.sun:jfxrt:2.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: javafx:javafx:ea-b40-mac:2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.1" level="project" />
   </component>
 </module>
 

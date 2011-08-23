@@ -13,6 +13,7 @@
 package com.dooapp.fxform.model;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 
 /**
@@ -23,7 +24,7 @@ import javafx.beans.value.ObservableValue;
  * <p/>
  * Used to encapsulate an enum in an ObjectProperty.
  */
-public class EnumProperty<T extends Enum> extends ObjectProperty<T> implements ObservableValue<T> {
+public class EnumProperty<T extends Enum> extends SimpleObjectProperty<T> implements ObservableValue<T> {
 
     private final Class<T> clazz;
 

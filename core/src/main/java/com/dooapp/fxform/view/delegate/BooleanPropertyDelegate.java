@@ -14,7 +14,7 @@ package com.dooapp.fxform.view.delegate;
 
 import com.dooapp.fxform.model.impl.ObservableAndWritableFormFieldController;
 import com.dooapp.fxform.view.EditorFactory;
-import javafx.beans.value.InvalidationListener;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -29,9 +29,9 @@ public class BooleanPropertyDelegate implements EditorFactory<ObservableAndWrita
     public Node createNode(ObservableAndWritableFormFieldController<Boolean> controller) {
         final CheckBox checkBox = new CheckBox();
         checkBox.setSelected(controller.getFormField().getObservable().getValue());
-        controller.getFormField().getObservable().addListener(new InvalidationListener<Boolean>() {
-            public void invalidated(ObservableValue<? extends Boolean> observableValue) {
-                checkBox.setSelected(observableValue.getValue());
+        controller.getFormField().getObservable().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
+                checkBox.setSelected(aBoolean1);
             }
         });
         checkBox.selectedProperty().addListener(controller);

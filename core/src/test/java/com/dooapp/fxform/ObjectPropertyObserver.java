@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform;
 
-import javafx.beans.value.InvalidationListener;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
 import java.lang.reflect.Field;
@@ -22,7 +22,7 @@ import java.lang.reflect.Field;
  * Date: 17/04/11
  * Time: 00:21
  */
-public class ObjectPropertyObserver implements InvalidationListener {
+public class ObjectPropertyObserver implements ChangeListener {
 
     private final Object source;
 
@@ -41,7 +41,7 @@ public class ObjectPropertyObserver implements InvalidationListener {
         }
     }
 
-    public void invalidated(ObservableValue observableValue) {
+    public void changed(ObservableValue observableValue, Object o, Object o1) {
         System.out.println(observableValue);
     }
 }
