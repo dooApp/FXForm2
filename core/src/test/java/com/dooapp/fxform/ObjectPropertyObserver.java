@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.model.impl.ReflectionFieldProvider;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -28,8 +29,7 @@ public class ObjectPropertyObserver implements ChangeListener {
 
     public ObjectPropertyObserver(Object source) {
         this.source = source;
-        Class clazz = source.getClass();
-        for (Field field : clazz.getDeclaredFields()) {
+        for (Field field : new ReflectionFieldProvider().getProperties(source)) {
             if (ObservableValue.class.isAssignableFrom(field.getType())) {
                 try {
                     field.setAccessible(true);

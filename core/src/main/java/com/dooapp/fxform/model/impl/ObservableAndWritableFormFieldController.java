@@ -19,11 +19,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import javax.validation.*;
 import java.util.Set;
 
 /**
@@ -33,13 +32,21 @@ import java.util.Set;
  */
 public class ObservableAndWritableFormFieldController<T> extends AbstractFormFieldController<ObservableAndWritableFormField<T>> implements FormFieldController, ChangeListener {
 
-    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-    Validator validator = factory.getValidator();
+    private final static Logger logger = LoggerFactory.getLogger(ObservableAndWritableFormFieldController.class);
+    ValidatorFactory factory;
+    Validator validator;
 
     private ObservableList<ConstraintViolation<? extends Object>> constraintViolations = FXCollections.observableArrayList();
 
     public ObservableAndWritableFormFieldController(ObservableAndWritableFormField formField) {
         super(formField);
+        try {
+            factory = Validation.buildDefaultValidatorFactory();
+            validator = factory.getValidator();
+        } catch (ValidationException e) {
+            // validation is not activated, since no implementation has been provided
+            logger.trace("Validation disabled", e);
+        }
     }
 
     @Override
@@ -52,9 +59,11 @@ public class ObservableAndWritableFormFieldController<T> extends AbstractFormFie
     }
 
     public void changed(ObservableValue observableValue, Object o, Object o1) {
-        Set<ConstraintViolation<Object>> constraintViolationSet = validator.validateValue((Class<Object>) ((formField).getSource().getClass()), formField.getField().getName(), observableValue.getValue());
-        constraintViolations.clear();
-        constraintViolations.addAll(constraintViolationSet);
+        if (validator != null) {
+            Set<ConstraintViolation<Object>> constraintViolationSet = validator.validateValue((Class<Object>) ((formField).getSource().getClass()), formField.getField().getName(), observableValue.getValue());
+            constraintViolations.clear();
+            constraintViolations.addAll(constraintViolationSet);
+        }
         if (constraintViolations.size() == 0) {
             formField.getWritable().setValue((T) observableValue.getValue());
         }
