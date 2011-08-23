@@ -60,5 +60,13 @@ public class DemoObject {
         return age.get();
     }
 
+    public TestEnum getLetter() {
+        return letter.get();
+    }
+
+    public void setLetter(TestEnum testEnum) {
+        letter.set(testEnum);
+    }
+
 
 }

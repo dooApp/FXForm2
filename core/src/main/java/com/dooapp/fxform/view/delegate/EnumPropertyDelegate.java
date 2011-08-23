@@ -16,6 +16,8 @@ import com.dooapp.fxform.model.EnumProperty;
 import com.dooapp.fxform.model.impl.ObservableAndWritableFormFieldController;
 import com.dooapp.fxform.view.EditorFactory;
 import com.dooapp.fxform.view.NodeCreationException;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
@@ -34,17 +36,13 @@ public class EnumPropertyDelegate implements EditorFactory<ObservableAndWritable
         Object[] constants = ((EnumProperty) formFieldController.getFormField().getObservable()).getEnum().getEnumConstants();
         final ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
-        /*choiceBox.selectionModelProperty().addListener(new InvalidationListener() {
-            public void invalidated(ObservableValue observableValue) {
-                System.out.println("Selection updated: " + observableValue.getValue());
-                property.set(observableValue.getValue());
-            }
-        });
-        property.addListener(new InvalidationListener() {
-            public void invalidated(ObservableValue observableValue) {
+        choiceBox.getSelectionModel().select(formFieldController.getFormField().getObservable().getValue());
+        choiceBox.getSelectionModel().selectedItemProperty().addListener(formFieldController);
+        formFieldController.getFormField().getObservable().addListener(new ChangeListener() {
+            public void changed(ObservableValue observableValue, Object o, Object o1) {
                 choiceBox.getSelectionModel().select(observableValue.getValue());
             }
-        }); */
+        });
         return choiceBox;
     }
 }
