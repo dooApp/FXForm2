@@ -28,8 +28,8 @@ import java.lang.reflect.Field;
 public class FormFieldControllerFactoryImpl implements FormFieldControllerFactory {
 
     public FormFieldController create(Field field, Object object) throws FormException {
-        if (WritableValue.class.isAssignableFrom(field.getType()) && ObservableValue.class.isAssignableFrom(field.getType())) {
-            return new ObservableAndWritableFormFieldController(new ObservableAndWritableFormField(field, object));
+        if (WritableValue.class.isAssignableFrom(field.getType())) {
+            return new WritableFormFieldController(new WritableFormField(field, object));
         } else if (ObservableValue.class.isAssignableFrom(field.getType())) {
             return new ObservableFormFieldController(new ObservableFormField(field, object));
         }

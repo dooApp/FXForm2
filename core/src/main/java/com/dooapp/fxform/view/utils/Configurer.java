@@ -3,52 +3,23 @@
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
  * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform;
-
-import javafx.scene.Node;
-import javafx.scene.control.Skin;
+package com.dooapp.fxform.view.utils;
 
 /**
- * User: Antoine Mischler
- * Date: 09/04/11
- * Time: 21:36
- * Skin of the FXForm control.
+ * User: antoine
+ * Date: 24/08/11
+ * Time: 14:30
  */
-public abstract class FXFormSkin implements Skin<FXForm> {
+public interface Configurer<T> {
 
-    protected FXForm fxForm;
-    private Node rootNode;
+    public void configure(T toConfigure);
 
-    public FXFormSkin(FXForm fxForm) {
-        this.fxForm = fxForm;
-        rootNode = createRootNode();
-    }
+    public void unconfigure(T toUnconfigure);
 
-    protected abstract Node createRootNode();
-
-    public FXForm getControl() {
-        return fxForm;
-    }
-
-    public Node getNode() {
-        if (rootNode == null) {
-            rootNode = createRootNode();
-        }
-        return rootNode;
-    }
-
-    public void dispose() {
-        fxForm = null;
-    }
-
-    public FXForm getSkinnable() {
-        return fxForm;
-    }
 }

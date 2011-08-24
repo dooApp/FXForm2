@@ -12,6 +12,10 @@
 
 package com.dooapp.fxform.model;
 
+import com.dooapp.fxform.i18n.ResourceBundleHelper;
+
+import java.util.MissingResourceException;
+
 /**
  * User: Antoine Mischler
  * Date: 26/04/11
@@ -19,25 +23,32 @@ package com.dooapp.fxform.model;
  */
 public abstract class AbstractFormFieldController<T extends FormField> implements FormFieldController {
 
-    private FormFieldView view;
-
     protected final T formField;
 
     public AbstractFormFieldController(T formField) {
         this.formField = formField;
     }
 
-    public FormFieldView getView() {
-        if (view == null) {
-            view = createView();
-        }
-        return view;
-    }
-
-    protected abstract FormFieldView createView();
-
     public T getFormField() {
         return formField;
+    }
+
+    public String getLabel() {
+        try {
+            return ResourceBundleHelper.$(formField.getField().getName() + LABEL_SUFFIX);
+        } catch (MissingResourceException e) {
+            // label is undefined
+            return formField.getField().getName();
+        }
+    }
+
+    public String getTooltip() {
+        try {
+            return ResourceBundleHelper.$(formField.getField().getName() + TOOLTIP_SUFFIX);
+        } catch (MissingResourceException e) {
+            // tooltip is undefined
+            return null;
+        }
     }
 
     @Override

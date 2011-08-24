@@ -17,9 +17,18 @@ package com.dooapp.fxform;
  * Date: 09/04/11
  * Time: 21:31
  */
-public interface FormAPI {
+public interface FormAPI<T> {
 
+    /**
+     * Set the title of the Form
+     * @param title
+     */
     public void setTitle(String title);
+
+    /**
+     * Get the source object used for this form
+     */
+    public T getSource();
 
 
 }

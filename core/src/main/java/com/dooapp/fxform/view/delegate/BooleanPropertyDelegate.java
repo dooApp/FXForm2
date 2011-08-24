@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.delegate;
 
-import com.dooapp.fxform.model.impl.ObservableAndWritableFormFieldController;
+import com.dooapp.fxform.model.impl.WritableFormFieldController;
 import com.dooapp.fxform.view.EditorFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -24,9 +24,9 @@ import javafx.scene.control.CheckBox;
  * Date: 16/04/11
  * Time: 23:57
  */
-public class BooleanPropertyDelegate implements EditorFactory<ObservableAndWritableFormFieldController<Boolean>> {
+public class BooleanPropertyDelegate implements EditorFactory<WritableFormFieldController<Boolean>> {
 
-    public Node createNode(ObservableAndWritableFormFieldController<Boolean> controller) {
+    public Node createNode(WritableFormFieldController<Boolean> controller) {
         final CheckBox checkBox = new CheckBox();
         checkBox.setSelected(controller.getFormField().getObservable().getValue());
         controller.getFormField().getObservable().addListener(new ChangeListener<Boolean>() {

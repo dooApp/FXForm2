@@ -13,7 +13,7 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.annotation.NonVisual;
-import com.dooapp.fxform.model.EnumProperty;
+import com.dooapp.fxform.type.EnumProperty;
 import javafx.beans.property.*;
 import org.hibernate.validator.constraints.Email;
 

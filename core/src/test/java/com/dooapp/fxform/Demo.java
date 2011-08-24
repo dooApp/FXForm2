@@ -12,10 +12,15 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.view.FXFormSkin;
+import com.dooapp.fxform.view.skin.DefaultSkin;
+import com.dooapp.fxform.view.skin.InlineSkin;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -35,10 +40,17 @@ public class Demo extends Application {
     public void start(Stage stage) {
         VBox root = new VBox();
         root.setPadding(new Insets(10, 10, 10, 10));
-        Node fxForm = createFXForm();
+        final FXForm fxForm = createFXForm();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Demo.class.getResource("style.css").toExternalForm());
-        root.getChildren().add(fxForm);
+        ChoiceBox<FXFormSkin> skinChoiceBox = new ChoiceBox<FXFormSkin>();
+        skinChoiceBox.getItems().addAll(new DefaultSkin(fxForm), new InlineSkin(fxForm));
+        skinChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<FXFormSkin>() {
+            public void changed(ObservableValue<? extends FXFormSkin> observableValue, FXFormSkin fxFormSkin, FXFormSkin fxFormSkin1) {
+                fxForm.setSkin(fxFormSkin1);
+            }
+        });
+        root.getChildren().addAll(skinChoiceBox, fxForm);
         stage.setScene(scene);
         stage.setVisible(true);
 
@@ -49,7 +61,7 @@ public class Demo extends Application {
         demoObject.setName("John Hudson");
         demoObject.setLetter(TestEnum.B);
         new ObjectPropertyObserver(demoObject);
-        FXForm fxForm = new FXForm(demoObject);
+        FXForm<DemoObject> fxForm = new FXForm<DemoObject>(demoObject);
         fxForm.setTitle("Dude, where is my form?");
         return fxForm;
     }

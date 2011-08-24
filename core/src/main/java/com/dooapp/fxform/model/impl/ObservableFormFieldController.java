@@ -14,7 +14,6 @@ package com.dooapp.fxform.model.impl;
 
 import com.dooapp.fxform.model.AbstractFormFieldController;
 import com.dooapp.fxform.model.FormFieldController;
-import com.dooapp.fxform.model.FormFieldView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -29,11 +28,6 @@ public class ObservableFormFieldController<T> extends AbstractFormFieldControlle
 
     public ObservableFormFieldController(ObservableFormField<T> formField) {
         super(formField);
-    }
-
-    @Override
-    protected FormFieldView createView() {
-        return new ObservableFormFieldView(formField);
     }
 
     public ObservableList<ConstraintViolation<? extends Object>> getConstraintViolations() {

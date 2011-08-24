@@ -25,12 +25,9 @@ import javax.validation.ConstraintViolation;
  */
 public interface FormFieldController {
 
-    /**
-     * Returns the view associated to this controller.
-     *
-     * @return
-     */
-    public FormFieldView getView();
+    public static String LABEL_SUFFIX = "-label";
+
+    public static String TOOLTIP_SUFFIX = "-tooltip";
 
     /**
      * Returns the model associated to this controller.
@@ -45,5 +42,19 @@ public interface FormFieldController {
      * @return
      */
     public ObservableList<ConstraintViolation<? extends Object>> getConstraintViolations();
+
+    /**
+     * Get the tooltip for this field. Might return null if no tooltip has been defined.
+     *
+     * @return
+     */
+    public String getTooltip();
+
+    /**
+     * Get the label for this field.
+     *
+     * @return
+     */
+    public String getLabel();
 
 }

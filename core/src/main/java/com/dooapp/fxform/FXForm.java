@@ -18,6 +18,7 @@ import com.dooapp.fxform.model.FormFieldController;
 import com.dooapp.fxform.model.FormFieldControllerFactory;
 import com.dooapp.fxform.model.impl.FormFieldControllerFactoryImpl;
 import com.dooapp.fxform.model.impl.ReflectionFieldProvider;
+import com.dooapp.fxform.view.skin.DefaultSkin;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -38,9 +39,9 @@ import java.util.List;
  * Time: 21:26
  * The FXForm control
  */
-public class FXForm extends Control implements FormAPI {
+public class FXForm<T> extends Control implements FormAPI<T> {
 
-    private final Object source;
+    private final T source;
 
     private StringProperty title = new SimpleStringProperty();
 
@@ -54,12 +55,12 @@ public class FXForm extends Control implements FormAPI {
         this.title.set(title);
     }
 
-    public FXForm(Object source) {
+    public FXForm(T source) {
         initBundle();
         this.source = source;
         this.fields = FXCollections.observableList(new ReflectionFieldProvider().getProperties(source));
         this.elements = createElements();
-        this.setSkin(new DefaultFXFormSkin(this));
+        this.setSkin(new DefaultSkin(this));
     }
 
     private ObservableList<FormFieldController> createElements() {
@@ -99,12 +100,12 @@ public class FXForm extends Control implements FormAPI {
         return title;
     }
 
-    public Object getSource() {
-        return source;
-    }
-
     public ObservableList<FormFieldController> getElements() {
         return elements;
+    }
+
+    public T getSource() {
+        return source;
     }
 
 }

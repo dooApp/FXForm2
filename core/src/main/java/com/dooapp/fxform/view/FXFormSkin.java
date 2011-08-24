@@ -12,41 +12,40 @@
 
 package com.dooapp.fxform.view;
 
-import com.dooapp.fxform.i18n.ResourceBundleHelper;
+import com.dooapp.fxform.FXForm;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-
-import java.lang.reflect.Field;
-import java.util.MissingResourceException;
+import javafx.scene.control.Skin;
 
 /**
  * User: Antoine Mischler
- * Date: 11/04/11
- * Time: 22:57
- * <p/>
- * Default label factory.
+ * Date: 09/04/11
+ * Time: 21:36
+ * Skin of the FXForm control.
  */
-public class FormFieldLabelFactory {
+public abstract class FXFormSkin implements Skin<FXForm> {
 
-    private final String suffix;
+    protected FXForm fxForm;
+    private Node rootNode;
 
-    private final boolean nullIfResourceIsMissing;
-
-    public FormFieldLabelFactory(String suffix, boolean nullIfResourceIsMissing) {
-        this.suffix = suffix;
-        this.nullIfResourceIsMissing = nullIfResourceIsMissing;
+    public FXFormSkin(FXForm fxForm) {
+        this.fxForm = fxForm;
+        rootNode = createRootNode();
     }
 
-    public Node createNode(Field field) {
-        try {
-            String value = ResourceBundleHelper.$(field.getName() + suffix);
-            return new Label(value);
-        } catch (MissingResourceException e) {
-            if (nullIfResourceIsMissing) {
-                return null;
-            } else {
-                return new Label(field.getName());
-            }
+    protected abstract Node createRootNode();
+
+    public Node getNode() {
+        if (rootNode == null) {
+            rootNode = createRootNode();
         }
+        return rootNode;
+    }
+
+    public void dispose() {
+        fxForm = null;
+    }
+
+    public FXForm getSkinnable() {
+        return fxForm;
     }
 }
