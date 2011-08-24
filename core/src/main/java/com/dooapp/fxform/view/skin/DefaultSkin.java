@@ -13,8 +13,9 @@
 package com.dooapp.fxform.view.skin;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.FXFormSkin;
 import com.dooapp.fxform.model.FormFieldController;
+import com.dooapp.fxform.view.FXFormSkin;
+import com.dooapp.fxform.view.NodeCreationException;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -39,7 +40,7 @@ public class DefaultSkin extends FXFormSkin {
     }
 
     @Override
-    protected Node createRootNode() {
+    protected Node createRootNode() throws NodeCreationException {
         VBox titleBox = new VBox();
         titleBox.getChildren().add(createTitleNode());
         VBox contentBox = new VBox();
@@ -66,9 +67,9 @@ public class DefaultSkin extends FXFormSkin {
                     }
                 }
             });
-            controllerBox.getChildren().addAll(controller.getView().getLabelNode(), controller.getView().getEditorNode());
-            if (controller.getView().getTooltipNode() != null) {
-                controllerBox.getChildren().add(controller.getView().getTooltipNode());
+            controllerBox.getChildren().addAll(createLabel(controller), createEditor(controller));
+            if (controller.getTooltip() != null) {
+                controllerBox.getChildren().add(createTooltip(controller));
             }
             contentBox.getChildren().addAll(controllerBox, constraintsBox);
         }

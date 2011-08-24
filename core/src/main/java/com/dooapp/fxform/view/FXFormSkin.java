@@ -13,8 +13,13 @@
 package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.model.FormFieldController;
+import com.dooapp.fxform.view.impl.DelegateFactoryImpl;
+import com.dooapp.fxform.view.utils.ConfigurationStore;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.Skin;
+
 
 /**
  * User: Antoine Mischler
@@ -24,19 +29,45 @@ import javafx.scene.control.Skin;
  */
 public abstract class FXFormSkin implements Skin<FXForm> {
 
+    public static final String LABEL_ID_SUFFIX = "-form-label";
+
+    public static final String EDITOR_ID_SUFFIX = "-form-editor";
+
+    public static final String EDITOR_STYLE = "form-editor";
+
+    public static final String LABEL_STYLE = "form-label";
+
+    public static final String TOOLTIP_ID_SUFFIX = "-form-tooltip";
+
+    public static final String TOOLTIP_STYLE = "form-tooltip";
+
+    private final EditorFactory editorFactory = new DelegateFactoryImpl();
+
     protected FXForm fxForm;
     private Node rootNode;
+    protected ConfigurationStore<Node> labels = new ConfigurationStore<Node>();
+    protected ConfigurationStore<Node> tooltips = new ConfigurationStore<Node>();
+    protected ConfigurationStore<Node> editors = new ConfigurationStore<Node>();
 
     public FXFormSkin(FXForm fxForm) {
         this.fxForm = fxForm;
-        rootNode = createRootNode();
+        labels.getConfigurers().add(new StyleConfigurer(LABEL_STYLE));
+        labels.getConfigurers().add(new IdConfigurer(LABEL_ID_SUFFIX));
+        tooltips.getConfigurers().add(new StyleConfigurer(TOOLTIP_STYLE));
+        tooltips.getConfigurers().add(new IdConfigurer(TOOLTIP_ID_SUFFIX));
+        editors.getConfigurers().add(new StyleConfigurer(EDITOR_STYLE));
+        editors.getConfigurers().add(new IdConfigurer(EDITOR_ID_SUFFIX));
     }
 
-    protected abstract Node createRootNode();
+    protected abstract Node createRootNode() throws NodeCreationException;
 
     public Node getNode() {
         if (rootNode == null) {
-            rootNode = createRootNode();
+            try {
+                rootNode = createRootNode();
+            } catch (NodeCreationException e) {
+                e.printStackTrace();
+            }
         }
         return rootNode;
     }
@@ -48,4 +79,26 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     public FXForm getSkinnable() {
         return fxForm;
     }
+
+    protected Node createLabel(FormFieldController controller) {
+        Node label = new Label(controller.getLabel());
+        label.getProperties().put(IdConfigurer.FXFORM_ID, controller.getFormField().getField().getName());
+        labels.getStore().add(label);
+        return label;
+    }
+
+    protected Node createEditor(FormFieldController controller) throws NodeCreationException {
+        Node editor = editorFactory.createNode(controller);
+        editor.getProperties().put(IdConfigurer.FXFORM_ID, controller.getFormField().getField().getName());
+        editors.getStore().add(editor);
+        return editor;
+    }
+
+    protected Node createTooltip(FormFieldController controller) {
+        Node tooltip = new Label(controller.getTooltip());
+        tooltip.getProperties().put(IdConfigurer.FXFORM_ID, controller.getFormField().getField().getName());
+        tooltips.getStore().add(tooltip);
+        return tooltip;
+    }
+
 }

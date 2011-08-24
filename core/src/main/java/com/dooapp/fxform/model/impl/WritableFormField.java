@@ -28,7 +28,7 @@ public class WritableFormField<T> extends ObservableFormField<T> {
     public WritableFormField(Field field, Object source) throws FormException {
         super(field, source);
         if (!WritableValue.class.isAssignableFrom(field.getType())) {
-            throw new FormException("Trying to create an writable form field with a non-writable source " + field.getType());
+            throw new FormException("Trying to create a writable form field with a non-writable source " + field.getType());
         }
     }
 

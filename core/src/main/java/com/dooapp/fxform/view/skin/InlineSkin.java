@@ -12,8 +12,9 @@
 package com.dooapp.fxform.view.skin;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.FXFormSkin;
 import com.dooapp.fxform.model.FormFieldController;
+import com.dooapp.fxform.view.FXFormSkin;
+import com.dooapp.fxform.view.NodeCreationException;
 import javafx.builders.GridPaneBuilder;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -43,7 +44,7 @@ public class InlineSkin extends FXFormSkin {
     }
 
     @Override
-    protected Node createRootNode() {
+    protected Node createRootNode() throws NodeCreationException {
         VBox titleBox = new VBox();
         titleBox.getChildren().add(createTitleNode());
         VBox contentBox = new VBox();
@@ -55,7 +56,7 @@ public class InlineSkin extends FXFormSkin {
         int row = 0;
         for (final Object o : fxForm.getElements()) {
             FormFieldController controller = (FormFieldController) o;
-            gridPane.addRow(row, controller.getView().getLabelNode(), controller.getView().getEditorNode());
+            gridPane.addRow(row, createLabel(controller), createEditor(controller));
             row++;
         }
         contentBox.getChildren().add(gridPane);

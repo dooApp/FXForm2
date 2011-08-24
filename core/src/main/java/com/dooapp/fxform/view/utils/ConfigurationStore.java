@@ -11,7 +11,12 @@
 
 package com.dooapp.fxform.view.utils;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * User: antoine
@@ -20,6 +25,69 @@ import javafx.collections.ObservableList;
  */
 public class ConfigurationStore<T> {
 
-    private ObservableList store;
+    private ObservableList<T> store = FXCollections.observableList(new ArrayList<T>());
+
+    private ObservableList<Configurer<T>> configurers = FXCollections.observableList(new ArrayList<Configurer<T>>());
+
+    public ObservableList<T> getStore() {
+        return store;
+    }
+
+    public ObservableList<Configurer<T>> getConfigurers() {
+        return configurers;
+    }
+
+    public ConfigurationStore() {
+        store.addListener(new ListChangeListener() {
+
+            public void onChanged(Change change) {
+                while (change.next()) {
+                    configure(change.getAddedSubList());
+                    unconfigure(change.getRemoved());
+                }
+            }
+        });
+        configurers.addListener(new ListChangeListener() {
+
+            public void onChanged(Change change) {
+                while (change.next()) {
+                    configurerAdded(change.getAddedSubList());
+                    configurerRemoved(change.getRemoved());
+                }
+            }
+        });
+    }
+
+    protected void configure(Collection<T> toConfigure) {
+        for (T t : toConfigure) {
+            for (Configurer c : configurers) {
+                c.configure(t);
+            }
+        }
+    }
+
+    protected void unconfigure(Collection<T> toConfigure) {
+        for (T t : toConfigure) {
+            for (Configurer c : configurers) {
+                c.unconfigure(t);
+            }
+        }
+    }
+
+    protected void configurerAdded(Collection<Configurer<T>> configurer) {
+        for (Configurer c : configurer) {
+            for (T t : store) {
+                c.configure(t);
+            }
+        }
+    }
+
+    protected void configurerRemoved(Collection<Configurer<T>> configurer) {
+        for (Configurer c : configurer) {
+            for (T t : store) {
+                c.unconfigure(t);
+            }
+        }
+    }
 
 }
