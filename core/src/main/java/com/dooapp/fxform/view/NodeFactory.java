@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view;
 
-import com.dooapp.fxform.model.FormFieldController;
+import com.dooapp.fxform.model.ElementController;
 import javafx.scene.Node;
 
 /**
@@ -20,8 +20,8 @@ import javafx.scene.Node;
  * Date: 11/04/11
  * Time: 22:56
  */
-public interface NodeFactory<T extends FormFieldController> {
+public interface NodeFactory<T extends ElementController> {
 
-    public Node createNode(T formFieldController) throws NodeCreationException;
+    public Node createNode(T controller) throws NodeCreationException;
 
 }

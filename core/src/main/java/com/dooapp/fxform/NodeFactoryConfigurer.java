@@ -13,36 +13,38 @@ package com.dooapp.fxform;
 
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.utils.Configurer;
-import com.dooapp.fxform.view.LabelFactory;
 import com.dooapp.fxform.view.NodeCreationException;
-import javafx.scene.control.Label;
+import com.dooapp.fxform.view.NodeFactory;
+import javafx.scene.Node;
 
 /**
  * User: antoine
  * Date: 25/08/11
  * Time: 18:31
  */
-public class NodeFactoryConfigurer implements Configurer<ElementController> {
+public abstract class NodeFactoryConfigurer implements Configurer<ElementController> {
 
-    public static final String LABEL_ID_SUFFIX = "-form-label";
+    private final NodeFactory nodeFactory;
 
-    public static final String LABEL_STYLE = "form-label";
+    private final String idSuffix;
 
-    private final LabelFactory labelFactory;
+    private final String style;
 
-    public NodeFactoryConfigurer(LabelFactory labelFactory) {
-        this.labelFactory = labelFactory;
+    public NodeFactoryConfigurer(NodeFactory nodeFactory, String idSuffix, String style) {
+        this.nodeFactory = nodeFactory;
+        this.idSuffix = idSuffix;
+        this.style = style;
     }
 
-    public void configure(final ElementController toConfigure) {
-        toConfigure.setLabelFactory(new LabelFactory<ElementController>() {
-            public Label createNode(ElementController controller) throws NodeCreationException {
-                Label label = labelFactory.createNode(controller);
-                label.setId(controller.getFormField().getField().getName() + LABEL_ID_SUFFIX);
-                label.getStyleClass().add(LABEL_STYLE);
-                return label;
+    protected NodeFactory createNodeFactory() {
+        return new NodeFactory<ElementController>() {
+            public Node createNode(ElementController controller) throws NodeCreationException {
+                Node node = nodeFactory.createNode(controller);
+                node.setId(controller.getFormField().getField().getName() + idSuffix);
+                node.getStyleClass().add(style);
+                return node;
             }
-        });
+        };
     }
 
     public void unconfigure(ElementController toUnconfigure) {

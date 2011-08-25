@@ -13,8 +13,11 @@
 package com.dooapp.fxform.model;
 
 import com.dooapp.fxform.i18n.ResourceBundleHelper;
+import com.dooapp.fxform.view.NodeFactory;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 
 import javax.validation.ConstraintViolation;
@@ -34,6 +37,12 @@ public abstract class ElementController<T extends Element> {
     public static String TOOLTIP_SUFFIX = "-tooltip";
 
     protected final T formField;
+
+    private final ObjectProperty<NodeFactory> editorFactory = new SimpleObjectProperty<NodeFactory>();
+
+    private final ObjectProperty<NodeFactory> tooltipFactory = new SimpleObjectProperty<NodeFactory>();
+
+    private final ObjectProperty<NodeFactory> labelFactory = new SimpleObjectProperty<NodeFactory>();
 
     private final BooleanProperty dirty = new SimpleBooleanProperty();
 
@@ -97,6 +106,42 @@ public abstract class ElementController<T extends Element> {
 
     public void setDirty(boolean dirty) {
         this.dirty().set(dirty);
+    }
+
+    public ObjectProperty<NodeFactory> editorFactory() {
+        return editorFactory;
+    }
+
+    public ObjectProperty<NodeFactory> tooltipFactory() {
+        return tooltipFactory;
+    }
+
+    public ObjectProperty<NodeFactory> labelFactory() {
+        return labelFactory;
+    }
+
+    public NodeFactory getEditorFactory() {
+        return editorFactory().get();
+    }
+
+    public NodeFactory getTooltipFactory() {
+        return tooltipFactory.get();
+    }
+
+    public NodeFactory getLabelFactory() {
+        return labelFactory().get();
+    }
+
+    public void setEditorFactory(NodeFactory nodeFactory) {
+        this.editorFactory.set(nodeFactory);
+    }
+
+    public void setTooltipFactory(NodeFactory nodeFactory) {
+        this.tooltipFactory().set(nodeFactory);
+    }
+
+    public void setLabelFactory(NodeFactory labelFactory) {
+        this.labelFactory.set(labelFactory);
     }
 
 }
