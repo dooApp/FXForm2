@@ -13,11 +13,15 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.i18n.ResourceBundleHelper;
+import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.model.ElementControllerFactory;
 import com.dooapp.fxform.model.FormException;
-import com.dooapp.fxform.model.FormFieldController;
-import com.dooapp.fxform.model.FormFieldControllerFactory;
-import com.dooapp.fxform.model.impl.FormFieldControllerFactoryImpl;
+import com.dooapp.fxform.model.impl.ElementControllerFactoryImpl;
 import com.dooapp.fxform.model.impl.ReflectionFieldProvider;
+import com.dooapp.fxform.utils.ConfigurationStore;
+import com.dooapp.fxform.view.NodeFactory;
+import com.dooapp.fxform.view.handler.FieldHandler;
+import com.dooapp.fxform.view.impl.DelegateFactoryImpl;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -30,8 +34,6 @@ import javafx.scene.control.Control;
 
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * User: Antoine Mischler
@@ -41,15 +43,35 @@ import java.util.List;
  */
 public class FXForm<T> extends Control implements FormAPI<T> {
 
+    public static final String LABEL_ID_SUFFIX = "-form-label";
+
+    public static final String LABEL_STYLE = "form-label";
+
+    public static final String EDITOR_ID_SUFFIX = "-form-editor";
+
+    public static final String EDITOR_STYLE = "form-editor";
+
+    public static final String TOOLTIP_ID_SUFFIX = "-form-tooltip";
+
+    public static final String TOOLTIP_STYLE = "form-tooltip";
+
+    /**
+     * Register a global factory for all forms.
+     *
+     * @param handler
+     * @param factory
+     */
+    public static void registerGlobalFactory(FieldHandler handler, NodeFactory factory) {
+
+    }
+
     private final T source;
 
     private StringProperty title = new SimpleStringProperty();
 
-    private final ObservableList<Field> fields;
+    private final ConfigurationStore<ElementController> controllers = new ConfigurationStore<ElementController>();
 
-    private final ObservableList<FormFieldController> elements;
-
-    private FormFieldControllerFactory formFieldControllerFactory = new FormFieldControllerFactoryImpl();
+    private ElementControllerFactory elementControllerFactory = new ElementControllerFactoryImpl();
 
     public void setTitle(String title) {
         this.title.set(title);
@@ -58,23 +80,35 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     public FXForm(T source) {
         initBundle();
         this.source = source;
-        this.fields = FXCollections.observableList(new ReflectionFieldProvider().getProperties(source));
-        this.elements = createElements();
+        controllers.addConfigurer(new NodeFactoryConfigurer(new DefaultLabelFactory(), LABEL_ID_SUFFIX, LABEL_STYLE) {
+            public void configure(ElementController toConfigure) {
+                toConfigure.setLabelFactory(createNodeFactory());
+            }
+        });
+        controllers.addConfigurer(new NodeFactoryConfigurer(new DefaultLabelFactory(), TOOLTIP_ID_SUFFIX, TOOLTIP_STYLE) {
+            public void configure(ElementController toConfigure) {
+                toConfigure.setTooltipFactory(createNodeFactory());
+            }
+        });
+        controllers.addConfigurer(new NodeFactoryConfigurer(new DefaultLabelFactory(), EDITOR_ID_SUFFIX, EDITOR_STYLE) {
+            public void configure(ElementController toConfigure) {
+                toConfigure.setEditorFactory(new DelegateFactoryImpl());
+            }
+        });
+        createElements();
         this.setSkin(new DefaultSkin(this));
     }
 
-    private ObservableList<FormFieldController> createElements() {
-        List<FormFieldController> fields = new LinkedList();
-        for (Field field : this.fields) {
-            FormFieldController controller = null;
+    private void createElements() {
+        for (Field field : FXCollections.observableList(new ReflectionFieldProvider().getProperties(source))) {
+            ElementController controller = null;
             try {
-                controller = formFieldControllerFactory.create(field, source);
+                controller = elementControllerFactory.create(field, source);
             } catch (FormException e) {
                 e.printStackTrace();
             }
-            fields.add(controller);
+            controllers.add(controller);
         }
-        return FXCollections.observableList(fields);
     }
 
     private void initBundle() {
@@ -100,8 +134,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         return title;
     }
 
-    public ObservableList<FormFieldController> getElements() {
-        return elements;
+    public ObservableList<ElementController> getControllers() {
+        return controllers;
     }
 
     public T getSource() {

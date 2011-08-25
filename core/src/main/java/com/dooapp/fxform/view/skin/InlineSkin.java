@@ -12,7 +12,7 @@
 package com.dooapp.fxform.view.skin;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.model.FormFieldController;
+import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.builders.GridPaneBuilder;
@@ -52,11 +52,14 @@ public class InlineSkin extends FXFormSkin {
         contentBox.getStyleClass().add("form-content-box");
         titleBox.getChildren().add(contentBox);
         contentBox.setSpacing(5.0);
-        GridPane gridPane = GridPaneBuilder.create().build();
+        GridPane gridPane = GridPaneBuilder.create().hgap(5.0).vgap(5.0).build();
         int row = 0;
-        for (final Object o : fxForm.getElements()) {
-            FormFieldController controller = (FormFieldController) o;
-            gridPane.addRow(row, createLabel(controller), createEditor(controller));
+        for (final Object o : fxForm.getControllers()) {
+            ElementController controller = (ElementController) o;
+            gridPane.addRow(row, controller.getLabelFactory().createNode(controller), controller.getEditorFactory().createNode(controller));
+            if (controller.getTooltip() != null) {
+                gridPane.add(controller.getTooltipFactory().createNode(controller), 1, ++row);
+            }
             row++;
         }
         contentBox.getChildren().add(gridPane);

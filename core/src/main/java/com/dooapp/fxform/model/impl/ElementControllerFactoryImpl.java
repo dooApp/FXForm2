@@ -12,25 +12,28 @@
 
 package com.dooapp.fxform.model.impl;
 
-import com.dooapp.fxform.model.AbstractFormFieldController;
-import com.dooapp.fxform.model.FormFieldController;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.dooapp.fxform.model.FormException;
+import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.model.ElementControllerFactory;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WritableValue;
 
-import javax.validation.ConstraintViolation;
+import java.lang.reflect.Field;
 
 /**
  * User: Antoine Mischler
  * Date: 26/04/11
- * Time: 11:43
+ * Time: 11:23
  */
-public class ObservableFormFieldController<T> extends AbstractFormFieldController<ObservableFormField<T>> implements FormFieldController {
+public class ElementControllerFactoryImpl implements ElementControllerFactory {
 
-    public ObservableFormFieldController(ObservableFormField<T> formField) {
-        super(formField);
+    public ElementController create(Field field, Object object) throws FormException {
+        if (WritableValue.class.isAssignableFrom(field.getType())) {
+            return new WritableElementController(new WritableElement(field, object));
+        } else if (ObservableValue.class.isAssignableFrom(field.getType())) {
+            return new ObservableElementController(new ObservableElement(field, object));
+        }
+        throw new FormException("No controller is suitable for " + field + " - " + object);
     }
 
-    public ObservableList<ConstraintViolation<? extends Object>> getConstraintViolations() {
-        return FXCollections.emptyObservableList();
-    }
 }

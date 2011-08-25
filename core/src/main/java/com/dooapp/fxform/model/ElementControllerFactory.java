@@ -10,18 +10,19 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.view;
+package com.dooapp.fxform.model;
 
-import com.dooapp.fxform.model.FormFieldController;
-import javafx.scene.Node;
+import java.lang.reflect.Field;
 
 /**
  * User: Antoine Mischler
- * Date: 11/04/11
- * Time: 22:56
+ * Date: 26/04/11
+ * Time: 11:15
+ * <p/>
+ * Factory responsible for creating ElementController.
  */
-public interface EditorFactory<T extends FormFieldController> {
+public interface ElementControllerFactory {
 
-    public Node createNode(T formFieldController) throws NodeCreationException;
+    public ElementController create(Field field, Object object) throws FormException;
 
 }

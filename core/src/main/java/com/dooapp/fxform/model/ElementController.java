@@ -12,49 +12,91 @@
 
 package com.dooapp.fxform.model;
 
+import com.dooapp.fxform.i18n.ResourceBundleHelper;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 
 import javax.validation.ConstraintViolation;
+import java.util.MissingResourceException;
 
 /**
  * User: Antoine Mischler
  * Date: 26/04/11
  * Time: 11:14
  * <p/>
- * The controller of a FormField.
+ * The controller of a Element.
  */
-public interface FormFieldController {
+public abstract class ElementController<T extends Element> {
 
     public static String LABEL_SUFFIX = "-label";
 
     public static String TOOLTIP_SUFFIX = "-tooltip";
 
-    /**
-     * Returns the model associated to this controller.
-     *
-     * @return
-     */
-    public FormField getFormField();
+    protected final T formField;
 
-    /**
-     * Returns an observable collection of violated constraints.
-     *
-     * @return
-     */
-    public ObservableList<ConstraintViolation<? extends Object>> getConstraintViolations();
+    private final BooleanProperty dirty = new SimpleBooleanProperty();
 
-    /**
-     * Get the tooltip for this field. Might return null if no tooltip has been defined.
-     *
-     * @return
-     */
-    public String getTooltip();
+    public ElementController(T formField) {
+        this.formField = formField;
+    }
+
+    public T getFormField() {
+        return formField;
+    }
 
     /**
      * Get the label for this field.
      *
      * @return
      */
-    public String getLabel();
+    public String getLabel() {
+        try {
+            return ResourceBundleHelper.$(formField.getField().getName() + LABEL_SUFFIX);
+        } catch (MissingResourceException e) {
+            // label is undefined
+            return formField.getField().getName();
+        }
+    }
+
+    /**
+     * Get the tooltip for this field. Might return null if no tooltip has been defined.
+     *
+     * @return
+     */
+    public String getTooltip() {
+        try {
+            return ResourceBundleHelper.$(formField.getField().getName() + TOOLTIP_SUFFIX);
+        } catch (MissingResourceException e) {
+            // tooltip is undefined
+            return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractFormFieldController{" +
+                "formField=" + formField +
+                '}';
+    }
+
+    /**
+     * Returns an observable collection of violated constraints.
+     *
+     * @return
+     */
+    public abstract ObservableList<ConstraintViolation> getConstraintViolations();
+
+    public BooleanProperty dirty() {
+        return dirty;
+    }
+
+    public boolean isDirty() {
+        return dirty.get();
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty().set(dirty);
+    }
 
 }

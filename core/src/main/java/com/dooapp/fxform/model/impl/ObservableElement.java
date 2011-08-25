@@ -13,7 +13,7 @@
 package com.dooapp.fxform.model.impl;
 
 import com.dooapp.fxform.model.FormException;
-import com.dooapp.fxform.model.FormField;
+import com.dooapp.fxform.model.Element;
 import javafx.beans.value.ObservableValue;
 
 import java.lang.reflect.Field;
@@ -25,9 +25,9 @@ import java.lang.reflect.Field;
  * <p/>
  * A form field that represent an observable value.
  */
-public class ObservableFormField<T> extends FormField {
+public class ObservableElement<T> extends Element {
 
-    public ObservableFormField(Field field, Object source) throws FormException {
+    public ObservableElement(Field field, Object source) throws FormException {
         super(field, source);
         if (!ObservableValue.class.isAssignableFrom(field.getType())) {
             throw new FormException("Trying to create an observable form field with a non-observable source " + field.getType());

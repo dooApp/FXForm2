@@ -12,8 +12,7 @@
 
 package com.dooapp.fxform.model.impl;
 
-import com.dooapp.fxform.model.AbstractFormFieldController;
-import com.dooapp.fxform.model.FormFieldController;
+import com.dooapp.fxform.model.ElementController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -29,15 +28,15 @@ import java.util.Set;
  * Date: 26/04/11
  * Time: 11:24
  */
-public class WritableFormFieldController<T> extends AbstractFormFieldController<WritableFormField<T>> implements FormFieldController, ChangeListener {
+public class WritableElementController<T> extends ElementController<WritableElement<T>> implements ChangeListener {
 
-    private final static Logger logger = LoggerFactory.getLogger(WritableFormFieldController.class);
+    private final static Logger logger = LoggerFactory.getLogger(WritableElementController.class);
     ValidatorFactory factory;
     Validator validator;
 
-    private ObservableList<ConstraintViolation<? extends Object>> constraintViolations = FXCollections.observableArrayList();
+    private ObservableList<ConstraintViolation> constraintViolations = FXCollections.observableArrayList();
 
-    public WritableFormFieldController(WritableFormField formField) {
+    public WritableElementController(WritableElement formField) {
         super(formField);
         try {
             factory = Validation.buildDefaultValidatorFactory();
@@ -48,11 +47,13 @@ public class WritableFormFieldController<T> extends AbstractFormFieldController<
         }
     }
 
-    public ObservableList<ConstraintViolation<? extends Object>> getConstraintViolations() {
+    public ObservableList<ConstraintViolation> getConstraintViolations() {
         return constraintViolations;
     }
 
     public void changed(ObservableValue observableValue, Object o, Object o1) {
+        // mark controller as dirty
+        dirty().set(true);
         if (validator != null) {
             Set<ConstraintViolation<Object>> constraintViolationSet = validator.validateValue((Class<Object>) ((formField).getSource().getClass()), formField.getField().getName(), observableValue.getValue());
             constraintViolations.clear();

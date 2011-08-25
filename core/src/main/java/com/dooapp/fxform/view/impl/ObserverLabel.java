@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.impl;
 
-import com.dooapp.fxform.model.impl.ObservableFormField;
+import com.dooapp.fxform.model.impl.ObservableElement;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
@@ -24,9 +24,9 @@ import javafx.scene.control.Label;
  */
 public class ObserverLabel extends Label {
 
-    private final ObservableFormField formField;
+    private final ObservableElement formField;
 
-    public ObserverLabel(ObservableFormField formField) {
+    public ObserverLabel(ObservableElement formField) {
         this.formField = formField;
         formField.getObservable().addListener(new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {

@@ -12,8 +12,8 @@
 
 package com.dooapp.fxform.view.delegate;
 
-import com.dooapp.fxform.model.impl.WritableFormFieldController;
-import com.dooapp.fxform.view.EditorFactory;
+import com.dooapp.fxform.model.impl.WritableElementController;
+import com.dooapp.fxform.view.NodeFactory;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -25,9 +25,9 @@ import javafx.scene.control.TextField;
  * Date: 16/04/11
  * Time: 23:28
  */
-public class StringPropertyDelegate implements EditorFactory<WritableFormFieldController<String>> {
+public class StringPropertyDelegate implements NodeFactory<WritableElementController<String>> {
 
-    public Node createNode(WritableFormFieldController<String> formFieldController) throws NodeCreationException {
+    public Node createNode(WritableElementController<String> formFieldController) throws NodeCreationException {
         final TextField text = new TextField();
         String value = formFieldController.getFormField().getObservable().getValue();
         if (value != null) {

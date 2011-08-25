@@ -12,10 +12,10 @@
 
 package com.dooapp.fxform.view.impl;
 
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.type.EnumProperty;
-import com.dooapp.fxform.model.FormField;
-import com.dooapp.fxform.model.FormFieldController;
-import com.dooapp.fxform.view.EditorFactory;
+import com.dooapp.fxform.view.NodeFactory;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.delegate.*;
 import com.dooapp.fxform.view.handler.FieldHandler;
@@ -34,16 +34,16 @@ import java.util.Map;
  * <p/>
  * Factory implementation based on delegates.
  */
-public class DelegateFactoryImpl implements EditorFactory {
+public class DelegateFactoryImpl implements NodeFactory {
 
-    private final static EditorFactory DEFAULT_FACTORY = new EditorFactory() {
+    private final static NodeFactory DEFAULT_FACTORY = new NodeFactory() {
 
-        public Node createNode(FormFieldController formFieldController) throws NodeCreationException {
-            return new Label(formFieldController.getFormField().getField().getType() + " not supported");
+        public Node createNode(ElementController elementController) throws NodeCreationException {
+            return new Label(elementController.getFormField().getField().getType() + " not supported");
         }
     };
 
-    private Map<FieldHandler, EditorFactory> map = new HashMap();
+    private Map<FieldHandler, NodeFactory> map = new HashMap();
 
     public DelegateFactoryImpl() {
         // register default delegates
@@ -55,14 +55,14 @@ public class DelegateFactoryImpl implements EditorFactory {
         map.put(new TypeFieldHandler(DoubleProperty.class), new DoublePropertyDelegate());
     }
 
-    public Node createNode(FormFieldController controller) throws NodeCreationException {
-        EditorFactory delegate = getDelegate(controller.getFormField());
+    public Node createNode(ElementController controller) throws NodeCreationException {
+        NodeFactory delegate = getDelegate(controller.getFormField());
         return delegate.createNode(controller);
     }
 
-    private EditorFactory getDelegate(FormField formField) {
+    private NodeFactory getDelegate(Element element) {
         for (FieldHandler handler : map.keySet()) {
-            if (handler.handle(formField.getField())) {
+            if (handler.handle(element.getField())) {
                 return map.get(handler);
             }
         }

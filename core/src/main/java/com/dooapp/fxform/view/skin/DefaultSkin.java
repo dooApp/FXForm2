@@ -13,9 +13,11 @@
 package com.dooapp.fxform.view.skin;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.model.FormFieldController;
+import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -48,15 +50,16 @@ public class DefaultSkin extends FXFormSkin {
         contentBox.getStyleClass().add("form-content-box");
         titleBox.getChildren().add(contentBox);
         contentBox.setSpacing(5.0);
-        for (Object o : fxForm.getElements()) {
-            final FormFieldController controller = (FormFieldController) o;
+        for (Object o : fxForm.getControllers()) {
+            final ElementController controller = (ElementController) o;
             VBox controllerBox = new VBox();
             final VBox constraintsBox = new VBox();
             controller.getConstraintViolations().addListener(new ListChangeListener() {
 
                 public void onChanged(Change change) {
                     constraintsBox.getChildren().clear();
-                    for (ConstraintViolation constraintViolation : controller.getConstraintViolations()) {
+                    for (Object o : controller.getConstraintViolations()) {
+                        ConstraintViolation constraintViolation = (ConstraintViolation) o;
                         Label errorLabel = new Label(constraintViolation.getMessage());
                         ImageView warningView = new ImageView(WARNING);
                         warningView.setFitHeight(15);
@@ -67,9 +70,16 @@ public class DefaultSkin extends FXFormSkin {
                     }
                 }
             });
-            controllerBox.getChildren().addAll(createLabel(controller), createEditor(controller));
+            Node editor = controller.getEditorFactory().createNode(controller);
+            final Node label = controller.getLabelFactory().createNode(controller);
+            controller.dirty().addListener(new ChangeListener<Boolean>() {
+                public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
+                    label.setOpacity(0.5);
+                }
+            });
+            controllerBox.getChildren().addAll(label, editor);
             if (controller.getTooltip() != null) {
-                controllerBox.getChildren().add(createTooltip(controller));
+                controllerBox.getChildren().add(controller.getTooltipFactory().createNode(controller));
             }
             contentBox.getChildren().addAll(controllerBox, constraintsBox);
         }

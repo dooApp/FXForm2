@@ -13,8 +13,8 @@
 package com.dooapp.fxform.view.delegate;
 
 import com.dooapp.fxform.type.EnumProperty;
-import com.dooapp.fxform.model.impl.WritableFormFieldController;
-import com.dooapp.fxform.view.EditorFactory;
+import com.dooapp.fxform.model.impl.WritableElementController;
+import com.dooapp.fxform.view.NodeFactory;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -29,10 +29,10 @@ import java.util.Arrays;
  * Date: 17/04/11
  * Time: 00:19
  */
-public class EnumPropertyDelegate implements EditorFactory<WritableFormFieldController<Enum>> {
+public class EnumPropertyDelegate implements NodeFactory<WritableElementController<Enum>> {
 
 
-    public Node createNode(WritableFormFieldController<Enum> formFieldController) throws NodeCreationException {
+    public Node createNode(WritableElementController<Enum> formFieldController) throws NodeCreationException {
         Object[] constants = ((EnumProperty) formFieldController.getFormField().getObservable()).getEnum().getEnumConstants();
         final ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));

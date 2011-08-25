@@ -12,49 +12,38 @@
 
 package com.dooapp.fxform.model;
 
-import com.dooapp.fxform.i18n.ResourceBundleHelper;
-
-import java.util.MissingResourceException;
+import java.lang.reflect.Field;
 
 /**
  * User: Antoine Mischler
- * Date: 26/04/11
- * Time: 12:51
+ * Date: 11/04/11
+ * Time: 22:22
+ * Model object wrapping an object field.
  */
-public abstract class AbstractFormFieldController<T extends FormField> implements FormFieldController {
+public class Element<T extends Object> {
 
-    protected final T formField;
+    protected final Field field;
 
-    public AbstractFormFieldController(T formField) {
-        this.formField = formField;
+    protected final T source;
+
+    public Element(Field field, T source) {
+        this.field = field;
+        this.source = source;
     }
 
-    public T getFormField() {
-        return formField;
+    public Field getField() {
+        return field;
     }
 
-    public String getLabel() {
-        try {
-            return ResourceBundleHelper.$(formField.getField().getName() + LABEL_SUFFIX);
-        } catch (MissingResourceException e) {
-            // label is undefined
-            return formField.getField().getName();
-        }
-    }
-
-    public String getTooltip() {
-        try {
-            return ResourceBundleHelper.$(formField.getField().getName() + TOOLTIP_SUFFIX);
-        } catch (MissingResourceException e) {
-            // tooltip is undefined
-            return null;
-        }
+    public T getSource() {
+        return source;
     }
 
     @Override
     public String toString() {
-        return "AbstractFormFieldController{" +
-                "formField=" + formField +
+        return "Element{" +
+                "field=" + field +
                 '}';
     }
+
 }

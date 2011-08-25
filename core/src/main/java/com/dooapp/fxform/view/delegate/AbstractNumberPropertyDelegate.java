@@ -12,8 +12,8 @@
 
 package com.dooapp.fxform.view.delegate;
 
-import com.dooapp.fxform.model.impl.WritableFormFieldController;
-import com.dooapp.fxform.view.EditorFactory;
+import com.dooapp.fxform.model.impl.WritableElementController;
+import com.dooapp.fxform.view.NodeFactory;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -29,11 +29,11 @@ import java.text.ParseException;
  * Date: 17/04/11
  * Time: 17:31
  */
-public abstract class AbstractNumberPropertyDelegate<T extends Number> implements EditorFactory<WritableFormFieldController<T>> {
+public abstract class AbstractNumberPropertyDelegate<T extends Number> implements NodeFactory<WritableElementController<T>> {
 
     protected ObjectProperty<T> numberProperty = new SimpleObjectProperty<T>();
 
-    public Node createNode(final WritableFormFieldController<T> controller) {
+    public Node createNode(final WritableElementController<T> controller) {
         final TextField textBox = new TextField();
         textBox.textProperty().addListener(new ChangeListener<String>() {
 
