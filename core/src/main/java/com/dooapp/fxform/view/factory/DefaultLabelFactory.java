@@ -13,7 +13,6 @@ package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.NodeFactory;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 

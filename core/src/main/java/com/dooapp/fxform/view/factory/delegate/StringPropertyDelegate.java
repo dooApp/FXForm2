@@ -13,7 +13,7 @@
 package com.dooapp.fxform.view.factory.delegate;
 
 import com.dooapp.fxform.model.impl.WritableElementController;
-import com.dooapp.fxform.view.NodeFactory;
+import com.dooapp.fxform.view.factory.NodeFactory;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
