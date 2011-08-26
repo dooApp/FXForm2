@@ -12,10 +12,10 @@
 
 package com.dooapp.fxform.view.factory;
 
+import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.type.EnumProperty;
-import com.dooapp.fxform.view.factory.NodeFactory;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.delegate.*;
 import com.dooapp.fxform.view.handler.FieldHandler;
@@ -43,29 +43,81 @@ public class DelegateFactory implements NodeFactory {
         }
     };
 
-    private Map<FieldHandler, NodeFactory> map = new HashMap();
+    private final static Map<FieldHandler, NodeFactory> DEFAULT_MAP = new HashMap();
+
+    private final static Map<FieldHandler, NodeFactory> GLOBAL_MAP = new HashMap();
+
+    private final Map<FieldHandler, NodeFactory> USER_MAP = new HashMap();
 
     public DelegateFactory() {
         // register default delegates
-        map.put(new TypeFieldHandler(StringProperty.class), new StringPropertyDelegate());
-        map.put(new TypeFieldHandler(BooleanProperty.class), new BooleanPropertyDelegate());
-        map.put(new TypeFieldHandler(EnumProperty.class), new EnumPropertyDelegate());
-        map.put(new TypeFieldHandler(IntegerProperty.class), new IntegerPropertyDelegate());
-        map.put(new TypeFieldHandler(LongProperty.class), new LongPropertyDelegate());
-        map.put(new TypeFieldHandler(DoubleProperty.class), new DoublePropertyDelegate());
+        DEFAULT_MAP.put(new TypeFieldHandler(StringProperty.class), new StringPropertyDelegate());
+        DEFAULT_MAP.put(new TypeFieldHandler(BooleanProperty.class), new BooleanPropertyDelegate());
+        DEFAULT_MAP.put(new TypeFieldHandler(EnumProperty.class), new EnumPropertyDelegate());
+        DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new IntegerPropertyDelegate());
+        DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new LongPropertyDelegate());
+        DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new DoublePropertyDelegate());
     }
 
+    /**
+     * Create the node by trying to find a delegate factory.
+     * This method will lookup in the user map, the global map and finally in the default map.
+     *
+     * @param controller
+     * @return the created node
+     * @throws NodeCreationException
+     */
     public Node createNode(ElementController controller) throws NodeCreationException {
-        NodeFactory delegate = getDelegate(controller.getFormField());
+        // check field annotation
+        if (controller.getFormField().getField().getAnnotation(FormFactory.class) != null) {
+            // use factory provided by the annotation
+            try {
+                return controller.getFormField().getField().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        // check user defined factories
+        NodeFactory delegate = getDelegate(controller.getFormField(), USER_MAP);
+        // check user defined global factories
+        if (delegate == null) {
+            delegate = getDelegate(controller.getFormField(), GLOBAL_MAP);
+        }
+        // check field type annotation
+        if (delegate == null && controller.getFormField().getField().getType().getAnnotation(FormFactory.class) != null) {
+            // use factory provided by the annotation
+            try {
+                return controller.getFormField().getField().getType().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        // check default map
+        if (delegate == null) {
+            delegate = getDelegate(controller.getFormField(), DEFAULT_MAP);
+        }
+        // use default factory
+        if (delegate == null) {
+            delegate = DEFAULT_FACTORY;
+        }
         return delegate.createNode(controller);
     }
 
-    private NodeFactory getDelegate(Element element) {
+    private NodeFactory getDelegate(Element element, Map<FieldHandler, NodeFactory> map) {
         for (FieldHandler handler : map.keySet()) {
             if (handler.handle(element.getField())) {
                 return map.get(handler);
             }
         }
-        return DEFAULT_FACTORY;
+        return null;
     }
+
+    public static void addGlobalFactory(FieldHandler handler, NodeFactory factory) {
+        GLOBAL_MAP.put(handler, factory);
+    }
+
+    public void addFactory(FieldHandler handler, NodeFactory factory) {
+        USER_MAP.put(handler, factory);
+    }
+
 }
