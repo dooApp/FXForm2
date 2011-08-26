@@ -59,7 +59,6 @@ public class Demo extends Application {
         root.getChildren().addAll(skinChoiceBox, fxForm);
         stage.setScene(scene);
         stage.setVisible(true);
-
     }
 
     private FXForm createFXForm() {
