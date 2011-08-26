@@ -3,7 +3,6 @@
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
  * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
@@ -12,46 +11,26 @@
 
 package com.dooapp.fxform.model.impl;
 
-import com.dooapp.fxform.annotation.NonVisual;
-import com.dooapp.fxform.model.FieldProvider;
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.ElementController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
+import javax.validation.ConstraintViolation;
 
 /**
- * This default implementations retrieves all fields of the given source object, including inherited fields.
- * <p/>
- * User: Antoine Mischler
- * Date: 09/04/11
- * Time: 22:31
+ * User: antoine
+ * Date: 26/08/11
+ * Time: 17:19
  */
-public class ReflectionFieldProvider implements FieldProvider {
+public class DefaultElementController extends ElementController<Element> {
 
-    public List<Field> getProperties(Object source) {
-        List<Field> result = new LinkedList<Field>();
-        if (source != null) {
-            Class clazz = source.getClass();
-            fillFields(clazz, result);
-        }
-        return result;
+    public DefaultElementController(Element formField) {
+        super(formField);
     }
 
-    private void fillFields(Class clazz, List<Field> result) {
-        for (Field field : clazz.getDeclaredFields()) {
-            if (field.getAnnotation(NonVisual.class) == null) {
-                result.add(field);
-            }
-        }
-
-        for (Field field : result) {
-            if (!field.isAccessible()) {
-                field.setAccessible(true);
-            }
-        }
-        if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
-            fillFields(clazz.getSuperclass(), result);
-        }
+    @Override
+    public ObservableList<ConstraintViolation> getConstraintViolations() {
+        return FXCollections.emptyObservableList();
     }
 }
-

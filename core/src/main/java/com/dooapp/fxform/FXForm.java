@@ -20,9 +20,9 @@ import com.dooapp.fxform.model.impl.ElementControllerFactoryImpl;
 import com.dooapp.fxform.model.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.utils.ConfigurationStore;
 import com.dooapp.fxform.view.factory.DefaultLabelFactory;
-import com.dooapp.fxform.view.factory.DelegateFactoryImpl;
+import com.dooapp.fxform.view.factory.DefaultTooltipFactory;
+import com.dooapp.fxform.view.factory.DelegateFactory;
 import com.dooapp.fxform.view.factory.NodeFactory;
-import com.dooapp.fxform.view.handler.FieldHandler;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -56,16 +56,6 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public static final String TOOLTIP_STYLE = "form-tooltip";
 
-    /**
-     * Register a global factory for all forms.
-     *
-     * @param handler
-     * @param factory
-     */
-    public static void registerGlobalFactory(FieldHandler handler, NodeFactory factory) {
-
-    }
-
     private final T source;
 
     private StringProperty title = new SimpleStringProperty();
@@ -79,23 +69,31 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     }
 
     public FXForm(T source) {
+        this(source, new DelegateFactory());
+    }
+
+    public FXForm(T source, NodeFactory editorFactory) {
+        this(source, new DefaultLabelFactory(), new DefaultTooltipFactory(), editorFactory);
+    }
+
+    public FXForm(T source, NodeFactory labelFactory, NodeFactory tooltipFactory, NodeFactory editorFactory) {
         initBundle();
         this.source = source;
-        controllers.addConfigurer(new NodeFactoryConfigurer(new DefaultLabelFactory(), LABEL_ID_SUFFIX, LABEL_STYLE) {
+        controllers.addConfigurer(new NodeFactoryConfigurer(labelFactory, LABEL_ID_SUFFIX, LABEL_STYLE) {
 
             @Override
             protected void applyTo(NodeFactory factory, ElementController controller) {
                 controller.setLabelFactory(factory);
             }
         });
-        controllers.addConfigurer(new NodeFactoryConfigurer(new DefaultLabelFactory(), TOOLTIP_ID_SUFFIX, TOOLTIP_STYLE) {
+        controllers.addConfigurer(new NodeFactoryConfigurer(tooltipFactory, TOOLTIP_ID_SUFFIX, TOOLTIP_STYLE) {
 
             @Override
             protected void applyTo(NodeFactory factory, ElementController controller) {
                 controller.setTooltipFactory(factory);
             }
         });
-        controllers.addConfigurer(new NodeFactoryConfigurer(new DelegateFactoryImpl(), EDITOR_ID_SUFFIX, EDITOR_STYLE) {
+        controllers.addConfigurer(new NodeFactoryConfigurer(editorFactory, EDITOR_ID_SUFFIX, EDITOR_STYLE) {
 
             @Override
             protected void applyTo(NodeFactory factory, ElementController controller) {
@@ -118,22 +116,38 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         }
     }
 
+    /**
+     * Auto loading of associated resource bundle and css file.
+     */
     private void initBundle() {
+        final StackTraceElement element = getCallingClass();
+        String bundle = element.getClassName();
+        ResourceBundleHelper.init(bundle);
+        sceneProperty().addListener(new ChangeListener<Scene>() {
+            public void changed(ObservableValue<? extends Scene> observableValue, Scene scene, Scene scene1) {
+                URL css = FXForm.class.getResource(element.getFileName().substring(0, element.getFileName().indexOf(".")) + ".css");
+                if (css != null && observableValue.getValue() != null) {
+                    System.out.println("Registering " + css + " in " + observableValue.getValue());
+                    getScene().getStylesheets().add(css.toExternalForm());
+                }
+            }
+        });
+    }
+
+    /**
+     * Retrieve the calling class in which the form is being created.
+     *
+     * @return the StackTraceElement representing the calling class
+     */
+    private StackTraceElement getCallingClass() {
         try {
             throw new Exception();
         } catch (Exception e) {
-            final StackTraceElement element = e.getStackTrace()[2];
-            String bundle = element.getClassName();
-            ResourceBundleHelper.init(bundle);
-            sceneProperty().addListener(new ChangeListener<Scene>() {
-                public void changed(ObservableValue<? extends Scene> observableValue, Scene scene, Scene scene1) {
-                    URL css = FXForm.class.getResource(element.getFileName().substring(0, element.getFileName().indexOf(".")) + ".css");
-                    if (css != null && observableValue.getValue() != null) {
-                        System.out.println("Registering " + css + " in " + observableValue.getValue());
-                        getScene().getStylesheets().add(css.toExternalForm());
-                    }
-                }
-            });
+            int i = 1;
+            while (e.getStackTrace()[i].getClassName().equals(FXForm.class.getName())) {
+                i++;
+            }
+            return e.getStackTrace()[i];
         }
     }
 
@@ -142,6 +156,10 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     }
 
     public ObservableList<ElementController> getControllers() {
+        return controllers;
+    }
+
+    public ConfigurationStore<ElementController> getStore() {
         return controllers;
     }
 

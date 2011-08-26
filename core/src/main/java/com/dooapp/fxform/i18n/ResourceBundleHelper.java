@@ -27,15 +27,21 @@ public class ResourceBundleHelper {
 
     private static ResourceBundle bundle;
 
+    private static boolean initialized = false;
+
     public static void init(String bundle) {
         try {
-             ResourceBundleHelper.bundle = ResourceBundle.getBundle(bundle);
+            ResourceBundleHelper.bundle = ResourceBundle.getBundle(bundle);
+            initialized = true;
         } catch (MissingResourceException e) {
             logger.info("Form resource bundle not found. You should create a bundle called " + bundle);
         }
     }
 
     public static String $(String key) throws MissingResourceException {
+        if (!initialized) {
+            throw new MissingResourceException("Resource bundle not initialized", "", "");
+        }
         return bundle.getString(key);
     }
 

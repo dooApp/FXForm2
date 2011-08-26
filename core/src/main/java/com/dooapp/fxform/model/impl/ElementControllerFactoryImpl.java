@@ -12,9 +12,10 @@
 
 package com.dooapp.fxform.model.impl;
 
-import com.dooapp.fxform.model.FormException;
+import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.model.ElementControllerFactory;
+import com.dooapp.fxform.model.FormException;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WritableValue;
 
@@ -33,7 +34,7 @@ public class ElementControllerFactoryImpl implements ElementControllerFactory {
         } else if (ObservableValue.class.isAssignableFrom(field.getType())) {
             return new ObservableElementController(new ObservableElement(field, object));
         }
-        throw new FormException("No controller is suitable for " + field + " - " + object);
+        return new DefaultElementController(new Element(field, object));
     }
 
 }

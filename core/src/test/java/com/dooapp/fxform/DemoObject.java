@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.annotation.NonVisual;
 import com.dooapp.fxform.type.EnumProperty;
 import javafx.beans.property.*;
@@ -41,6 +42,11 @@ public class DemoObject {
     private IntegerProperty age = new SimpleIntegerProperty();
 
     private DoubleProperty height = new SimpleDoubleProperty();
+
+    @FormFactory(DemoFactory.class)
+    private StringProperty factoryAnnotationOnField = new SimpleStringProperty();
+
+    private CustomType customType = new CustomType();
 
     public String getName() {
         return name.get();

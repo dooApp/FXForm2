@@ -12,14 +12,21 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.FXFormSkin;
+import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.factory.DelegateFactory;
+import com.dooapp.fxform.view.factory.NodeFactory;
+import com.dooapp.fxform.view.handler.NamedFieldHandler;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import com.dooapp.fxform.view.skin.InlineSkin;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -61,7 +68,12 @@ public class Demo extends Application {
         demoObject.setName("John Hudson");
         demoObject.setLetter(TestEnum.B);
         new ObjectPropertyObserver(demoObject);
-        FXForm<DemoObject> fxForm = new FXForm<DemoObject>(demoObject);
+        DelegateFactory.addGlobalFactory(new NamedFieldHandler("height"), new NodeFactory<ElementController>() {
+            public Node createNode(ElementController controller) throws NodeCreationException {
+                return new Button("Custom factory");
+            }
+        });
+        FXForm<DemoObject> fxForm = new FXForm<DemoObject>(demoObject, new DelegateFactory());
         fxForm.setTitle("Dude, where is my form?");
         return fxForm;
     }

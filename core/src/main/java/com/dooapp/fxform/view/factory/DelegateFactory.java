@@ -34,7 +34,7 @@ import java.util.Map;
  * <p/>
  * Factory implementation based on delegates.
  */
-public class DelegateFactoryImpl implements NodeFactory {
+public class DelegateFactory implements NodeFactory {
 
     private final static NodeFactory DEFAULT_FACTORY = new NodeFactory() {
 
@@ -45,7 +45,7 @@ public class DelegateFactoryImpl implements NodeFactory {
 
     private Map<FieldHandler, NodeFactory> map = new HashMap();
 
-    public DelegateFactoryImpl() {
+    public DelegateFactory() {
         // register default delegates
         map.put(new TypeFieldHandler(StringProperty.class), new StringPropertyDelegate());
         map.put(new TypeFieldHandler(BooleanProperty.class), new BooleanPropertyDelegate());
