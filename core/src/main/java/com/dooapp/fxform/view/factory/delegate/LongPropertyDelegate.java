@@ -10,35 +10,26 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.view.delegate;
+package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.impl.WritableElementController;
-import com.dooapp.fxform.view.NodeFactory;
-import com.dooapp.fxform.view.NodeCreationException;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.Node;
-import javafx.scene.control.TextField;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 /**
  * User: Antoine Mischler
- * Date: 16/04/11
- * Time: 23:28
+ * Date: 17/04/11
+ * Time: 17:58
  */
-public class StringPropertyDelegate implements NodeFactory<WritableElementController<String>> {
+public class LongPropertyDelegate extends AbstractNumberPropertyDelegate<Long> {
 
-    public Node createNode(WritableElementController<String> formFieldController) throws NodeCreationException {
-        final TextField text = new TextField();
-        String value = formFieldController.getFormField().getObservable().getValue();
-        if (value != null) {
-            text.setText(value);
-        }
-        text.textProperty().addListener(formFieldController);
-        formFieldController.getFormField().getObservable().addListener(new ChangeListener<String>() {
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
-                text.setText(s1);
-            }
-        });
-        return text;
+    @Override
+    protected NumberFormat createFormat() {
+        return NumberFormat.getNumberInstance();
     }
+
+    @Override
+    protected Long parse(String text) throws ParseException {
+        return getFormat().parse(text).longValue();
+    }
+
 }

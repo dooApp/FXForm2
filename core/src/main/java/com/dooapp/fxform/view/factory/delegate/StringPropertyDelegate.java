@@ -10,28 +10,35 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.view.impl;
+package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.impl.ObservableElement;
+import com.dooapp.fxform.model.impl.WritableElementController;
+import com.dooapp.fxform.view.NodeFactory;
+import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Label;
+import javafx.scene.Node;
+import javafx.scene.control.TextField;
 
 /**
  * User: Antoine Mischler
- * Date: 26/04/11
- * Time: 12:06
+ * Date: 16/04/11
+ * Time: 23:28
  */
-public class ObserverLabel extends Label {
+public class StringPropertyDelegate implements NodeFactory<WritableElementController<String>> {
 
-    private final ObservableElement formField;
-
-    public ObserverLabel(ObservableElement formField) {
-        this.formField = formField;
-        formField.getObservable().addListener(new ChangeListener() {
-            public void changed(ObservableValue observableValue, Object o, Object o1) {
-                setText(ObserverLabel.this.formField.getObservable().getValue().toString());
+    public Node createNode(WritableElementController<String> formFieldController) throws NodeCreationException {
+        final TextField text = new TextField();
+        String value = formFieldController.getFormField().getObservable().getValue();
+        if (value != null) {
+            text.setText(value);
+        }
+        text.textProperty().addListener(formFieldController);
+        formFieldController.getFormField().getObservable().addListener(new ChangeListener<String>() {
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
+                text.setText(s1);
             }
         });
+        return text;
     }
 }

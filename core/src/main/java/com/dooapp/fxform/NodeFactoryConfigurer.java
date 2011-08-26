@@ -13,9 +13,7 @@ package com.dooapp.fxform;
 
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.utils.Configurer;
-import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.NodeFactory;
-import javafx.scene.Node;
+import com.dooapp.fxform.view.factory.NodeFactory;
 
 /**
  * User: antoine
@@ -26,28 +24,18 @@ public abstract class NodeFactoryConfigurer implements Configurer<ElementControl
 
     private final NodeFactory nodeFactory;
 
-    private final String idSuffix;
-
-    private final String style;
-
     public NodeFactoryConfigurer(NodeFactory nodeFactory, String idSuffix, String style) {
-        this.nodeFactory = nodeFactory;
-        this.idSuffix = idSuffix;
-        this.style = style;
+        this.nodeFactory = new NodeFactoryWrapper(nodeFactory, idSuffix, style);
     }
 
-    protected NodeFactory createNodeFactory() {
-        return new NodeFactory<ElementController>() {
-            public Node createNode(ElementController controller) throws NodeCreationException {
-                Node node = nodeFactory.createNode(controller);
-                node.setId(controller.getFormField().getField().getName() + idSuffix);
-                node.getStyleClass().add(style);
-                return node;
-            }
-        };
+    protected abstract void applyTo(NodeFactory factory, ElementController controller);
+
+    public void configure(ElementController toConfigure) {
+        applyTo(nodeFactory, toConfigure);
     }
 
-    public void unconfigure(ElementController toUnconfigure) {
-        toUnconfigure.setLabelFactory(null);
+    public void unconfigure(ElementController controller) {
+        // nothing specific to to there
     }
+
 }

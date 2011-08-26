@@ -3,32 +3,45 @@
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
  * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.view.delegate;
+package com.dooapp.fxform;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
+import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.factory.NodeFactory;
+import javafx.scene.Node;
 
 /**
- * User: Antoine Mischler
- * Date: 17/04/11
- * Time: 17:57
+ * Wrap a NodeFactory to add a specific style and set an id to the generated nodes.
+ *
+ * User: antoine
+ * Date: 26/08/11
+ * Time: 10:09
  */
-public class IntegerPropertyDelegate extends AbstractNumberPropertyDelegate<Integer> {
+public class NodeFactoryWrapper implements NodeFactory {
 
-    @Override
-    protected NumberFormat createFormat() {
-        return NumberFormat.getIntegerInstance();
+    protected final NodeFactory factory;
+
+    private final String idSuffix;
+
+    private final String style;
+
+    public NodeFactoryWrapper(NodeFactory factory, String idSuffix, String style) {
+        this.factory = factory;
+        this.idSuffix = idSuffix;
+        this.style = style;
     }
 
-    @Override
-    protected Integer parse(String text) throws ParseException {
-        return getFormat().parse(text).intValue();
+    public Node createNode(ElementController controller) throws NodeCreationException {
+        Node node = factory.createNode(controller);
+        node.setId(controller.getFormField().getField().getName() + idSuffix);
+        node.getStyleClass().add(style);
+        return node;
     }
+
 }

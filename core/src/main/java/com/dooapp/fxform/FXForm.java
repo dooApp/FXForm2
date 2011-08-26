@@ -19,9 +19,10 @@ import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.impl.ElementControllerFactoryImpl;
 import com.dooapp.fxform.model.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.utils.ConfigurationStore;
-import com.dooapp.fxform.view.NodeFactory;
+import com.dooapp.fxform.view.factory.DefaultLabelFactory;
+import com.dooapp.fxform.view.factory.DelegateFactoryImpl;
+import com.dooapp.fxform.view.factory.NodeFactory;
 import com.dooapp.fxform.view.handler.FieldHandler;
-import com.dooapp.fxform.view.impl.DelegateFactoryImpl;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -81,18 +82,24 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         initBundle();
         this.source = source;
         controllers.addConfigurer(new NodeFactoryConfigurer(new DefaultLabelFactory(), LABEL_ID_SUFFIX, LABEL_STYLE) {
-            public void configure(ElementController toConfigure) {
-                toConfigure.setLabelFactory(createNodeFactory());
+
+            @Override
+            protected void applyTo(NodeFactory factory, ElementController controller) {
+                controller.setLabelFactory(factory);
             }
         });
         controllers.addConfigurer(new NodeFactoryConfigurer(new DefaultLabelFactory(), TOOLTIP_ID_SUFFIX, TOOLTIP_STYLE) {
-            public void configure(ElementController toConfigure) {
-                toConfigure.setTooltipFactory(createNodeFactory());
+
+            @Override
+            protected void applyTo(NodeFactory factory, ElementController controller) {
+                controller.setTooltipFactory(factory);
             }
         });
-        controllers.addConfigurer(new NodeFactoryConfigurer(new DefaultLabelFactory(), EDITOR_ID_SUFFIX, EDITOR_STYLE) {
-            public void configure(ElementController toConfigure) {
-                toConfigure.setEditorFactory(new DelegateFactoryImpl());
+        controllers.addConfigurer(new NodeFactoryConfigurer(new DelegateFactoryImpl(), EDITOR_ID_SUFFIX, EDITOR_STYLE) {
+
+            @Override
+            protected void applyTo(NodeFactory factory, ElementController controller) {
+                controller.setEditorFactory(factory);
             }
         });
         createElements();

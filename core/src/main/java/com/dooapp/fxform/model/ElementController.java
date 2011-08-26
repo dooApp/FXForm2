@@ -13,7 +13,7 @@
 package com.dooapp.fxform.model;
 
 import com.dooapp.fxform.i18n.ResourceBundleHelper;
-import com.dooapp.fxform.view.NodeFactory;
+import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
