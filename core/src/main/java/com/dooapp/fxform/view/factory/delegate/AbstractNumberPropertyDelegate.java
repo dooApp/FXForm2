@@ -48,6 +48,7 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
                 }
             }
         });
+        textBox.textProperty().setValue(getFormat().format(controller.getValue()));
         controller.addListener(new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
                 textBox.textProperty().setValue(getFormat().format(controller.getValue()));

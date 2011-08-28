@@ -51,8 +51,10 @@ public class Demo extends Application {
         root.setPadding(new Insets(10, 10, 10, 10));
         final DemoObject instance1 = new SubDemoObject();
         instance1.setName("John");
+        instance1.setAge(18);
         final DemoObject instance2 = new SubDemoObject();
         instance2.setName("Julio");
+        instance2.setAge(4);
         new ObjectPropertyObserver(instance1);
         new ObjectPropertyObserver(instance2);
         final FXForm fxForm = createFXForm();
