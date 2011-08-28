@@ -73,5 +73,8 @@ public class DemoObject {
         letter.set(testEnum);
     }
 
-
+    @Override
+    public String toString() {
+        return name.get();
+    }
 }

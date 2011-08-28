@@ -39,7 +39,7 @@ public class DelegateFactory implements NodeFactory {
     private final static NodeFactory DEFAULT_FACTORY = new NodeFactory() {
 
         public Node createNode(ElementController elementController) throws NodeCreationException {
-            return new Label(elementController.getFormField().getField().getType() + " not supported");
+            return new Label(elementController.getElement().getField().getType() + " not supported");
         }
     };
 
@@ -69,32 +69,32 @@ public class DelegateFactory implements NodeFactory {
      */
     public Node createNode(ElementController controller) throws NodeCreationException {
         // check field annotation
-        if (controller.getFormField().getField().getAnnotation(FormFactory.class) != null) {
+        if (controller.getElement().getField().getAnnotation(FormFactory.class) != null) {
             // use factory provided by the annotation
             try {
-                return controller.getFormField().getField().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
+                return controller.getElement().getField().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
             } catch (Exception e) {
                 // ignore
             }
         }
         // check user defined factories
-        NodeFactory delegate = getDelegate(controller.getFormField(), USER_MAP);
+        NodeFactory delegate = getDelegate(controller.getElement(), USER_MAP);
         // check user defined global factories
         if (delegate == null) {
-            delegate = getDelegate(controller.getFormField(), GLOBAL_MAP);
+            delegate = getDelegate(controller.getElement(), GLOBAL_MAP);
         }
         // check field type annotation
-        if (delegate == null && controller.getFormField().getField().getType().getAnnotation(FormFactory.class) != null) {
+        if (delegate == null && controller.getElement().getField().getType().getAnnotation(FormFactory.class) != null) {
             // use factory provided by the annotation
             try {
-                return controller.getFormField().getField().getType().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
+                return controller.getElement().getField().getType().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
             } catch (Exception e) {
                 // ignore
             }
         }
         // check default map
         if (delegate == null) {
-            delegate = getDelegate(controller.getFormField(), DEFAULT_MAP);
+            delegate = getDelegate(controller.getElement(), DEFAULT_MAP);
         }
         // use default factory
         if (delegate == null) {

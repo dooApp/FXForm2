@@ -21,6 +21,7 @@ public interface FormAPI<T> {
 
     /**
      * Set the title of the Form
+     *
      * @param title
      */
     public void setTitle(String title);
@@ -29,5 +30,12 @@ public interface FormAPI<T> {
      * Get the source object used for this form
      */
     public T getSource();
+
+    /**
+     * Set the source of this form.
+     *
+     * @param source
+     */
+    public void setSource(T source);
 
 }

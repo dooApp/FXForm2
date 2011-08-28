@@ -27,6 +27,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 import javax.validation.ConstraintViolation;
+import java.util.List;
 
 /**
  * User: Antoine Mischler
@@ -41,21 +42,26 @@ public class DefaultSkin extends FXFormSkin {
         super(fxForm);
     }
 
+    private VBox controllerBox;
+
     @Override
     protected Node createRootNode() throws NodeCreationException {
         VBox titleBox = new VBox();
         titleBox.getChildren().add(createTitleNode());
-        VBox contentBox = new VBox();
+        final VBox contentBox = new VBox();
         contentBox.setPadding(new Insets(5.0, 5.0, 5.0, 5.0));
         contentBox.getStyleClass().add("form-content-box");
         titleBox.getChildren().add(contentBox);
         contentBox.setSpacing(5.0);
-        for (Object o : fxForm.getControllers()) {
-            final ElementController controller = (ElementController) o;
-            VBox controllerBox = new VBox();
+        controllerBox = new VBox();
+        contentBox.getChildren().addAll(controllerBox);
+        return titleBox;
+    }
+
+    protected void addControllers(List<ElementController> controllers) {
+        for (final ElementController controller : controllers) {
             final VBox constraintsBox = new VBox();
             controller.getConstraintViolations().addListener(new ListChangeListener() {
-
                 public void onChanged(Change change) {
                     constraintsBox.getChildren().clear();
                     for (Object o : controller.getConstraintViolations()) {
@@ -70,20 +76,27 @@ public class DefaultSkin extends FXFormSkin {
                     }
                 }
             });
-            Node editor = controller.getEditorFactory().createNode(controller);
-            final Node label = controller.getLabelFactory().createNode(controller);
+            Node editor = getEditor(controller);
+            final Node label = getLabel(controller);
             controller.dirty().addListener(new ChangeListener<Boolean>() {
                 public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
                     label.setOpacity(0.5);
                 }
             });
-            controllerBox.getChildren().addAll(label, editor);
+            controllerBox.getChildren().addAll(label, editor, constraintsBox);
             if (controller.getTooltip() != null) {
-                controllerBox.getChildren().add(controller.getTooltipFactory().createNode(controller));
+                Node node = getTooltip(controller);
+                controllerBox.getChildren().add(node);
             }
-            contentBox.getChildren().addAll(controllerBox, constraintsBox);
         }
-        return titleBox;
+    }
+
+    protected void removeControllers(List<ElementController> controllers) {
+        for (ElementController controller : controllers) {
+            controllerBox.getChildren().remove(getLabel(controller));
+            controllerBox.getChildren().remove(getEditor(controller));
+            controllerBox.getChildren().remove(getTooltip(controller));
+        }
     }
 
     private Node createTitleNode() {

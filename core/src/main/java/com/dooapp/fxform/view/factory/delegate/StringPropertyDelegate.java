@@ -12,9 +12,9 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.impl.WritableElementController;
-import com.dooapp.fxform.view.factory.NodeFactory;
+import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
@@ -25,18 +25,26 @@ import javafx.scene.control.TextField;
  * Date: 16/04/11
  * Time: 23:28
  */
-public class StringPropertyDelegate implements NodeFactory<WritableElementController<String>> {
+public class StringPropertyDelegate implements NodeFactory<String> {
 
-    public Node createNode(WritableElementController<String> formFieldController) throws NodeCreationException {
+    public Node createNode(final ElementController<String> controller) throws NodeCreationException {
         final TextField text = new TextField();
-        String value = formFieldController.getFormField().getObservable().getValue();
+        String value = controller.getValue();
         if (value != null) {
             text.setText(value);
         }
-        text.textProperty().addListener(formFieldController);
-        formFieldController.getFormField().getObservable().addListener(new ChangeListener<String>() {
+        text.textProperty().addListener(new ChangeListener<String>() {
             public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
-                text.setText(s1);
+                controller.setValue(s1);
+            }
+        });
+        controller.addListener(new ChangeListener<String>() {
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
+                if (s1 != null) {
+                    text.setText(s1);
+                } else {
+                    text.setText("");
+                }
             }
         });
         return text;

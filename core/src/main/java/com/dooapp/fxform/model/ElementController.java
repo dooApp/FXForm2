@@ -14,14 +14,22 @@ package com.dooapp.fxform.model;
 
 import com.dooapp.fxform.i18n.ResourceBundleHelper;
 import com.dooapp.fxform.view.factory.NodeFactory;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WritableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.validation.ConstraintViolation;
+import javax.validation.*;
 import java.util.MissingResourceException;
+import java.util.Set;
 
 /**
  * User: Antoine Mischler
@@ -30,13 +38,15 @@ import java.util.MissingResourceException;
  * <p/>
  * The controller of a Element.
  */
-public abstract class ElementController<T extends Element> {
+public class ElementController<WrappedType> implements ObservableValue<WrappedType>, WritableValue<WrappedType> {
+
+    private final static Logger logger = LoggerFactory.getLogger(ElementController.class);
 
     public static String LABEL_SUFFIX = "-label";
 
     public static String TOOLTIP_SUFFIX = "-tooltip";
 
-    protected final T formField;
+    protected final Element<?, WrappedType, ?> element;
 
     private final ObjectProperty<NodeFactory> editorFactory = new SimpleObjectProperty<NodeFactory>();
 
@@ -46,12 +56,20 @@ public abstract class ElementController<T extends Element> {
 
     private final BooleanProperty dirty = new SimpleBooleanProperty();
 
-    public ElementController(T formField) {
-        this.formField = formField;
-    }
+    private ObservableList<ConstraintViolation> constraintViolations = FXCollections.observableArrayList();
 
-    public T getFormField() {
-        return formField;
+    ValidatorFactory factory;
+    Validator validator;
+
+    public ElementController(Element element) {
+        this.element = element;
+        try {
+            factory = Validation.buildDefaultValidatorFactory();
+            validator = factory.getValidator();
+        } catch (ValidationException e) {
+            // validation is not activated, since no implementation has been provided
+            logger.trace("Validation disabled", e);
+        }
     }
 
     /**
@@ -61,10 +79,10 @@ public abstract class ElementController<T extends Element> {
      */
     public String getLabel() {
         try {
-            return ResourceBundleHelper.$(formField.getField().getName() + LABEL_SUFFIX);
+            return ResourceBundleHelper.$(element.getField().getName() + LABEL_SUFFIX);
         } catch (MissingResourceException e) {
             // label is undefined
-            return formField.getField().getName();
+            return element.getField().getName();
         }
     }
 
@@ -75,7 +93,7 @@ public abstract class ElementController<T extends Element> {
      */
     public String getTooltip() {
         try {
-            return ResourceBundleHelper.$(formField.getField().getName() + TOOLTIP_SUFFIX);
+            return ResourceBundleHelper.$(element.getField().getName() + TOOLTIP_SUFFIX);
         } catch (MissingResourceException e) {
             // tooltip is undefined
             return null;
@@ -85,16 +103,9 @@ public abstract class ElementController<T extends Element> {
     @Override
     public String toString() {
         return "AbstractFormFieldController{" +
-                "formField=" + formField +
+                "element=" + element +
                 '}';
     }
-
-    /**
-     * Returns an observable collection of violated constraints.
-     *
-     * @return
-     */
-    public abstract ObservableList<ConstraintViolation> getConstraintViolations();
 
     public BooleanProperty dirty() {
         return dirty;
@@ -144,4 +155,44 @@ public abstract class ElementController<T extends Element> {
         this.labelFactory.set(labelFactory);
     }
 
+    public ObservableList<ConstraintViolation> getConstraintViolations() {
+        return constraintViolations;
+    }
+
+    public void setValue(WrappedType o1) {
+        // mark controller as dirty
+        dirty().set(true);
+        if (validator != null) {
+            Set<ConstraintViolation<Object>> constraintViolationSet = validator.validateValue((Class<Object>) (element.getSource().getClass()), element.getField().getName(), o1);
+            constraintViolations.clear();
+            constraintViolations.addAll(constraintViolationSet);
+        }
+        if (constraintViolations.size() == 0) {
+            element.setValue(o1);
+        }
+    }
+
+    public void addListener(ChangeListener<? super WrappedType> changeListener) {
+        element.addListener(changeListener);
+    }
+
+    public void removeListener(ChangeListener<? super WrappedType> changeListener) {
+        element.removeListener(changeListener);
+    }
+
+    public WrappedType getValue() {
+        return element.getValue();
+    }
+
+    public void addListener(InvalidationListener invalidationListener) {
+        element.addListener(invalidationListener);
+    }
+
+    public void removeListener(InvalidationListener invalidationListener) {
+        element.removeListener(invalidationListener);
+    }
+
+    public Element getElement() {
+        return element;
+    }
 }

@@ -13,10 +13,11 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.i18n.ResourceBundleHelper;
+import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.ElementController;
-import com.dooapp.fxform.model.ElementControllerFactory;
 import com.dooapp.fxform.model.FormException;
-import com.dooapp.fxform.model.impl.ElementControllerFactoryImpl;
+import com.dooapp.fxform.model.impl.PropertyElement;
+import com.dooapp.fxform.model.impl.ReadOnlyPropertyElement;
 import com.dooapp.fxform.model.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.utils.ConfigurationStore;
 import com.dooapp.fxform.view.factory.DefaultLabelFactory;
@@ -24,14 +25,14 @@ import com.dooapp.fxform.view.factory.DefaultTooltipFactory;
 import com.dooapp.fxform.view.factory.DelegateFactory;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import com.dooapp.fxform.view.skin.DefaultSkin;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -43,6 +44,8 @@ import java.net.URL;
  * The FXForm control
  */
 public class FXForm<T> extends Control implements FormAPI<T> {
+
+    private final static Logger logger = LoggerFactory.getLogger(FXForm.class);
 
     public static final String LABEL_ID_SUFFIX = "-form-label";
 
@@ -56,29 +59,26 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public static final String TOOLTIP_STYLE = "form-tooltip";
 
-    private final T source;
+    private final ObjectProperty<T> source = new SimpleObjectProperty<T>();
 
     private StringProperty title = new SimpleStringProperty();
 
     private final ConfigurationStore<ElementController> controllers = new ConfigurationStore<ElementController>();
 
-    private ElementControllerFactory elementControllerFactory = new ElementControllerFactoryImpl();
-
     public void setTitle(String title) {
         this.title.set(title);
     }
 
-    public FXForm(T source) {
-        this(source, new DelegateFactory());
+    public FXForm() {
+        this(new DelegateFactory());
     }
 
-    public FXForm(T source, NodeFactory editorFactory) {
-        this(source, new DefaultLabelFactory(), new DefaultTooltipFactory(), editorFactory);
+    public FXForm(NodeFactory editorFactory) {
+        this(new DefaultLabelFactory(), new DefaultTooltipFactory(), editorFactory);
     }
 
-    public FXForm(T source, NodeFactory labelFactory, NodeFactory tooltipFactory, NodeFactory editorFactory) {
+    public FXForm(NodeFactory labelFactory, NodeFactory tooltipFactory, NodeFactory editorFactory) {
         initBundle();
-        this.source = source;
         controllers.addConfigurer(new NodeFactoryConfigurer(labelFactory, LABEL_ID_SUFFIX, LABEL_STYLE) {
 
             @Override
@@ -100,19 +100,36 @@ public class FXForm<T> extends Control implements FormAPI<T> {
                 controller.setEditorFactory(factory);
             }
         });
-        createElements();
+        source.addListener(new ChangeListener<T>() {
+            public void changed(ObservableValue<? extends T> observableValue, T t, T t1) {
+                if (controllers.isEmpty() || (t1.getClass() != t.getClass())) {
+                    createControllers();
+                }
+            }
+        });
         this.setSkin(new DefaultSkin(this));
     }
 
-    private void createElements() {
-        for (Field field : FXCollections.observableList(new ReflectionFieldProvider().getProperties(source))) {
-            ElementController controller = null;
+    private void createControllers() {
+        logger.info("Creating controllers for " + source.get());
+        controllers.clear();
+        for (Field field : new ReflectionFieldProvider().getProperties(source.get())) {
+            ElementController controller;
             try {
-                controller = elementControllerFactory.create(field, source);
+                Element<T, ?, ?> element = null;
+                if (Property.class.isAssignableFrom(field.getType())) {
+                    element = new PropertyElement(field);
+                } else if (ReadOnlyProperty.class.isAssignableFrom(field.getType())) {
+                    element = new ReadOnlyPropertyElement(field);
+                }
+                if (element != null) {
+                    element.sourceProperty().bind(source);
+                    controller = new ElementController(element);
+                    controllers.add(controller);
+                }
             } catch (FormException e) {
                 e.printStackTrace();
             }
-            controllers.add(controller);
         }
     }
 
@@ -127,7 +144,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
             public void changed(ObservableValue<? extends Scene> observableValue, Scene scene, Scene scene1) {
                 URL css = FXForm.class.getResource(element.getFileName().substring(0, element.getFileName().indexOf(".")) + ".css");
                 if (css != null && observableValue.getValue() != null) {
-                    System.out.println("Registering " + css + " in " + observableValue.getValue());
+                    logger.info("Registering " + css + " in " + observableValue.getValue());
                     getScene().getStylesheets().add(css.toExternalForm());
                 }
             }
@@ -164,6 +181,14 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     }
 
     public T getSource() {
+        return source.get();
+    }
+
+    public void setSource(T source) {
+        this.source.set(source);
+    }
+
+    public ObjectProperty<T> sourceProperty() {
         return source;
     }
 

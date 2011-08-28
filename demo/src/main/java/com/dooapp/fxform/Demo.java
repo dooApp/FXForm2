@@ -29,6 +29,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.apache.log4j.BasicConfigurator;
+import org.slf4j.Logger;
 
 /**
  * User: Antoine Mischler
@@ -39,6 +41,7 @@ import javafx.stage.Stage;
 public class Demo extends Application {
 
     public static void main(String[] args) {
+        BasicConfigurator.configure();
         Application.launch(Demo.class, args);
     }
 
@@ -46,32 +49,43 @@ public class Demo extends Application {
     public void start(Stage stage) {
         VBox root = new VBox();
         root.setPadding(new Insets(10, 10, 10, 10));
+        final DemoObject instance1 = new SubDemoObject();
+        instance1.setName("John");
+        final DemoObject instance2 = new SubDemoObject();
+        instance2.setName("Julio");
+        new ObjectPropertyObserver(instance1);
+        new ObjectPropertyObserver(instance2);
         final FXForm fxForm = createFXForm();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Demo.class.getResource("style.css").toExternalForm());
-        ChoiceBox<FXFormSkin> skinChoiceBox = new ChoiceBox<FXFormSkin>();
-        skinChoiceBox.getItems().addAll(new DefaultSkin(fxForm), new InlineSkin(fxForm));
-        skinChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<FXFormSkin>() {
-            public void changed(ObservableValue<? extends FXFormSkin> observableValue, FXFormSkin fxFormSkin, FXFormSkin fxFormSkin1) {
-                fxForm.setSkin(fxFormSkin1);
+        ChoiceBox<FXFormSkinFactory> skinChoiceBox = new ChoiceBox<FXFormSkinFactory>();
+        skinChoiceBox.getItems().addAll(FXFormSkinFactory.DEFAULT_FACTORY, FXFormSkinFactory.INLINE_FACTORY);
+        skinChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<FXFormSkinFactory>() {
+            public void changed(ObservableValue<? extends FXFormSkinFactory> observableValue, FXFormSkinFactory fxFormSkin, FXFormSkinFactory fxFormSkin1) {
+                fxForm.setSkin(fxFormSkin1.createSkin(fxForm));
             }
         });
-        root.getChildren().addAll(skinChoiceBox, fxForm);
+        ChoiceBox<DemoObject> instanceChoiceBox = new ChoiceBox<DemoObject>();
+        instanceChoiceBox.getItems().addAll(instance1, instance2);
+        instanceChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<DemoObject>() {
+            public void changed(ObservableValue<? extends DemoObject> observableValue, DemoObject demoObject, DemoObject demoObject1) {
+                fxForm.setSource(demoObject1);
+            }
+        });
+        instanceChoiceBox.selectionModelProperty().get().selectFirst();
+        skinChoiceBox.selectionModelProperty().get().selectFirst();
+        root.getChildren().addAll(skinChoiceBox, instanceChoiceBox, fxForm);
         stage.setScene(scene);
         stage.setVisible(true);
     }
 
-    private FXForm createFXForm() {
-        DemoObject demoObject = new SubDemoObject();
-        demoObject.setName("John Hudson");
-        demoObject.setLetter(TestEnum.B);
-        new ObjectPropertyObserver(demoObject);
+    private FXForm<DemoObject> createFXForm() {
         DelegateFactory.addGlobalFactory(new NamedFieldHandler("height"), new NodeFactory<ElementController>() {
             public Node createNode(ElementController controller) throws NodeCreationException {
                 return new Button("Custom factory");
             }
         });
-        FXForm<DemoObject> fxForm = new FXForm<DemoObject>(demoObject, new DelegateFactory());
+        FXForm<DemoObject> fxForm = new FXForm<DemoObject>(new DelegateFactory());
         fxForm.setTitle("Dude, where is my form?");
         return fxForm;
     }

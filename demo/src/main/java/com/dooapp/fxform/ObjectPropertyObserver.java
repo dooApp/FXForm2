@@ -42,6 +42,6 @@ public class ObjectPropertyObserver implements ChangeListener {
     }
 
     public void changed(ObservableValue observableValue, Object o, Object o1) {
-        System.out.println(observableValue);
+        System.out.println(source + ": "  + o + "->" + o1);
     }
 }

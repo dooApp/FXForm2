@@ -23,6 +23,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
+
 /**
  * User: antoine
  * Date: 24/08/11
@@ -43,6 +45,9 @@ public class InlineSkin extends FXFormSkin {
         return label;
     }
 
+    private GridPane gridPane;
+    int row = 0;
+
     @Override
     protected Node createRootNode() throws NodeCreationException {
         VBox titleBox = new VBox();
@@ -52,18 +57,28 @@ public class InlineSkin extends FXFormSkin {
         contentBox.getStyleClass().add("form-content-box");
         titleBox.getChildren().add(contentBox);
         contentBox.setSpacing(5.0);
-        GridPane gridPane = GridPaneBuilder.create().hgap(5.0).vgap(5.0).build();
+        gridPane = GridPaneBuilder.create().hgap(5.0).vgap(5.0).build();
         int row = 0;
-        for (final Object o : fxForm.getControllers()) {
-            ElementController controller = (ElementController) o;
-            gridPane.addRow(row, controller.getLabelFactory().createNode(controller), controller.getEditorFactory().createNode(controller));
+        contentBox.getChildren().add(gridPane);
+        return titleBox;
+    }
+
+    @Override
+    protected void removeControllers(List<ElementController> removed) {
+        for (ElementController controller : removed) {
+            gridPane.getChildren().removeAll(getEditor(controller), getLabel(controller), getEditor(controller));
+        }
+    }
+
+    @Override
+    protected void addControllers(List<ElementController> addedSubList) {
+        for (ElementController controller : addedSubList) {
+            gridPane.addRow(row, getLabel(controller), getEditor(controller));
             if (controller.getTooltip() != null) {
-                gridPane.add(controller.getTooltipFactory().createNode(controller), 1, ++row);
+                gridPane.add(getTooltip(controller), 1, ++row);
             }
             row++;
         }
-        contentBox.getChildren().add(gridPane);
-        return titleBox;
     }
 
     @Override

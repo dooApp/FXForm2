@@ -39,7 +39,7 @@ public class NodeFactoryWrapper implements NodeFactory {
 
     public Node createNode(ElementController controller) throws NodeCreationException {
         Node node = factory.createNode(controller);
-        node.setId(controller.getFormField().getField().getName() + idSuffix);
+        node.setId(controller.getElement().getField().getName() + idSuffix);
         node.getStyleClass().add(style);
         return node;
     }

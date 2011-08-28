@@ -12,10 +12,10 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
+import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.type.EnumProperty;
-import com.dooapp.fxform.model.impl.WritableElementController;
-import com.dooapp.fxform.view.factory.NodeFactory;
 import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -29,16 +29,20 @@ import java.util.Arrays;
  * Date: 17/04/11
  * Time: 00:19
  */
-public class EnumPropertyDelegate implements NodeFactory<WritableElementController<Enum>> {
+public class EnumPropertyDelegate implements NodeFactory<Enum> {
 
-
-    public Node createNode(WritableElementController<Enum> formFieldController) throws NodeCreationException {
-        Object[] constants = ((EnumProperty) formFieldController.getFormField().getObservable()).getEnum().getEnumConstants();
+    public Node createNode(final ElementController<Enum> controller) throws NodeCreationException {
+        Object[] constants = ((EnumProperty) controller.getElement().valueProperty().get()).getEnum().getEnumConstants();
         final ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
-        choiceBox.getSelectionModel().select(formFieldController.getFormField().getObservable().getValue());
-        choiceBox.getSelectionModel().selectedItemProperty().addListener(formFieldController);
-        formFieldController.getFormField().getObservable().addListener(new ChangeListener() {
+        choiceBox.getSelectionModel().select(controller.getValue());
+        /**choiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Enum>() {
+
+            public void changed(ObservableValue<? extends Enum> observableValue, Enum anEnum, Enum anEnum1) {
+                controller.setValue(anEnum1);
+            }
+        }); */
+        controller.addListener(new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
                 choiceBox.getSelectionModel().select(observableValue.getValue());
             }

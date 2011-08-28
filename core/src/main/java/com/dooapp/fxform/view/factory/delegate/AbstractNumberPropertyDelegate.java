@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.impl.WritableElementController;
+import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -29,11 +29,11 @@ import java.text.ParseException;
  * Date: 17/04/11
  * Time: 17:31
  */
-public abstract class AbstractNumberPropertyDelegate<T extends Number> implements NodeFactory<WritableElementController<T>> {
+public abstract class AbstractNumberPropertyDelegate<T extends Number> implements NodeFactory<T> {
 
     protected ObjectProperty<T> numberProperty = new SimpleObjectProperty<T>();
 
-    public Node createNode(final WritableElementController<T> controller) {
+    public Node createNode(final ElementController<T> controller) {
         final TextField textBox = new TextField();
         textBox.textProperty().addListener(new ChangeListener<String>() {
 
@@ -48,12 +48,16 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
                 }
             }
         });
-        controller.getFormField().getObservable().addListener(new ChangeListener() {
+        controller.addListener(new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                textBox.textProperty().setValue(getFormat().format(controller.getFormField().getObservable().getValue()));
+                textBox.textProperty().setValue(getFormat().format(controller.getValue()));
             }
         });
-        numberProperty.addListener(controller);
+        numberProperty.addListener(new ChangeListener<T>() {
+            public void changed(ObservableValue<? extends T> observableValue, T t, T t1) {
+                controller.setValue(t1);
+            }
+        });
         return textBox;
     }
 

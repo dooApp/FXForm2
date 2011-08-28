@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.impl.WritableElementController;
+import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -24,17 +24,21 @@ import javafx.scene.control.CheckBox;
  * Date: 16/04/11
  * Time: 23:57
  */
-public class BooleanPropertyDelegate implements NodeFactory<WritableElementController<Boolean>> {
+public class BooleanPropertyDelegate implements NodeFactory<Boolean> {
 
-    public Node createNode(WritableElementController<Boolean> controller) {
+    public Node createNode(final ElementController<Boolean> controller) {
         final CheckBox checkBox = new CheckBox();
-        checkBox.setSelected(controller.getFormField().getObservable().getValue());
-        controller.getFormField().getObservable().addListener(new ChangeListener<Boolean>() {
+        checkBox.setSelected(controller.getValue());
+        controller.addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
                 checkBox.setSelected(aBoolean1);
             }
         });
-        checkBox.selectedProperty().addListener(controller);
+        checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
+                controller.setValue(aBoolean1);
+            }
+        });
         return checkBox;
     }
 }

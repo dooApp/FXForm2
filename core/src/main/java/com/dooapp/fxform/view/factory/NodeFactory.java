@@ -21,8 +21,8 @@ import javafx.scene.Node;
  * Date: 11/04/11
  * Time: 22:56
  */
-public interface NodeFactory<T extends ElementController> {
+public interface NodeFactory<T> {
 
-    public Node createNode(T controller) throws NodeCreationException;
+    public Node createNode(ElementController<T> controller) throws NodeCreationException;
 
 }

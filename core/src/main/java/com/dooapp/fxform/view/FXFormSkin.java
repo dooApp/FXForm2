@@ -13,8 +13,16 @@
 package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.model.ElementController;
+import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.Skin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -25,8 +33,14 @@ import javafx.scene.control.Skin;
  */
 public abstract class FXFormSkin implements Skin<FXForm> {
 
+    private final Logger logger = LoggerFactory.getLogger(FXFormSkin.class);
+
     protected FXForm fxForm;
     private Node rootNode;
+
+    private final Map<ElementController, Node> labelMap = new HashMap<ElementController, Node>();
+    private final Map<ElementController, Node> tooltipMap = new HashMap<ElementController, Node>();
+    private final Map<ElementController, Node> editorMap = new HashMap<ElementController, Node>();
 
     public FXFormSkin(FXForm fxForm) {
         this.fxForm = fxForm;
@@ -36,8 +50,27 @@ public abstract class FXFormSkin implements Skin<FXForm> {
 
     public Node getNode() {
         if (rootNode == null) {
+            logger.info("Creating skin node");
             try {
                 rootNode = createRootNode();
+                addControllers(fxForm.getControllers());
+                fxForm.getControllers().addListener(new ListChangeListener() {
+                    public void onChanged(Change change) {
+                        logger.info("Updating controllers view");
+                        addControllers(change.getAddedSubList());
+                        if (change.wasRemoved()) {
+                            removeControllers(change.getRemoved());
+                            unregisterControllers(change.getRemoved());
+                        }
+                        while (change.next()) {
+                            addControllers(change.getAddedSubList());
+                            if (change.wasRemoved()) {
+                                removeControllers(change.getRemoved());
+                                unregisterControllers(change.getRemoved());
+                            }
+                        }
+                    }
+                });
             } catch (NodeCreationException e) {
                 e.printStackTrace();
             }
@@ -45,7 +78,54 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         return rootNode;
     }
 
+    private void unregisterControllers(List<ElementController> removed) {
+        logger.info("Clearing controllers nodes");
+        for (ElementController controller : removed) {
+            labelMap.remove(controller);
+            editorMap.remove(controller);
+            tooltipMap.remove(controller);
+        }
+    }
+
+    protected abstract void removeControllers(List<ElementController> removed);
+
+    protected abstract void addControllers(List<ElementController> addedSubList);
+
+    protected Node getLabel(ElementController controller) {
+        if (!labelMap.containsKey(controller)) {
+            try {
+                labelMap.put(controller, controller.getLabelFactory().createNode(controller));
+            } catch (NodeCreationException e) {
+                e.printStackTrace();
+            }
+        }
+        return labelMap.get(controller);
+    }
+
+    protected Node getTooltip(ElementController controller) {
+        if (!tooltipMap.containsKey(controller)) {
+            try {
+                tooltipMap.put(controller, controller.getTooltipFactory().createNode(controller));
+            } catch (NodeCreationException e) {
+                e.printStackTrace();
+            }
+        }
+        return tooltipMap.get(controller);
+    }
+
+    protected Node getEditor(ElementController controller) {
+        if (!editorMap.containsKey(controller)) {
+            try {
+                editorMap.put(controller, controller.getEditorFactory().createNode(controller));
+            } catch (NodeCreationException e) {
+                e.printStackTrace();
+            }
+        }
+        return editorMap.get(controller);
+    }
+
     public void dispose() {
+        logger.info("Disposing skin");
         fxForm = null;
     }
 

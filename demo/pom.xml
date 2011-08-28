@@ -37,6 +37,22 @@
             <artifactId>core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>javafx-runtime</artifactId>
+            <version>2.0-beta</version>
+        </dependency>
     </dependencies>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1.1</version>
+                <configuration>
+                    <mainClass>com.dooapp.fxform.Demo</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

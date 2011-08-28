@@ -12,6 +12,12 @@
 
 package com.dooapp.fxform.model;
 
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WritableValue;
+
 import java.lang.reflect.Field;
 
 /**
@@ -20,22 +26,49 @@ import java.lang.reflect.Field;
  * Time: 22:22
  * Model object wrapping an object field.
  */
-public class Element<T extends Object> {
+public abstract class Element<SourceType, WrappedType, FieldType> implements ObservableValue<WrappedType>, WritableValue<WrappedType> {
 
     protected final Field field;
 
-    protected final T source;
+    private final ObjectProperty<SourceType> source = new SimpleObjectProperty<SourceType>();
 
-    public Element(Field field, T source) {
+    private final ObjectBinding<FieldType> value = new ObjectBinding<FieldType>() {
+
+        {
+            super.bind(sourceProperty());
+        }
+
+        @Override
+        protected FieldType computeValue() {
+            if (getSource() == null) {
+                return null;
+            }
+            try {
+                return (FieldType) getField().get(getSource());
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    };
+
+    public Element(Field field) {
         this.field = field;
-        this.source = source;
     }
 
     public Field getField() {
         return field;
     }
 
-    public T getSource() {
+    public SourceType getSource() {
+        return source.get();
+    }
+
+    public void setSource(SourceType source) {
+        this.source.set(source);
+    }
+
+    public ObjectProperty<SourceType> sourceProperty() {
         return source;
     }
 
@@ -44,6 +77,10 @@ public class Element<T extends Object> {
         return "Element{" +
                 "field=" + field +
                 '}';
+    }
+
+    public ObjectBinding<FieldType> valueProperty() {
+        return value;
     }
 
 }
