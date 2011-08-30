@@ -32,19 +32,23 @@ import java.util.Arrays;
 public class EnumPropertyDelegate implements NodeFactory<Enum> {
 
     public Node createNode(final ElementController<Enum> controller) throws NodeCreationException {
-        Object[] constants = ((EnumProperty) controller.getElement().valueProperty().get()).getEnum().getEnumConstants();
-        final ChoiceBox choiceBox = new ChoiceBox();
+        Enum[] constants = (Enum[]) ((EnumProperty) controller.getElement().valueProperty().get()).getEnum().getEnumConstants();
+        final ChoiceBox<Enum> choiceBox = new ChoiceBox<Enum>();
         choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
         choiceBox.getSelectionModel().select(controller.getValue());
-        /**choiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Enum>() {
+        choiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Enum>() {
 
             public void changed(ObservableValue<? extends Enum> observableValue, Enum anEnum, Enum anEnum1) {
                 controller.setValue(anEnum1);
             }
-        }); */
+        });
         controller.addListener(new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                choiceBox.getSelectionModel().select(observableValue.getValue());
+                if (o1 != null) {
+                    choiceBox.getSelectionModel().select((Enum) o1);
+                } else {
+                    choiceBox.getSelectionModel().clearSelection();
+                }
             }
         });
         return choiceBox;
