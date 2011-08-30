@@ -12,13 +12,14 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.filter.FieldFilter;
 import com.dooapp.fxform.i18n.ResourceBundleHelper;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.impl.PropertyElement;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyElement;
-import com.dooapp.fxform.model.impl.ReflectionFieldProvider;
+import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.utils.ConfigurationStore;
 import com.dooapp.fxform.view.factory.DefaultLabelFactory;
 import com.dooapp.fxform.view.factory.DefaultTooltipFactory;
@@ -28,6 +29,8 @@ import com.dooapp.fxform.view.skin.DefaultSkin;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
@@ -36,6 +39,8 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * User: Antoine Mischler
@@ -62,6 +67,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     private final ObjectProperty<T> source = new SimpleObjectProperty<T>();
 
     private StringProperty title = new SimpleStringProperty();
+
+    private final ObservableList<FieldFilter> filters = FXCollections.observableList(new LinkedList<FieldFilter>());
 
     private final ConfigurationStore<ElementController> controllers = new ConfigurationStore<ElementController>();
 
@@ -107,13 +114,22 @@ public class FXForm<T> extends Control implements FormAPI<T> {
                 }
             }
         });
+        filters.addListener(new ListChangeListener() {
+            public void onChanged(Change change) {
+                createControllers();
+            }
+        });
         this.setSkin(new DefaultSkin(this));
     }
 
     private void createControllers() {
         logger.info("Creating controllers for " + source.get());
         controllers.clear();
-        for (Field field : new ReflectionFieldProvider().getProperties(source.get())) {
+        List<Field> fields = new ReflectionFieldProvider().getProperties(source.get());
+        for (FieldFilter filter : filters) {
+            fields = filter.filter(fields);
+        }
+        for (Field field : fields) {
             ElementController controller;
             try {
                 Element<T, ?, ?> element = null;

@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform;
 
-import com.dooapp.fxform.model.impl.ReflectionFieldProvider;
+import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
