@@ -16,13 +16,17 @@ import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.builders.GridPaneBuilder;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+import javax.validation.ConstraintViolation;
 import java.util.List;
 
 /**
@@ -72,8 +76,25 @@ public class InlineSkin extends FXFormSkin {
 
     @Override
     protected void addControllers(List<ElementController> addedSubList) {
-        for (ElementController controller : addedSubList) {
-            gridPane.addRow(row, getLabel(controller), getEditor(controller));
+        for (final ElementController controller : addedSubList) {
+            final VBox constraintsBox = new VBox();
+            controller.getConstraintViolations().addListener(new ListChangeListener() {
+                public void onChanged(Change change) {
+                    constraintsBox.getChildren().clear();
+                    for (Object o : controller.getConstraintViolations()) {
+                        ConstraintViolation constraintViolation = (ConstraintViolation) o;
+                        Label errorLabel = new Label(constraintViolation.getMessage());
+                        ImageView warningView = new ImageView(WARNING);
+                        warningView.setFitHeight(15);
+                        warningView.setPreserveRatio(true);
+                        warningView.setSmooth(true);
+                        errorLabel.setGraphic(warningView);
+                        constraintsBox.getChildren().add(errorLabel);
+                    }
+                }
+            });
+            constraintsBox.setAlignment(Pos.CENTER_LEFT);
+            gridPane.addRow(row, getLabel(controller), getEditor(controller), constraintsBox);
             if (controller.getTooltip() != null) {
                 gridPane.add(getTooltip(controller), 1, ++row);
             }
