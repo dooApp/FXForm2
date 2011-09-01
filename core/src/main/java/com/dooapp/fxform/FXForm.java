@@ -13,6 +13,7 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.filter.FieldFilter;
+import com.dooapp.fxform.filter.NonVisualFilter;
 import com.dooapp.fxform.i18n.ResourceBundleHelper;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.ElementController;
@@ -114,6 +115,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
                 }
             }
         });
+        filters.add(new NonVisualFilter());
         filters.addListener(new ListChangeListener() {
             public void onChanged(Change change) {
                 createControllers();
@@ -206,6 +208,14 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public ObjectProperty<T> sourceProperty() {
         return source;
+    }
+
+    public ObservableList<FieldFilter> getFilters() {
+        return filters;
+    }
+
+    public void addFilters(FieldFilter... filters) {
+        this.filters.addAll(filters);
     }
 
 }

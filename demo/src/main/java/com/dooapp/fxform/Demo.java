@@ -11,14 +11,12 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.filter.ReorderFilter;
 import com.dooapp.fxform.model.ElementController;
-import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.DelegateFactory;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import com.dooapp.fxform.view.handler.NamedFieldHandler;
-import com.dooapp.fxform.view.skin.DefaultSkin;
-import com.dooapp.fxform.view.skin.InlineSkin;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -30,7 +28,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.log4j.BasicConfigurator;
-import org.slf4j.Logger;
 
 /**
  * User: Antoine Mischler
@@ -79,6 +76,7 @@ public class Demo extends Application {
         root.getChildren().addAll(skinChoiceBox, instanceChoiceBox, fxForm);
         stage.setScene(scene);
         stage.setVisible(true);
+        fxForm.addFilters(new ReorderFilter(new String[]{"age", "mail"}));
     }
 
     private FXForm<DemoObject> createFXForm() {
