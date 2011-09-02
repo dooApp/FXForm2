@@ -15,11 +15,17 @@ package com.dooapp.fxform.view;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.ElementController;
 import javafx.collections.ListChangeListener;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.Skin;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.ConstraintViolation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,12 +41,15 @@ public abstract class FXFormSkin implements Skin<FXForm> {
 
     private final Logger logger = LoggerFactory.getLogger(FXFormSkin.class);
 
+    private final static Image WARNING = new Image(FXFormSkin.class.getResource("warning.png").toExternalForm());
+
     protected FXForm fxForm;
     private Node rootNode;
 
     private final Map<ElementController, Node> labelMap = new HashMap<ElementController, Node>();
     private final Map<ElementController, Node> tooltipMap = new HashMap<ElementController, Node>();
     private final Map<ElementController, Node> editorMap = new HashMap<ElementController, Node>();
+    private final Map<ElementController, Node> constraintMap = new HashMap<ElementController, Node>();
 
     public FXFormSkin(FXForm fxForm) {
         this.fxForm = fxForm;
@@ -57,11 +66,6 @@ public abstract class FXFormSkin implements Skin<FXForm> {
                 fxForm.getControllers().addListener(new ListChangeListener() {
                     public void onChanged(Change change) {
                         logger.info("Updating controllers view");
-                        addControllers(change.getAddedSubList());
-                        if (change.wasRemoved()) {
-                            removeControllers(change.getRemoved());
-                            unregisterControllers(change.getRemoved());
-                        }
                         while (change.next()) {
                             addControllers(change.getAddedSubList());
                             if (change.wasRemoved()) {
@@ -122,6 +126,35 @@ public abstract class FXFormSkin implements Skin<FXForm> {
             }
         }
         return editorMap.get(controller);
+    }
+
+    protected Node getConstraint(ElementController controller) {
+        if (!constraintMap.containsKey(controller)) {
+            // maybe we should use a factory here too
+            constraintMap.put(controller, createConstraintNode(controller));
+        }
+        return constraintMap.get(controller);
+    }
+
+    protected Node createConstraintNode(final ElementController controller) {
+        final VBox constraintsBox = new VBox();
+        constraintsBox.setAlignment(Pos.CENTER_LEFT);
+        controller.getConstraintViolations().addListener(new ListChangeListener() {
+            public void onChanged(Change change) {
+                constraintsBox.getChildren().clear();
+                for (Object o : controller.getConstraintViolations()) {
+                    ConstraintViolation constraintViolation = (ConstraintViolation) o;
+                    Label errorLabel = new Label(constraintViolation.getMessage());
+                    ImageView warningView = new ImageView(WARNING);
+                    warningView.setFitHeight(15);
+                    warningView.setPreserveRatio(true);
+                    warningView.setSmooth(true);
+                    errorLabel.setGraphic(warningView);
+                    constraintsBox.getChildren().add(errorLabel);
+                }
+            }
+        });
+        return constraintsBox;
     }
 
     public void dispose() {

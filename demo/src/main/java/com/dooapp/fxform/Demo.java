@@ -75,7 +75,7 @@ public class Demo extends Application {
         skinChoiceBox.selectionModelProperty().get().selectFirst();
         root.getChildren().addAll(skinChoiceBox, instanceChoiceBox, fxForm);
         stage.setScene(scene);
-        stage.setVisible(true);
+        stage.show();
         fxForm.addFilters(new ReorderFilter(new String[]{"age", "mail"}));
     }
 

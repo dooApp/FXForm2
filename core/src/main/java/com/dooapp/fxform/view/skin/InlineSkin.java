@@ -15,18 +15,13 @@ import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
-import javafx.builders.GridPaneBuilder;
-import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.GridPaneBuilder;
 import javafx.scene.layout.VBox;
 
-import javax.validation.ConstraintViolation;
 import java.util.List;
 
 /**
@@ -35,8 +30,6 @@ import java.util.List;
  * Time: 11:03
  */
 public class InlineSkin extends FXFormSkin {
-
-    private final static Image WARNING = new Image(DefaultSkin.class.getResource("warning.png").toExternalForm());
 
     public InlineSkin(FXForm fxForm) {
         super(fxForm);
@@ -62,7 +55,6 @@ public class InlineSkin extends FXFormSkin {
         titleBox.getChildren().add(contentBox);
         contentBox.setSpacing(5.0);
         gridPane = GridPaneBuilder.create().hgap(5.0).vgap(5.0).build();
-        int row = 0;
         contentBox.getChildren().add(gridPane);
         return titleBox;
     }
@@ -70,31 +62,14 @@ public class InlineSkin extends FXFormSkin {
     @Override
     protected void removeControllers(List<ElementController> removed) {
         for (ElementController controller : removed) {
-            gridPane.getChildren().removeAll(getEditor(controller), getLabel(controller), getEditor(controller));
+            gridPane.getChildren().removeAll(getEditor(controller), getLabel(controller), getEditor(controller), getConstraint(controller));
         }
     }
 
     @Override
     protected void addControllers(List<ElementController> addedSubList) {
         for (final ElementController controller : addedSubList) {
-            final VBox constraintsBox = new VBox();
-            controller.getConstraintViolations().addListener(new ListChangeListener() {
-                public void onChanged(Change change) {
-                    constraintsBox.getChildren().clear();
-                    for (Object o : controller.getConstraintViolations()) {
-                        ConstraintViolation constraintViolation = (ConstraintViolation) o;
-                        Label errorLabel = new Label(constraintViolation.getMessage());
-                        ImageView warningView = new ImageView(WARNING);
-                        warningView.setFitHeight(15);
-                        warningView.setPreserveRatio(true);
-                        warningView.setSmooth(true);
-                        errorLabel.setGraphic(warningView);
-                        constraintsBox.getChildren().add(errorLabel);
-                    }
-                }
-            });
-            constraintsBox.setAlignment(Pos.CENTER_LEFT);
-            gridPane.addRow(row, getLabel(controller), getEditor(controller), constraintsBox);
+            gridPane.addRow(row, getLabel(controller), getEditor(controller), getConstraint(controller));
             if (controller.getTooltip() != null) {
                 gridPane.add(getTooltip(controller), 1, ++row);
             }

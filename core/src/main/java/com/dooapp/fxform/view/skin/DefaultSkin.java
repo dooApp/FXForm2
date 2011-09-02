@@ -18,15 +18,11 @@ import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
-import javax.validation.ConstraintViolation;
 import java.util.List;
 
 /**
@@ -35,8 +31,6 @@ import java.util.List;
  * Time: 21:56
  */
 public class DefaultSkin extends FXFormSkin {
-
-    private final static Image WARNING = new Image(DefaultSkin.class.getResource("warning.png").toExternalForm());
 
     public DefaultSkin(FXForm fxForm) {
         super(fxForm);
@@ -60,22 +54,6 @@ public class DefaultSkin extends FXFormSkin {
 
     protected void addControllers(List<ElementController> controllers) {
         for (final ElementController controller : controllers) {
-            final VBox constraintsBox = new VBox();
-            controller.getConstraintViolations().addListener(new ListChangeListener() {
-                public void onChanged(Change change) {
-                    constraintsBox.getChildren().clear();
-                    for (Object o : controller.getConstraintViolations()) {
-                        ConstraintViolation constraintViolation = (ConstraintViolation) o;
-                        Label errorLabel = new Label(constraintViolation.getMessage());
-                        ImageView warningView = new ImageView(WARNING);
-                        warningView.setFitHeight(15);
-                        warningView.setPreserveRatio(true);
-                        warningView.setSmooth(true);
-                        errorLabel.setGraphic(warningView);
-                        constraintsBox.getChildren().add(errorLabel);
-                    }
-                }
-            });
             Node editor = getEditor(controller);
             final Node label = getLabel(controller);
             controller.dirty().addListener(new ChangeListener<Boolean>() {
@@ -83,7 +61,7 @@ public class DefaultSkin extends FXFormSkin {
                     label.setOpacity(0.5);
                 }
             });
-            controllerBox.getChildren().addAll(label, editor, constraintsBox);
+            controllerBox.getChildren().addAll(label, editor, getConstraint(controller));
             if (controller.getTooltip() != null) {
                 Node node = getTooltip(controller);
                 controllerBox.getChildren().add(node);
@@ -93,9 +71,7 @@ public class DefaultSkin extends FXFormSkin {
 
     protected void removeControllers(List<ElementController> controllers) {
         for (ElementController controller : controllers) {
-            controllerBox.getChildren().remove(getLabel(controller));
-            controllerBox.getChildren().remove(getEditor(controller));
-            controllerBox.getChildren().remove(getTooltip(controller));
+            controllerBox.getChildren().removeAll(getLabel(controller), getEditor(controller), getTooltip(controller), getConstraint(controller));
         }
     }
 
