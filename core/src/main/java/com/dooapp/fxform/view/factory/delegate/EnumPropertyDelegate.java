@@ -13,7 +13,7 @@
 package com.dooapp.fxform.view.factory.delegate;
 
 import com.dooapp.fxform.model.PropertyElementController;
-import com.dooapp.fxform.type.EnumProperty;
+import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
@@ -21,6 +21,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
@@ -31,8 +33,15 @@ import java.util.Arrays;
  */
 public class EnumPropertyDelegate implements NodeFactory<PropertyElementController<Enum>> {
 
+    private final Logger logger = LoggerFactory.getLogger(EnumPropertyDelegate.class);
+
     public Node createNode(final PropertyElementController<Enum> controller) throws NodeCreationException {
-        Enum[] constants = (Enum[]) ((EnumProperty) controller.getElement().valueProperty().get()).getEnum().getEnumConstants();
+        Enum[] constants = new Enum[0];
+        try {
+            constants = (Enum[]) Util.getObjectPropertyGeneric(controller.getElement().getField()).getEnumConstants();
+        } catch (Exception e) {
+            logger.warn("Could not retrieve enum constants from controller " + controller, e);
+        }
         final ChoiceBox<Enum> choiceBox = new ChoiceBox<Enum>();
         choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
         choiceBox.getSelectionModel().select(controller.getValue());

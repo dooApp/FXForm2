@@ -13,6 +13,7 @@ package com.dooapp.fxform;
 
 import com.dooapp.fxform.filter.ReorderFilter;
 import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.view.FXFormSkinFactory;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.DelegateFactory;
 import com.dooapp.fxform.view.factory.NodeFactory;

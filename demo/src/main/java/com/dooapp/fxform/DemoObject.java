@@ -13,7 +13,6 @@ package com.dooapp.fxform;
 
 import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.annotation.NonVisual;
-import com.dooapp.fxform.type.EnumProperty;
 import javafx.beans.property.*;
 import org.hibernate.validator.constraints.Email;
 
@@ -36,7 +35,7 @@ public class DemoObject {
 
     private BooleanProperty lucky = new SimpleBooleanProperty();
 
-    private EnumProperty<TestEnum> letter = new EnumProperty(TestEnum.class);
+    private ObjectProperty<TestEnum> letter = new SimpleObjectProperty<TestEnum>();
 
     private IntegerProperty age = new SimpleIntegerProperty();
 
@@ -45,7 +44,8 @@ public class DemoObject {
     @FormFactory(DemoFactory.class)
     private StringProperty factoryAnnotationOnField = new SimpleStringProperty();
 
-    private ObjectProperty<CustomType> customType = new SimpleObjectProperty<CustomType>() {};
+    private ObjectProperty<CustomType> customType = new SimpleObjectProperty<CustomType>() {
+    };
 
     public String getName() {
         return name.get();

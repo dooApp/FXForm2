@@ -2,14 +2,10 @@ package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.NodeCreationException;
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.Node;
-
-import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This factory adds @FormFactory annotation support to a wrapped factory.
@@ -36,12 +32,16 @@ public class AnnotationFactoryWrapper implements NodeFactory {
                 // ignore
             }
         }
-        // check field type annotation
-        try {
-            // TODO: retrieve ObjectProperty generic and check for factory annotation
-            //return controller.getElement().getField().getType().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
-        } catch (Exception e) {
-            // ignore
+        // check FormFactory annotation
+        if (ObjectProperty.class.isAssignableFrom(controller.getElement().getField().getType())) {
+            try {
+                Class genericClass = Util.getObjectPropertyGeneric(controller.getElement().getField());
+                if (genericClass.getAnnotation(FormFactory.class) != null) {
+                    return ((FormFactory) genericClass.getAnnotation(FormFactory.class)).value().newInstance().createNode(controller);
+                }
+            } catch (Exception e) {
+                // ignore
+            }
         }
         return delegate.createNode(controller);
     }

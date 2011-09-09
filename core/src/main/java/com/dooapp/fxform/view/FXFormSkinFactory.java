@@ -1,6 +1,6 @@
-package com.dooapp.fxform;
+package com.dooapp.fxform.view;
 
-import com.dooapp.fxform.view.FXFormSkin;
+import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import com.dooapp.fxform.view.skin.InlineSkin;
 

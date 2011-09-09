@@ -14,9 +14,9 @@ package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.ElementController;
-import com.dooapp.fxform.type.EnumProperty;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.delegate.*;
+import com.dooapp.fxform.view.handler.EnumHandler;
 import com.dooapp.fxform.view.handler.FieldHandler;
 import com.dooapp.fxform.view.handler.TypeFieldHandler;
 import javafx.beans.property.*;
@@ -52,7 +52,7 @@ public class DelegateFactory implements NodeFactory {
         // register default delegates
         DEFAULT_MAP.put(new TypeFieldHandler(StringProperty.class), new StringPropertyDelegate());
         DEFAULT_MAP.put(new TypeFieldHandler(BooleanProperty.class), new BooleanPropertyDelegate());
-        DEFAULT_MAP.put(new TypeFieldHandler(EnumProperty.class), new EnumPropertyDelegate());
+        DEFAULT_MAP.put(new EnumHandler(), new EnumPropertyDelegate());
         DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new IntegerPropertyDelegate());
         DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new LongPropertyDelegate());
         DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new DoublePropertyDelegate());
