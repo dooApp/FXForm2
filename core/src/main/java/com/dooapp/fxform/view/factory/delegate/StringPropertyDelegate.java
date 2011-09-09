@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.model.PropertyElementController;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
@@ -25,9 +25,9 @@ import javafx.scene.control.TextField;
  * Date: 16/04/11
  * Time: 23:28
  */
-public class StringPropertyDelegate implements NodeFactory<String> {
+public class StringPropertyDelegate implements NodeFactory<PropertyElementController<String>> {
 
-    public Node createNode(final ElementController<String> controller) throws NodeCreationException {
+    public Node createNode(final PropertyElementController<String> controller) throws NodeCreationException {
         final TextField text = new TextField();
         String value = controller.getValue();
         if (value != null) {

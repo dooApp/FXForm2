@@ -12,7 +12,6 @@
 
 package com.dooapp.fxform.view.factory;
 
-import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.type.EnumProperty;
@@ -32,7 +31,7 @@ import java.util.Map;
  * Date: 11/04/11
  * Time: 22:59
  * <p/>
- * Factory implementation based on delegates.
+ * Factory implementation based on delegates mapped by FieldHandler.
  */
 public class DelegateFactory implements NodeFactory {
 
@@ -68,29 +67,11 @@ public class DelegateFactory implements NodeFactory {
      * @throws NodeCreationException
      */
     public Node createNode(ElementController controller) throws NodeCreationException {
-        // check field annotation
-        if (controller.getElement().getField().getAnnotation(FormFactory.class) != null) {
-            // use factory provided by the annotation
-            try {
-                return controller.getElement().getField().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
-            } catch (Exception e) {
-                // ignore
-            }
-        }
         // check user defined factories
         NodeFactory delegate = getDelegate(controller.getElement(), USER_MAP);
         // check user defined global factories
         if (delegate == null) {
             delegate = getDelegate(controller.getElement(), GLOBAL_MAP);
-        }
-        // check field type annotation
-        if (delegate == null && controller.getElement().getField().getType().getAnnotation(FormFactory.class) != null) {
-            // use factory provided by the annotation
-            try {
-                return controller.getElement().getField().getType().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
-            } catch (Exception e) {
-                // ignore
-            }
         }
         // check default map
         if (delegate == null) {

@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.model.PropertyElementController;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -29,11 +29,11 @@ import java.text.ParseException;
  * Date: 17/04/11
  * Time: 17:31
  */
-public abstract class AbstractNumberPropertyDelegate<T extends Number> implements NodeFactory<T> {
+public abstract class AbstractNumberPropertyDelegate<T extends Number> implements NodeFactory<PropertyElementController<T>> {
 
     protected ObjectProperty<T> numberProperty = new SimpleObjectProperty<T>();
 
-    public Node createNode(final ElementController<T> controller) {
+    public Node createNode(final PropertyElementController<T> controller) {
         final TextField textBox = new TextField();
         textBox.textProperty().addListener(new ChangeListener<String>() {
 

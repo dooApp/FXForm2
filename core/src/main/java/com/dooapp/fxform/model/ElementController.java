@@ -38,7 +38,7 @@ import java.util.Set;
  * <p/>
  * The controller of a Element.
  */
-public class ElementController<WrappedType> implements ObservableValue<WrappedType>, WritableValue<WrappedType> {
+public class ElementController<WrappedType> implements ObservableValue<WrappedType> {
 
     private final static Logger logger = LoggerFactory.getLogger(ElementController.class);
 
@@ -56,20 +56,10 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
 
     private final BooleanProperty dirty = new SimpleBooleanProperty();
 
-    private ObservableList<ConstraintViolation> constraintViolations = FXCollections.observableArrayList();
-
-    ValidatorFactory factory;
-    Validator validator;
+    protected ObservableList<ConstraintViolation> constraintViolations = FXCollections.observableArrayList();
 
     public ElementController(Element element) {
         this.element = element;
-        try {
-            factory = Validation.buildDefaultValidatorFactory();
-            validator = factory.getValidator();
-        } catch (ValidationException e) {
-            // validation is not activated, since no implementation has been provided
-            logger.trace("Validation disabled", e);
-        }
     }
 
     /**
@@ -157,19 +147,6 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
 
     public ObservableList<ConstraintViolation> getConstraintViolations() {
         return constraintViolations;
-    }
-
-    public void setValue(WrappedType o1) {
-        // mark controller as dirty
-        dirty().set(true);
-        if (validator != null) {
-            Set<ConstraintViolation<Object>> constraintViolationSet = validator.validateValue((Class<Object>) (element.getSource().getClass()), element.getField().getName(), o1);
-            constraintViolations.clear();
-            constraintViolations.addAll(constraintViolationSet);
-        }
-        if (constraintViolations.size() == 0) {
-            element.setValue(o1);
-        }
     }
 
     public void addListener(ChangeListener<? super WrappedType> changeListener) {

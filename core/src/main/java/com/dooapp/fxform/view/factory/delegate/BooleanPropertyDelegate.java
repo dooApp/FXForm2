@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.model.PropertyElementController;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -24,9 +24,9 @@ import javafx.scene.control.CheckBox;
  * Date: 16/04/11
  * Time: 23:57
  */
-public class BooleanPropertyDelegate implements NodeFactory<Boolean> {
+public class BooleanPropertyDelegate implements NodeFactory<PropertyElementController<Boolean>> {
 
-    public Node createNode(final ElementController<Boolean> controller) {
+    public Node createNode(final PropertyElementController<Boolean> controller) {
         final CheckBox checkBox = new CheckBox();
         checkBox.setSelected(controller.getValue());
         controller.addListener(new ChangeListener<Boolean>() {

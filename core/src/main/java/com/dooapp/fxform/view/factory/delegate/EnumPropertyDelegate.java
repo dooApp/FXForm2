@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.model.PropertyElementController;
 import com.dooapp.fxform.type.EnumProperty;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.NodeFactory;
@@ -29,9 +29,9 @@ import java.util.Arrays;
  * Date: 17/04/11
  * Time: 00:19
  */
-public class EnumPropertyDelegate implements NodeFactory<Enum> {
+public class EnumPropertyDelegate implements NodeFactory<PropertyElementController<Enum>> {
 
-    public Node createNode(final ElementController<Enum> controller) throws NodeCreationException {
+    public Node createNode(final PropertyElementController<Enum> controller) throws NodeCreationException {
         Enum[] constants = (Enum[]) ((EnumProperty) controller.getElement().valueProperty().get()).getEnum().getEnumConstants();
         final ChoiceBox<Enum> choiceBox = new ChoiceBox<Enum>();
         choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));

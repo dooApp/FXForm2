@@ -12,13 +12,16 @@
 
 package com.dooapp.fxform.model;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.beans.value.WritableValue;
 
 import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * User: Antoine Mischler
@@ -26,7 +29,7 @@ import java.lang.reflect.Field;
  * Time: 22:22
  * Model object wrapping an object field.
  */
-public abstract class Element<SourceType, WrappedType, FieldType> implements ObservableValue<WrappedType>, WritableValue<WrappedType> {
+public class Element<SourceType, WrappedType, FieldType extends ObservableValue<WrappedType>> implements ObservableValue<WrappedType> {
 
     protected final Field field;
 
@@ -52,8 +55,30 @@ public abstract class Element<SourceType, WrappedType, FieldType> implements Obs
         }
     };
 
-    public Element(Field field) {
+    private List<ChangeListener> changeListeners = new LinkedList<ChangeListener>();
+
+    private List<InvalidationListener> invalidationListeners = new LinkedList<InvalidationListener>();
+
+    public Element(Field field) throws FormException {
         this.field = field;
+        if (!ObservableValue.class.isAssignableFrom(field.getType())) {
+            throw new FormException("Trying to create an observable element with a non-observable field " + field.getType());
+        }
+        valueProperty().addListener(new ChangeListener<FieldType>() {
+
+            public void changed(ObservableValue<? extends FieldType> observableValue, FieldType fieldType, FieldType fieldType1) {
+                for (InvalidationListener invalidationListener : invalidationListeners) {
+                    fieldType.removeListener(invalidationListener);
+                    fieldType1.addListener(invalidationListener);
+                    invalidationListener.invalidated(observableValue);
+                }
+                for (ChangeListener changeListener : changeListeners) {
+                    fieldType.removeListener(changeListener);
+                    fieldType1.addListener(changeListener);
+                    changeListener.changed(observableValue, fieldType.getValue(), fieldType1.getValue());
+                }
+            }
+        });
     }
 
     public Field getField() {
@@ -81,6 +106,31 @@ public abstract class Element<SourceType, WrappedType, FieldType> implements Obs
 
     public ObjectBinding<FieldType> valueProperty() {
         return value;
+    }
+
+    public void addListener(ChangeListener changeListener) {
+        changeListeners.add(changeListener);
+        valueProperty().get().addListener(changeListener);
+
+    }
+
+    public void removeListener(ChangeListener changeListener) {
+        changeListeners.remove(changeListener);
+        valueProperty().get().removeListener(changeListener);
+    }
+
+    public WrappedType getValue() {
+        return valueProperty().get().getValue();
+    }
+
+    public void addListener(InvalidationListener invalidationListener) {
+        invalidationListeners.add(invalidationListener);
+        valueProperty().addListener(invalidationListener);
+    }
+
+    public void removeListener(InvalidationListener invalidationListener) {
+        invalidationListeners.remove(invalidationListener);
+        valueProperty().removeListener(invalidationListener);
     }
 
 }

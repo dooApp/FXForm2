@@ -15,17 +15,10 @@ package com.dooapp.fxform;
 import com.dooapp.fxform.filter.FieldFilter;
 import com.dooapp.fxform.filter.NonVisualFilter;
 import com.dooapp.fxform.i18n.ResourceBundleHelper;
-import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.ElementController;
-import com.dooapp.fxform.model.FormException;
-import com.dooapp.fxform.model.impl.PropertyElement;
-import com.dooapp.fxform.model.impl.ReadOnlyPropertyElement;
+import com.dooapp.fxform.model.*;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.utils.ConfigurationStore;
-import com.dooapp.fxform.view.factory.DefaultLabelFactory;
-import com.dooapp.fxform.view.factory.DefaultTooltipFactory;
-import com.dooapp.fxform.view.factory.DelegateFactory;
-import com.dooapp.fxform.view.factory.NodeFactory;
+import com.dooapp.fxform.view.factory.*;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -81,12 +74,25 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         this(new DelegateFactory());
     }
 
+    public FXForm(T source) {
+        this(source, new DelegateFactory());
+    }
+
     public FXForm(NodeFactory editorFactory) {
-        this(new DefaultLabelFactory(), new DefaultTooltipFactory(), editorFactory);
+        this(null, new DefaultLabelFactory(), new DefaultTooltipFactory(), editorFactory);
+    }
+
+    public FXForm(T source, NodeFactory editorFactory) {
+        this(source, new DefaultLabelFactory(), new DefaultTooltipFactory(), editorFactory);
     }
 
     public FXForm(NodeFactory labelFactory, NodeFactory tooltipFactory, NodeFactory editorFactory) {
+        this(null, labelFactory, tooltipFactory, editorFactory);
+    }
+
+    public FXForm(T source, NodeFactory labelFactory, NodeFactory tooltipFactory, NodeFactory editorFactory) {
         initBundle();
+        setSource(source);
         controllers.addConfigurer(new NodeFactoryConfigurer(labelFactory, LABEL_ID_SUFFIX, LABEL_STYLE) {
 
             @Override
@@ -101,14 +107,14 @@ public class FXForm<T> extends Control implements FormAPI<T> {
                 controller.setTooltipFactory(factory);
             }
         });
-        controllers.addConfigurer(new NodeFactoryConfigurer(editorFactory, EDITOR_ID_SUFFIX, EDITOR_STYLE) {
+        controllers.addConfigurer(new NodeFactoryConfigurer(new AnnotationFactoryWrapper(editorFactory), EDITOR_ID_SUFFIX, EDITOR_STYLE) {
 
             @Override
             protected void applyTo(NodeFactory factory, ElementController controller) {
                 controller.setEditorFactory(factory);
             }
         });
-        source.addListener(new ChangeListener<T>() {
+        this.source.addListener(new ChangeListener<T>() {
             public void changed(ObservableValue<? extends T> observableValue, T t, T t1) {
                 if (controllers.isEmpty() || (t1.getClass() != t.getClass())) {
                     createControllers();
@@ -132,17 +138,18 @@ public class FXForm<T> extends Control implements FormAPI<T> {
             fields = filter.filter(fields);
         }
         for (Field field : fields) {
-            ElementController controller;
             try {
                 Element<T, ?, ?> element = null;
+                ElementController controller = null;
                 if (Property.class.isAssignableFrom(field.getType())) {
                     element = new PropertyElement(field);
+                    controller = new PropertyElementController((PropertyElement) element);
                 } else if (ReadOnlyProperty.class.isAssignableFrom(field.getType())) {
-                    element = new ReadOnlyPropertyElement(field);
+                    element = new Element(field);
+                    controller = new ElementController(element);
                 }
                 if (element != null) {
                     element.sourceProperty().bind(source);
-                    controller = new ElementController(element);
                     controllers.add(controller);
                 }
             } catch (FormException e) {

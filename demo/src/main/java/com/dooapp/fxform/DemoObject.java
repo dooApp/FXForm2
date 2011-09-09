@@ -45,7 +45,7 @@ public class DemoObject {
     @FormFactory(DemoFactory.class)
     private StringProperty factoryAnnotationOnField = new SimpleStringProperty();
 
-    private CustomType customType = new CustomType();
+    private ObjectProperty<CustomType> customType = new SimpleObjectProperty<CustomType>() {};
 
     public String getName() {
         return name.get();
