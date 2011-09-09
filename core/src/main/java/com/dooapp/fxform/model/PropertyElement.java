@@ -12,17 +12,10 @@
 
 package com.dooapp.fxform.model;
 
-import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.FormException;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.Property;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WritableValue;
 
 import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * User: Antoine Mischler
@@ -32,60 +25,15 @@ import java.util.List;
  */
 public class PropertyElement<SourceType, WrappedType> extends Element<SourceType, WrappedType, Property<WrappedType>> implements WritableValue<WrappedType> {
 
-    private List<ChangeListener> changeListeners = new LinkedList<ChangeListener>();
-
-    private List<InvalidationListener> invalidationListeners = new LinkedList<InvalidationListener>();
-
-
     public PropertyElement(Field field) throws FormException {
         super(field);
         if (!WritableValue.class.isAssignableFrom(field.getType())) {
             throw new FormException("Trying to create a writable element with a non-writable field: " + field.getType());
         }
-        valueProperty().addListener(new ChangeListener<Property<WrappedType>>() {
-
-            public void changed(ObservableValue<? extends Property<WrappedType>> observableValue, Property<WrappedType> wrappedTypeProperty, Property<WrappedType> wrappedTypeProperty1) {
-                for (InvalidationListener invalidationListener : invalidationListeners) {
-                    wrappedTypeProperty.removeListener(invalidationListener);
-                    wrappedTypeProperty1.addListener(invalidationListener);
-                    invalidationListener.invalidated(observableValue);
-                }
-                for (ChangeListener changeListener : changeListeners) {
-                    wrappedTypeProperty.removeListener(changeListener);
-                    wrappedTypeProperty1.addListener(changeListener);
-                    changeListener.changed(observableValue, wrappedTypeProperty.getValue(), wrappedTypeProperty1.getValue());
-                }
-            }
-        });
-    }
-
-    public void addListener(ChangeListener changeListener) {
-        changeListeners.add(changeListener);
-        valueProperty().get().addListener(changeListener);
-
-    }
-
-    public void removeListener(ChangeListener changeListener) {
-        changeListeners.remove(changeListener);
-        valueProperty().get().removeListener(changeListener);
-    }
-
-    public WrappedType getValue() {
-        return valueProperty().get().getValue();
     }
 
     public void setValue(WrappedType o) {
         valueProperty().get().setValue(o);
-    }
-
-    public void addListener(InvalidationListener invalidationListener) {
-        invalidationListeners.add(invalidationListener);
-        valueProperty().addListener(invalidationListener);
-    }
-
-    public void removeListener(InvalidationListener invalidationListener) {
-        invalidationListeners.remove(invalidationListener);
-        valueProperty().removeListener(invalidationListener);
     }
 
 }
