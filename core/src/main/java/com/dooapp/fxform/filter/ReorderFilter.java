@@ -24,14 +24,12 @@ import java.util.List;
  * Date: 01/09/11
  * Time: 17:12
  */
-public class ReorderFilter implements FieldFilter {
+public class ReorderFilter extends AbstractNameFilter implements FieldFilter {
 
     private final static Logger logger = LoggerFactory.getLogger(ReorderFilter.class);
 
-    private final String[] names;
-
     public ReorderFilter(String[] names) {
-        this.names = names;
+        super(names);
     }
 
     public List<Field> filter(List<Field> toFilter) {
@@ -48,13 +46,4 @@ public class ReorderFilter implements FieldFilter {
         return filtered;
     }
 
-    private Field extractFieldByName(List<Field> remaining, String name) throws FormException {
-        for (Field field : remaining) {
-            if (name.equals(field.getName())) {
-                remaining.remove(field);
-                return field;
-            }
-        }
-        throw new FormException(name + "not found in field list");
-    }
 }
