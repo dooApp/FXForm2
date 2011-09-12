@@ -5,6 +5,8 @@ import javafx.beans.property.*;
 import org.junit.Ignore;
 
 /**
+ * Model object used for unit tests. Be careful when updating this bean, since most tests are based on its structure.
+ * <p/>
  * User: antoine
  * Date: 12/09/11
  * Time: 16:19
@@ -20,5 +22,7 @@ public class TestBean {
     private final IntegerProperty integerProperty = new SimpleIntegerProperty();
 
     private final DoubleProperty doubleProperty = new SimpleDoubleProperty();
+
+    private final ObjectProperty<TestEnum> objectProperty = new SimpleObjectProperty<TestEnum>();
 
 }
