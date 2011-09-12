@@ -1,9 +1,8 @@
 package com.dooapp.fxform.filter;
 
-import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
+import com.dooapp.fxform.TestUtils;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -25,19 +24,10 @@ public abstract class AbstractFilterTest {
     @Before
     public void setUp() throws Exception {
         this.filter = createFilter();
-        this.toFilter = new ReflectionFieldProvider().getProperties(new TestBean());
+        this.toFilter = TestUtils.getTestFields();
         filtered = filter.filter(toFilter);
     }
 
     abstract FieldFilter createFilter();
-
-    protected boolean containsNamedField(String name, List<Field> fields) {
-        for (Field field : fields) {
-            if (name.equals(field.getName())) {
-                return true;
-            }
-        }
-        return false;
-    }
 
 }

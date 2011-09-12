@@ -1,5 +1,6 @@
 package com.dooapp.fxform.filter;
 
+import com.dooapp.fxform.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,10 +17,11 @@ public class IncludeFilterTest extends AbstractFilterTest {
 
     @Test
     public void testFilter() throws Exception {
-        Assert.assertTrue(containsNamedField("integerProperty", filtered));
-        Assert.assertTrue(containsNamedField("booleanProperty", filtered));
-        Assert.assertFalse(containsNamedField("stringProperty", filtered));
-        Assert.assertFalse(containsNamedField("doubleProperty", filtered));
+        Assert.assertTrue(TestUtils.containsNamedField("integerProperty", filtered));
+        Assert.assertTrue(TestUtils.containsNamedField("booleanProperty", filtered));
+        Assert.assertFalse(TestUtils.containsNamedField("stringProperty", filtered));
+        Assert.assertFalse(TestUtils.containsNamedField("doubleProperty", filtered));
+        Assert.assertFalse(TestUtils.containsNamedField("objectProperty", filtered));
     }
 
 }

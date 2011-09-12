@@ -1,4 +1,4 @@
-package com.dooapp.fxform.filter;
+package com.dooapp.fxform;
 
 import com.dooapp.fxform.annotation.NonVisual;
 import javafx.beans.property.*;
