@@ -6,6 +6,8 @@ import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This factory adds @FormFactory annotation support to a wrapped factory.
@@ -15,6 +17,8 @@ import javafx.scene.Node;
  * Time: 16:20
  */
 public class AnnotationFactoryWrapper implements NodeFactory {
+
+    private Logger logger = LoggerFactory.getLogger(AnnotationFactoryWrapper.class);
 
     private final NodeFactory delegate;
 
@@ -29,7 +33,7 @@ public class AnnotationFactoryWrapper implements NodeFactory {
             try {
                 return controller.getElement().getField().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
             } catch (Exception e) {
-                // ignore
+                logger.warn("The factory provided by the annotation @FormFactory on field " + controller.getElement() + " failed creating node", e);
             }
         }
         // check FormFactory annotation

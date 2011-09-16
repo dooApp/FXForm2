@@ -99,9 +99,7 @@ public class Element<SourceType, WrappedType, FieldType extends ObservableValue<
 
     @Override
     public String toString() {
-        return "Element{" +
-                "field=" + field +
-                '}';
+        return field.getName() + "[" + getSource().getClass() + "]";
     }
 
     public ObjectBinding<FieldType> valueProperty() {
