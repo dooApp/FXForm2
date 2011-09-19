@@ -1,6 +1,7 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
+import org.junit.Ignore;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * Date: 12/09/11
  * Time: 16:53
  */
+@Ignore
 public class TestUtils {
 
     /**

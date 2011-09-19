@@ -62,7 +62,10 @@ public class InlineSkin extends FXFormSkin {
     @Override
     protected void removeControllers(List<ElementController> removed) {
         for (ElementController controller : removed) {
-            gridPane.getChildren().removeAll(getEditor(controller), getLabel(controller), getEditor(controller), getConstraint(controller));
+            gridPane.getChildren().removeAll(getEditor(controller), getLabel(controller), getConstraint(controller));
+            if (controller.getTooltip() != null) {
+                gridPane.getChildren().remove(getTooltip(controller));
+            }
         }
     }
 
