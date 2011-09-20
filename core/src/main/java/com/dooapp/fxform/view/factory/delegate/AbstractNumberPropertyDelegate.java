@@ -12,9 +12,9 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
-
+import com.dooapp.fxform.model.PropertyElementController;
+import com.dooapp.fxform.view.factory.FormatProvider;
+import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -22,59 +22,54 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 
-import com.dooapp.fxform.model.PropertyElementController;
-import com.dooapp.fxform.view.factory.NodeFactory;
+import java.text.Format;
+import java.text.ParseException;
 
 /**
  * User: Antoine Mischler Date: 17/04/11 Time: 17:31
  */
 public abstract class AbstractNumberPropertyDelegate<T extends Number> implements
-		NodeFactory<PropertyElementController<T>> {
+        NodeFactory<PropertyElementController<T>> {
 
-	protected ObjectProperty<T> numberProperty = new SimpleObjectProperty<T>();
+    protected ObjectProperty<T> numberProperty = new SimpleObjectProperty<T>();
 
-	public Node createNode(final PropertyElementController<T> controller) {
-		final TextField textBox = new TextField();
-		textBox.textProperty().addListener(new ChangeListener<String>() {
+    protected final FormatProvider formatProvider;
 
-			public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
-				if (textBox.getText().trim().length() > 0) {
-					try {
-						Number parsed = parse(textBox.getText());
-						numberProperty.setValue((T) parsed);
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		});
-		if (controller.getValue() != null) {
-			textBox.textProperty().setValue(getFormat().format(controller.getValue()));
-		}
-		controller.addListener(new ChangeListener() {
-			public void changed(ObservableValue observableValue, Object o, Object o1) {
-				textBox.textProperty().setValue(getFormat().format(controller.getValue()));
-			}
-		});
-		numberProperty.addListener(new ChangeListener<T>() {
-			public void changed(ObservableValue<? extends T> observableValue, T t, T t1) {
-				controller.setValue(t1);
-			}
-		});
-		return textBox;
-	}
+    public AbstractNumberPropertyDelegate(FormatProvider formatProvider) {
+        this.formatProvider = formatProvider;
+    }
 
-	private NumberFormat format;
+    public Node createNode(final PropertyElementController<T> controller) {
+        final TextField textBox = new TextField();
+        textBox.textProperty().addListener(new ChangeListener<String>() {
 
-	protected NumberFormat getFormat() {
-		if (format == null) {
-			format = createFormat();
-		}
-		return format;
-	}
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
+                if (textBox.getText().trim().length() > 0) {
+                    try {
+                        Number parsed = parse(formatProvider.getFormat(controller.getElement()), textBox.getText());
+                        numberProperty.setValue((T) parsed);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        if (controller.getValue() != null) {
+            textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
+        }
+        controller.addListener(new ChangeListener() {
+            public void changed(ObservableValue observableValue, Object o, Object o1) {
+                textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
+            }
+        });
+        numberProperty.addListener(new ChangeListener<T>() {
+            public void changed(ObservableValue<? extends T> observableValue, T t, T t1) {
+                controller.setValue(t1);
+            }
+        });
+        return textBox;
+    }
 
-	protected abstract NumberFormat createFormat();
-
-	protected abstract Number parse(String text) throws ParseException;
+    protected abstract Number parse(Format format, String text) throws ParseException;
 
 }

@@ -35,6 +35,8 @@ import java.util.Map;
  */
 public class DelegateFactory implements NodeFactory {
 
+    private final FormatProvider formatProvider;
+
     private final static NodeFactory DEFAULT_FACTORY = new NodeFactory() {
 
         public Node createNode(ElementController elementController) throws NodeCreationException {
@@ -49,13 +51,18 @@ public class DelegateFactory implements NodeFactory {
     private final Map<FieldHandler, NodeFactory> USER_MAP = new HashMap();
 
     public DelegateFactory() {
+        this(new FormatProviderImpl());
+    }
+
+    public DelegateFactory(FormatProvider formatProvider) {
+        this.formatProvider = formatProvider;
         // register default delegates
         DEFAULT_MAP.put(new TypeFieldHandler(StringProperty.class), new StringPropertyDelegate());
         DEFAULT_MAP.put(new TypeFieldHandler(BooleanProperty.class), new BooleanPropertyDelegate());
         DEFAULT_MAP.put(new EnumHandler(), new EnumPropertyDelegate());
-        DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new IntegerPropertyDelegate());
-        DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new LongPropertyDelegate());
-        DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new DoublePropertyDelegate());
+        DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new IntegerPropertyDelegate(formatProvider));
+        DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new LongPropertyDelegate(formatProvider));
+        DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new DoublePropertyDelegate(formatProvider));
     }
 
     /**

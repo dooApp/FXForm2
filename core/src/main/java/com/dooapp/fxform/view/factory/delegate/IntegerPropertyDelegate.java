@@ -12,7 +12,9 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import java.text.NumberFormat;
+import com.dooapp.fxform.view.factory.FormatProvider;
+
+import java.text.Format;
 import java.text.ParseException;
 
 /**
@@ -22,13 +24,12 @@ import java.text.ParseException;
  */
 public class IntegerPropertyDelegate extends AbstractNumberPropertyDelegate<Integer> {
 
-    @Override
-    protected NumberFormat createFormat() {
-        return NumberFormat.getIntegerInstance();
+    public IntegerPropertyDelegate(FormatProvider formatProvider) {
+        super(formatProvider);
     }
 
     @Override
-    protected Integer parse(String text) throws ParseException {
-        return getFormat().parse(text).intValue();
+    protected Integer parse(Format format, String text) throws ParseException {
+        return ((Number) format.parseObject(text)).intValue();
     }
 }

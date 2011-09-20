@@ -12,8 +12,9 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import com.dooapp.fxform.view.factory.FormatProvider;
+
+import java.text.Format;
 import java.text.ParseException;
 
 /**
@@ -24,14 +25,13 @@ import java.text.ParseException;
 public class DoublePropertyDelegate extends AbstractNumberPropertyDelegate<Double> {
 
 
-    @Override
-    protected NumberFormat createFormat() {
-        return DecimalFormat.getNumberInstance();
+    public DoublePropertyDelegate(FormatProvider formatProvider) {
+        super(formatProvider);
     }
 
     @Override
-    protected Double parse(String text) throws ParseException {
-        return getFormat().parse(text).doubleValue();
+    protected Double parse(Format format, String text) throws ParseException {
+        return ((Number) format.parseObject(text)).doubleValue();
     }
 
 }
