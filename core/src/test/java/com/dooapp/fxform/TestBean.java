@@ -7,7 +7,7 @@ import org.junit.Ignore;
 /**
  * Model object used for unit tests. Be careful when updating this bean, since most tests are based on its structure.
  * <p/>
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 12/09/11
  * Time: 16:19
  */

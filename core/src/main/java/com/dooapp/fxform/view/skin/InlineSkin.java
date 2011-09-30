@@ -25,7 +25,7 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 /**
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 24/08/11
  * Time: 11:03
  */

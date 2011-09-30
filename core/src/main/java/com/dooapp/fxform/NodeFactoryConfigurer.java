@@ -16,7 +16,7 @@ import com.dooapp.fxform.utils.Configurer;
 import com.dooapp.fxform.view.factory.NodeFactory;
 
 /**
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 25/08/11
  * Time: 18:31
  */

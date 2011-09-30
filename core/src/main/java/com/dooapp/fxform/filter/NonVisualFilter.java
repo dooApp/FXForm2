@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 01/09/11
  * Time: 17:12
  */

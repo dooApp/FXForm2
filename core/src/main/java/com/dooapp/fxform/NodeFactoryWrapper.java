@@ -19,7 +19,7 @@ import javafx.scene.Node;
 /**
  * Wrap a NodeFactory to add a specific style and set an id to the generated nodes.
  *
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 26/08/11
  * Time: 10:09
  */

@@ -18,7 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
 
 /**
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 26/08/11
  * Time: 16:53
  */

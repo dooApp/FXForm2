@@ -18,7 +18,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Annotation used to specify a NodeFactory to use for a specific field or type.
  * <p/>
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 26/08/11
  * Time: 16:32
  */

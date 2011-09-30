@@ -5,7 +5,7 @@ import org.junit.Ignore;
 /**
  * Model enum used for testing.
  * <p/>
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 12/09/11
  * Time: 17:05
  */

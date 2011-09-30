@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 
 /**
  * A field handler used to match a field according to his name.
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 25/08/11
  * Time: 17:38
  */

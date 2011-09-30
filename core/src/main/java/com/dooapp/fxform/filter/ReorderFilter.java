@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.dooapp.fxform.model.FormException;
 
 /**
- * User: antoine Date: 01/09/11 Time: 17:12
+ * User: Antoine Mischler <antoine@dooapp.com> Date: 01/09/11 Time: 17:12
  */
 public class ReorderFilter extends AbstractNameFilter implements FieldFilter {
 

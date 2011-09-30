@@ -17,7 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 
 /**
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 26/08/11
  * Time: 11:50
  */

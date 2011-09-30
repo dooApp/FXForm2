@@ -12,7 +12,7 @@
 package com.dooapp.fxform.utils;
 
 /**
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 24/08/11
  * Time: 14:30
  */

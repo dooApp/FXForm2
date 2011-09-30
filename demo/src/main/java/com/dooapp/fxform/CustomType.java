@@ -14,7 +14,7 @@ package com.dooapp.fxform;
 import com.dooapp.fxform.annotation.FormFactory;
 
 /**
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 26/08/11
  * Time: 16:52
  */

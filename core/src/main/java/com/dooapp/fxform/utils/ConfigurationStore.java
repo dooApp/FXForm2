@@ -19,7 +19,7 @@ import javafx.collections.ObservableList;
 import java.util.*;
 
 /**
- * User: antoine
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 24/08/11
  * Time: 14:07
  */

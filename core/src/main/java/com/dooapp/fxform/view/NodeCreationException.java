@@ -15,7 +15,7 @@ package com.dooapp.fxform.view;
 import com.dooapp.fxform.model.FormException;
 
 /**
- * User: antoinemischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 16/04/11
  * Time: 23:46
  */
