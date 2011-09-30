@@ -12,24 +12,20 @@
 
 package com.dooapp.fxform.model;
 
-import com.dooapp.fxform.i18n.ResourceBundleHelper;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.beans.value.WritableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.*;
+import javax.validation.ConstraintViolation;
 import java.util.MissingResourceException;
-import java.util.Set;
+import java.util.ResourceBundle;
 
 /**
  * User: Antoine Mischler
@@ -54,6 +50,8 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
 
     private final ObjectProperty<NodeFactory> labelFactory = new SimpleObjectProperty<NodeFactory>();
 
+    private final ObjectProperty<ResourceBundle> resourceBundle = new SimpleObjectProperty<ResourceBundle>();
+
     private final BooleanProperty dirty = new SimpleBooleanProperty();
 
     protected ObservableList<ConstraintViolation> constraintViolations = FXCollections.observableArrayList();
@@ -67,13 +65,24 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
      *
      * @return
      */
-    public String getLabel() {
-        try {
-            return ResourceBundleHelper.$(element.getField().getName() + LABEL_SUFFIX);
-        } catch (MissingResourceException e) {
-            // label is undefined
-            return element.getField().getName();
-        }
+    public StringProperty getLabel() {
+        StringProperty stringProperty = new SimpleStringProperty();
+        stringProperty.bind(new StringBinding() {
+            {
+                super.bind(resourceBundle);
+            }
+
+            @Override
+            protected String computeValue() {
+                try {
+                    return resourceBundle.get().getString(element.getField().getName() + LABEL_SUFFIX);
+                } catch (MissingResourceException e) {
+                    // label is undefined
+                    return (element.getField().getName());
+                }
+            }
+        });
+        return stringProperty;
     }
 
     /**
@@ -81,13 +90,24 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
      *
      * @return
      */
-    public String getTooltip() {
-        try {
-            return ResourceBundleHelper.$(element.getField().getName() + TOOLTIP_SUFFIX);
-        } catch (MissingResourceException e) {
-            // tooltip is undefined
-            return null;
-        }
+    public StringProperty getTooltip() {
+        StringProperty stringProperty = new SimpleStringProperty();
+        stringProperty.bind(new StringBinding() {
+            {
+                super.bind(resourceBundle);
+            }
+
+            @Override
+            protected String computeValue() {
+                try {
+                    return resourceBundle.get().getString(element.getField().getName() + TOOLTIP_SUFFIX);
+                } catch (MissingResourceException e) {
+                    // label is undefined
+                    return (element.getField().getName());
+                }
+            }
+        });
+        return stringProperty;
     }
 
     @Override
@@ -107,6 +127,10 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
 
     public void setDirty(boolean dirty) {
         this.dirty().set(dirty);
+    }
+
+    public ObjectProperty<ResourceBundle> resourceBundleProperty() {
+        return resourceBundle;
     }
 
     public ObjectProperty<NodeFactory> editorFactory() {

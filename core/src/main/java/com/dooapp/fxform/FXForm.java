@@ -14,7 +14,6 @@ package com.dooapp.fxform;
 
 import com.dooapp.fxform.filter.FieldFilter;
 import com.dooapp.fxform.filter.NonVisualFilter;
-import com.dooapp.fxform.i18n.ResourceBundleHelper;
 import com.dooapp.fxform.model.*;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.utils.ConfigurationStore;
@@ -35,6 +34,8 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * User: Antoine Mischler
@@ -65,6 +66,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     private final ObservableList<FieldFilter> filters = FXCollections.observableList(new LinkedList<FieldFilter>());
 
     private final ConfigurationStore<ElementController> controllers = new ConfigurationStore<ElementController>();
+
+    private final ObjectProperty<ResourceBundle> resourceBundle = new SimpleObjectProperty<ResourceBundle>();
 
     public void setTitle(String title) {
         this.title.set(title);
@@ -151,6 +154,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
                     controller = new ElementController(element);
                 }
                 if (element != null) {
+                    controller.resourceBundleProperty().bind(resourceBundle);
                     element.sourceProperty().bind(source);
                     controllers.add(controller);
                 }
@@ -161,17 +165,24 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     }
 
     /**
-     * Auto loading of associated resource bundle and css file.
+     * Auto loading of default resource bundle and css file.
      */
     private void initBundle() {
         final StackTraceElement element = getCallingClass();
         String bundle = element.getClassName();
-        ResourceBundleHelper.init(bundle);
+        if (resourceBundle.get() == null) {
+            try {
+                resourceBundle.set(ResourceBundle.getBundle(bundle));
+                logger.debug("Default resource bundle loaded: " + bundle);
+            } catch (MissingResourceException e) {
+                logger.info("Default resource bundle not found: " + bundle);
+            }
+        }
         sceneProperty().addListener(new ChangeListener<Scene>() {
             public void changed(ObservableValue<? extends Scene> observableValue, Scene scene, Scene scene1) {
                 URL css = FXForm.class.getResource(element.getFileName().substring(0, element.getFileName().indexOf(".")) + ".css");
                 if (css != null && observableValue.getValue() != null) {
-                    logger.info("Registering " + css + " in " + observableValue.getValue());
+                    logger.debug("Registering " + css + " in " + observableValue.getValue());
                     getScene().getStylesheets().add(css.toExternalForm());
                 }
             }
@@ -225,6 +236,23 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public void addFilters(FieldFilter... filters) {
         this.filters.addAll(filters);
+    }
+
+    /**
+     * Set the resource bundle used by this form to i18n labels, tooltips,...
+     *
+     * @param resourceBundle
+     */
+    public void setResourceBundle(ResourceBundle resourceBundle) {
+        this.resourceBundle.set(resourceBundle);
+    }
+
+    public ObjectProperty<ResourceBundle> resourceBundleProperty() {
+        return resourceBundle;
+    }
+
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle.get();
     }
 
 }

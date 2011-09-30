@@ -23,6 +23,8 @@ import javafx.scene.control.Label;
  */
 public class DefaultTooltipFactory implements NodeFactory<ElementController> {
     public Node createNode(ElementController controller) throws NodeCreationException {
-        return new Label(controller.getTooltip());
+        Label label = new Label();
+        label.textProperty().bind(controller.getTooltip());
+        return label;
     }
 }

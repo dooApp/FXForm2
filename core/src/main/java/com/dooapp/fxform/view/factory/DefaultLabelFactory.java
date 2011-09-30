@@ -24,6 +24,8 @@ import javafx.scene.control.Label;
 public class DefaultLabelFactory implements NodeFactory<ElementController> {
 
     public Node createNode(ElementController controller) throws NodeCreationException {
-        return new Label(controller.getLabel());
+        Label label = new Label();
+        label.textProperty().bind(controller.getLabel());
+        return label;
     }
 }
