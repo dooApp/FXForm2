@@ -76,7 +76,7 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
             protected String computeValue() {
                 try {
                     return resourceBundle.get().getString(element.getField().getName() + LABEL_SUFFIX);
-                } catch (MissingResourceException e) {
+                } catch (Exception e) {
                     // label is undefined
                     return (element.getField().getName());
                 }
@@ -101,7 +101,7 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
             protected String computeValue() {
                 try {
                     return resourceBundle.get().getString(element.getField().getName() + TOOLTIP_SUFFIX);
-                } catch (MissingResourceException e) {
+                } catch (Exception e) {
                     // label is undefined
                     return null;
                 }

@@ -56,13 +56,8 @@ public class DefaultSkin extends FXFormSkin {
         for (final ElementController controller : controllers) {
             Node editor = getEditor(controller);
             final Node label = getLabel(controller);
-            controller.dirty().addListener(new ChangeListener<Boolean>() {
-                public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
-                    label.setOpacity(0.5);
-                }
-            });
             controllerBox.getChildren().addAll(label, editor, getConstraint(controller));
-            if (controller.getTooltip() != null) {
+            if (controller.getTooltip().get() != null) {
                 Node node = getTooltip(controller);
                 controllerBox.getChildren().add(node);
             }
