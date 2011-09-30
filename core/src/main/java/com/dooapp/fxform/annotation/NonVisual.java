@@ -15,7 +15,7 @@ package com.dooapp.fxform.annotation;
 import java.lang.annotation.*;
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 02/06/11
  * Time: 17:19
  * <p/>

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 17/04/11
  * Time: 00:19
  */

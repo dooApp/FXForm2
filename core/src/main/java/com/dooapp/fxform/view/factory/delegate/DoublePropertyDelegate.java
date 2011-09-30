@@ -18,7 +18,7 @@ import java.text.Format;
 import java.text.ParseException;
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 17/04/11
  * Time: 17:59
  */

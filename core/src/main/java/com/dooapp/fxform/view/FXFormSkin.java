@@ -32,7 +32,7 @@ import java.util.Map;
 
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 09/04/11
  * Time: 21:36
  * Skin of the FXForm control.

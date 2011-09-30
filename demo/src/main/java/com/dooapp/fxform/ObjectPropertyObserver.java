@@ -19,7 +19,7 @@ import javafx.beans.value.ObservableValue;
 import java.lang.reflect.Field;
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 17/04/11
  * Time: 00:21
  */

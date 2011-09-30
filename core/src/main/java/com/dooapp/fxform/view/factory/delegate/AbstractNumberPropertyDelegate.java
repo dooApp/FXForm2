@@ -26,7 +26,7 @@ import java.text.Format;
 import java.text.ParseException;
 
 /**
- * User: Antoine Mischler Date: 17/04/11 Time: 17:31
+ * User: Antoine Mischler <antoine@dooapp.com> Date: 17/04/11 Time: 17:31
  */
 public abstract class AbstractNumberPropertyDelegate<T extends Number> implements
         NodeFactory<PropertyElementController<T>> {

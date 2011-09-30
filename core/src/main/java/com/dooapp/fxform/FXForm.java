@@ -38,7 +38,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 09/04/11
  * Time: 21:26
  * The FXForm control

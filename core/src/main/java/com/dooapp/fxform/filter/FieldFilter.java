@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 30/08/11
  * Time: 09:15
  */

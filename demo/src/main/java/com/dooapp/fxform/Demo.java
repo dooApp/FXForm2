@@ -31,7 +31,7 @@ import javafx.stage.Stage;
 import org.apache.log4j.BasicConfigurator;
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 09/04/11
  * Time: 21:44
  * FXForm demo

@@ -20,7 +20,7 @@ import javax.validation.constraints.Min;
 
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 09/04/11
  * Time: 22:53
  */

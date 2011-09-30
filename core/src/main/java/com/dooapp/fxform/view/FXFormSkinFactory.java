@@ -17,7 +17,7 @@ import com.dooapp.fxform.view.skin.DefaultSkin;
 import com.dooapp.fxform.view.skin.InlineSkin;
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 28/08/11
  * Time: 14:19
  */

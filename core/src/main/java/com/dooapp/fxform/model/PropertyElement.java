@@ -18,7 +18,7 @@ import javafx.beans.value.WritableValue;
 import java.lang.reflect.Field;
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 26/04/11
  * Time: 12:11
  * An observable and writable form field.

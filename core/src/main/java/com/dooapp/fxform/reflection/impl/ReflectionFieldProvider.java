@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * This default implementations retrieves all fields of the given source object, including inherited fields.
  * <p/>
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 09/04/11
  * Time: 22:31
  */

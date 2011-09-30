@@ -15,7 +15,7 @@ package com.dooapp.fxform.view.handler;
 import java.lang.reflect.Field;
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 16/04/11
  * Time: 23:35
  * <p/>
