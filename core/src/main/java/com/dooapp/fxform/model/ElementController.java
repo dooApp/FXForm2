@@ -28,7 +28,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * User: Antoine Mischler
+ * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 26/04/11
  * Time: 11:14
  * <p/>
@@ -103,7 +103,7 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
                     return resourceBundle.get().getString(element.getField().getName() + TOOLTIP_SUFFIX);
                 } catch (MissingResourceException e) {
                     // label is undefined
-                    return (element.getField().getName());
+                    return null;
                 }
             }
         });
