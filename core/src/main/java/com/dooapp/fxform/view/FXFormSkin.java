@@ -159,6 +159,10 @@ public abstract class FXFormSkin implements Skin<FXForm> {
 
     public void dispose() {
         logger.info("Disposing skin");
+        editorMap.clear();
+        labelMap.clear();
+        constraintMap.clear();
+        tooltipMap.clear();
         fxForm = null;
     }
 

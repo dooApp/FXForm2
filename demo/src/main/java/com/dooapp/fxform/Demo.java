@@ -78,6 +78,7 @@ public class Demo extends Application {
         stage.setScene(scene);
         stage.show();
         fxForm.addFilters(new ReorderFilter(new String[]{"age", "mail"}));
+        fxForm.setSource(null);
     }
 
     private FXForm<DemoObject> createFXForm() {

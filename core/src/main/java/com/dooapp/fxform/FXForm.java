@@ -119,7 +119,9 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         });
         this.source.addListener(new ChangeListener<T>() {
             public void changed(ObservableValue<? extends T> observableValue, T t, T t1) {
-                if (controllers.isEmpty() || (t1.getClass() != t.getClass())) {
+                if (t1 == null) {
+                    dispose();
+                } else if (controllers.isEmpty() || (t1.getClass() != t.getClass())) {
                     createControllers();
                 }
             }
@@ -127,10 +129,30 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         filters.add(new NonVisualFilter());
         filters.addListener(new ListChangeListener() {
             public void onChanged(Change change) {
+                dispose();
                 createControllers();
             }
         });
         this.setSkin(new DefaultSkin(this));
+    }
+
+    public void dispose() {
+        for (ElementController controller : controllers) {
+            clearBindings(controller);
+            controller.dispose();
+        }
+        controllers.clear();
+    }
+
+    private void applyBindings(ElementController controller) {
+        controller.resourceBundleProperty().bind(resourceBundle);
+        controller.getElement().sourceProperty().bind(source);
+    }
+
+    private void clearBindings(ElementController controller) {
+        controller.resourceBundleProperty().unbind();
+        controller.getElement().sourceProperty().unbind();
+        source.unbind();
     }
 
     private void createControllers() {
@@ -154,8 +176,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
                     controller = new ElementController(element);
                 }
                 if (element != null) {
-                    controller.resourceBundleProperty().bind(resourceBundle);
-                    element.sourceProperty().bind(source);
+                    applyBindings(controller);
                     controllers.add(controller);
                 }
             } catch (FormException e) {

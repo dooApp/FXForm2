@@ -69,13 +69,17 @@ public class Element<SourceType, WrappedType, FieldType extends ObservableValue<
             public void changed(ObservableValue<? extends FieldType> observableValue, FieldType fieldType, FieldType fieldType1) {
                 for (InvalidationListener invalidationListener : invalidationListeners) {
                     fieldType.removeListener(invalidationListener);
-                    fieldType1.addListener(invalidationListener);
+                    if (fieldType1 != null) {
+                        fieldType1.addListener(invalidationListener);
+                    }
                     invalidationListener.invalidated(observableValue);
                 }
                 for (ChangeListener changeListener : changeListeners) {
                     fieldType.removeListener(changeListener);
-                    fieldType1.addListener(changeListener);
-                    changeListener.changed(observableValue, fieldType.getValue(), fieldType1.getValue());
+                    if (fieldType1 != null) {
+                        fieldType1.addListener(changeListener);
+                        changeListener.changed(observableValue, fieldType.getValue(), fieldType1.getValue());
+                    }
                 }
             }
         });
@@ -97,10 +101,10 @@ public class Element<SourceType, WrappedType, FieldType extends ObservableValue<
         return source;
     }
 
-    @Override
-    public String toString() {
-        return field.getName() + "[" + getSource().getClass() + "]";
-    }
+    //@Override
+    //public String toString() {
+    //    return field.getName() + "[" + getSource().getClass() + "]";
+    //}
 
     public ObjectBinding<FieldType> valueProperty() {
         return value;
@@ -131,4 +135,7 @@ public class Element<SourceType, WrappedType, FieldType extends ObservableValue<
         valueProperty().removeListener(invalidationListener);
     }
 
+    public void dispose() {
+        value.dispose();
+    }
 }

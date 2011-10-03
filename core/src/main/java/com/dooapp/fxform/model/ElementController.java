@@ -129,6 +129,13 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
         this.dirty().set(dirty);
     }
 
+    /**
+     * Dispose this controller. The controller should clear all existing bindings.
+     */
+    public void dispose() {
+        element.dispose();
+    }
+
     public ObjectProperty<ResourceBundle> resourceBundleProperty() {
         return resourceBundle;
     }

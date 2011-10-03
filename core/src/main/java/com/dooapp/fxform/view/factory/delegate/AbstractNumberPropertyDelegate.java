@@ -31,8 +31,6 @@ import java.text.ParseException;
 public abstract class AbstractNumberPropertyDelegate<T extends Number> implements
         NodeFactory<PropertyElementController<T>> {
 
-    protected ObjectProperty<T> numberProperty = new SimpleObjectProperty<T>();
-
     protected final FormatProvider formatProvider;
 
     public AbstractNumberPropertyDelegate(FormatProvider formatProvider) {
@@ -47,7 +45,7 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
                 if (textBox.getText().trim().length() > 0) {
                     try {
                         Number parsed = parse(formatProvider.getFormat(controller.getElement()), textBox.getText());
-                        numberProperty.setValue((T) parsed);
+                        controller.setValue((T) parsed);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -59,12 +57,7 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         }
         controller.addListener(new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
-            }
-        });
-        numberProperty.addListener(new ChangeListener<T>() {
-            public void changed(ObservableValue<? extends T> observableValue, T t, T t1) {
-                controller.setValue(t1);
+               textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
             }
         });
         return textBox;
