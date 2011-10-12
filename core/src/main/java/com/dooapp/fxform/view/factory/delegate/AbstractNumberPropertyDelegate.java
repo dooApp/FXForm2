@@ -15,8 +15,6 @@ package com.dooapp.fxform.view.factory.delegate;
 import com.dooapp.fxform.model.PropertyElementController;
 import com.dooapp.fxform.view.factory.FormatProvider;
 import com.dooapp.fxform.view.factory.NodeFactory;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
@@ -39,8 +37,16 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
 
     public Node createNode(final PropertyElementController<T> controller) {
         final TextField textBox = new TextField();
-        textBox.textProperty().addListener(new ChangeListener<String>() {
+        textBox.textProperty().addListener(createTextBoxListener(controller, textBox));
+        if (controller.getValue() != null) {
+            textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
+        }
+        controller.addListener(createControllerListener(textBox, controller));
+        return textBox;
+    }
 
+    protected ChangeListener<String> createTextBoxListener(final PropertyElementController<T> controller, final TextField textBox) {
+        return new ChangeListener<String>() {
             public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
                 if (textBox.getText().trim().length() > 0) {
                     try {
@@ -51,16 +57,15 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
                     }
                 }
             }
-        });
-        if (controller.getValue() != null) {
-            textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
-        }
-        controller.addListener(new ChangeListener() {
+        };
+    }
+
+    protected ChangeListener createControllerListener(final TextField textBox, final PropertyElementController<T> controller){
+        return new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
                textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
             }
-        });
-        return textBox;
+        };
     }
 
     protected abstract Number parse(Format format, String text) throws ParseException;
