@@ -43,7 +43,7 @@ public class InlineSkin extends FXFormSkin {
     }
 
     protected GridPane gridPane;
-    int row = 0;
+    protected int row = 0;
 
     @Override
     protected Node createRootNode() throws NodeCreationException {
