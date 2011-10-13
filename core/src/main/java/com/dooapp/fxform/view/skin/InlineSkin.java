@@ -42,7 +42,7 @@ public class InlineSkin extends FXFormSkin {
         return label;
     }
 
-    private GridPane gridPane;
+    protected GridPane gridPane;
     int row = 0;
 
     @Override
