@@ -13,12 +13,15 @@
 package com.dooapp.fxform.view.factory.delegate;
 
 import com.dooapp.fxform.model.PropertyElementController;
+import com.dooapp.fxform.view.factory.DisposableNode;
+import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
 import com.dooapp.fxform.view.factory.FormatProvider;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 
 import java.text.Format;
 import java.text.ParseException;
@@ -35,14 +38,22 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         this.formatProvider = formatProvider;
     }
 
-    public Node createNode(final PropertyElementController<T> controller) {
+    public DisposableNode createNode(final PropertyElementController<T> controller) {
         final TextField textBox = new TextField();
-        textBox.textProperty().addListener(createTextBoxListener(controller, textBox));
+        final ChangeListener textBoxListener = createTextBoxListener(controller, textBox);
+        textBox.textProperty().addListener(textBoxListener);
         if (controller.getValue() != null) {
             textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
         }
-        controller.addListener(createControllerListener(textBox, controller));
-        return textBox;
+        final ChangeListener controllerListener = createControllerListener(textBox, controller);
+        controller.addListener(controllerListener);
+        return new DisposableNodeWrapper(textBox, new Callback<Node, Void>() {
+            public Void call(Node node) {
+                controller.removeListener(controllerListener);
+                textBox.textProperty().removeListener(textBoxListener);
+                return null;
+            }
+        });
     }
 
     protected ChangeListener<String> createTextBoxListener(final PropertyElementController<T> controller, final TextField textBox) {
@@ -60,10 +71,10 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         };
     }
 
-    protected ChangeListener createControllerListener(final TextField textBox, final PropertyElementController<T> controller){
+    protected ChangeListener createControllerListener(final TextField textBox, final PropertyElementController<T> controller) {
         return new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-               textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
+                textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
             }
         };
     }

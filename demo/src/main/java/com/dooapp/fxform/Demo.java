@@ -11,24 +11,29 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.filter.ReorderFilter;
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.model.PropertyElementController;
 import com.dooapp.fxform.view.FXFormSkinFactory;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.factory.DelegateFactory;
+import com.dooapp.fxform.view.factory.DisposableNode;
+import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
 import com.dooapp.fxform.view.factory.NodeFactory;
-import com.dooapp.fxform.view.handler.NamedFieldHandler;
 import javafx.application.Application;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.SceneBuilder;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.apache.log4j.BasicConfigurator;
+import org.hibernate.validator.constraints.Email;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -38,57 +43,121 @@ import org.apache.log4j.BasicConfigurator;
  */
 public class Demo extends Application {
 
+    /**
+     * The bean to be edited.
+     */
+    private static class MyBean {
+
+        private static enum Subject {
+            CONTACT, QUESTION, BUG, FEEDBACK
+        }
+
+        private final StringProperty name = new SimpleStringProperty();
+
+        private final StringProperty email = new SimpleStringProperty();
+
+        @FormFactory(TextAreaFactory.class)
+        private final StringProperty message = new SimpleStringProperty();
+
+        private final StringProperty website = new SimpleStringProperty();
+
+        private final BooleanProperty subscribe = new SimpleBooleanProperty();
+
+        private final ObjectProperty<Subject> subject = new SimpleObjectProperty<Subject>();
+
+        private MyBean(String name, String email, String message, String website, boolean subscribe, Subject subject) {
+            this.name.set(name);
+            this.email.set(email);
+            this.message.set(message);
+            this.website.set(website);
+            this.subscribe.set(subscribe);
+            this.subject.set(subject);
+        }
+
+        @Email
+        public String getEmail() {
+            return email.get();
+        }
+    }
+
+    /**
+     * Example of custom factory
+     */
+    public static class TextAreaFactory implements NodeFactory<PropertyElementController<String>> {
+        public DisposableNode createNode(PropertyElementController<String> controller) throws NodeCreationException {
+            TextArea textArea = new TextArea();
+            return new DisposableNodeWrapper(textArea, new Callback<Node, Void>() {
+                public Void call(Node node) {
+                    return null;
+                }
+            });
+        }
+    }
+
+    private FXForm<MyBean> fxForm = new FXForm<MyBean>();
+
+    private StackPane root = new StackPane();
+
+    private final String css = Demo.class.getResource("style.css").toExternalForm();
+
+    protected void setup() {
+        MyBean joe = new MyBean("Joe", "contact@", "How does this crazy form works?", "www.dooapp.com", true, MyBean.Subject.QUESTION);
+        new ObjectPropertyObserver(joe);
+        fxForm.setSource(joe);
+        fxForm.addFilters(new ReorderFilter("name", "email", "website", "subject", "message"));
+        fxForm.setTitle("Dude, where is my form?");
+        root.getChildren().add(createNode());
+    }
+
+    private Node createNode() {
+        VBox vBox = new VBox();
+        vBox.getChildren().addAll(createSkinSelector(), createCSSNode(), fxForm);
+        return vBox;
+    }
+
+    private Node createCSSNode() {
+        CheckBox checkBox = new CheckBox("Use css");
+        checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
+                if (aBoolean1) {
+                    root.getScene().getStylesheets().add(css);
+                } else {
+                    root.getScene().getStylesheets().remove(css);
+                }
+            }
+        });
+        checkBox.setSelected(true);
+        return checkBox;
+    }
+
+    /**
+     * Create a selector that changes the skin of the form.
+     *
+     * @return
+     */
+    private Node createSkinSelector() {
+        ChoiceBox<FXFormSkinFactory> choiceBox = new ChoiceBox<FXFormSkinFactory>();
+        choiceBox.getItems().addAll(FXFormSkinFactory.DEFAULT_FACTORY, FXFormSkinFactory.INLINE_FACTORY);
+        choiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<FXFormSkinFactory>() {
+            public void changed(ObservableValue<? extends FXFormSkinFactory> observableValue, FXFormSkinFactory fxFormSkinFactory, FXFormSkinFactory fxFormSkinFactory1) {
+                fxForm.setSkin(fxFormSkinFactory1.createSkin(fxForm));
+            }
+        });
+        choiceBox.getSelectionModel().selectFirst();
+        return choiceBox;
+    }
+
     public static void main(String[] args) {
         BasicConfigurator.configure();
         Application.launch(Demo.class, args);
     }
 
     @Override
-    public void start(Stage stage) {
-        VBox root = new VBox();
-        root.setPadding(new Insets(10, 10, 10, 10));
-        final DemoObject instance1 = new SubDemoObject();
-        instance1.setName("John");
-        instance1.setAge(18);
-        final DemoObject instance2 = new SubDemoObject();
-        instance2.setName("Julio");
-        instance2.setAge(4);
-        new ObjectPropertyObserver(instance1);
-        new ObjectPropertyObserver(instance2);
-        final FXForm fxForm = createFXForm();
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(Demo.class.getResource("style.css").toExternalForm());
-        ChoiceBox<FXFormSkinFactory> skinChoiceBox = new ChoiceBox<FXFormSkinFactory>();
-        skinChoiceBox.getItems().addAll(FXFormSkinFactory.DEFAULT_FACTORY, FXFormSkinFactory.INLINE_FACTORY);
-        skinChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<FXFormSkinFactory>() {
-            public void changed(ObservableValue<? extends FXFormSkinFactory> observableValue, FXFormSkinFactory fxFormSkin, FXFormSkinFactory fxFormSkin1) {
-                fxForm.setSkin(fxFormSkin1.createSkin(fxForm));
-            }
-        });
-        ChoiceBox<DemoObject> instanceChoiceBox = new ChoiceBox<DemoObject>();
-        instanceChoiceBox.getItems().addAll(instance1, instance2);
-        instanceChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<DemoObject>() {
-            public void changed(ObservableValue<? extends DemoObject> observableValue, DemoObject demoObject, DemoObject demoObject1) {
-                fxForm.setSource(demoObject1);
-            }
-        });
-        instanceChoiceBox.selectionModelProperty().get().selectFirst();
-        skinChoiceBox.selectionModelProperty().get().selectFirst();
-        root.getChildren().addAll(skinChoiceBox, instanceChoiceBox, fxForm);
-        stage.setScene(scene);
+    public void start(Stage stage) throws Exception {
+        stage.setTitle("FXForm Demo");
+        stage.setScene(SceneBuilder.create().root(root).build());
+        setup();
         stage.show();
-        fxForm.addFilters(new ReorderFilter(new String[]{"age", "mail"}));
-        fxForm.setSource(null);
     }
 
-    private FXForm<DemoObject> createFXForm() {
-        DelegateFactory.addGlobalFactory(new NamedFieldHandler("height"), new NodeFactory<ElementController>() {
-            public Node createNode(ElementController controller) throws NodeCreationException {
-                return new Button("Custom factory");
-            }
-        });
-        FXForm<DemoObject> fxForm = new FXForm<DemoObject>(new DelegateFactory());
-        fxForm.setTitle("Dude, where is my form?");
-        return fxForm;
-    }
 }

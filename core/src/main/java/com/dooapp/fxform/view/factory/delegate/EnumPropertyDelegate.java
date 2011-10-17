@@ -15,12 +15,15 @@ package com.dooapp.fxform.view.factory.delegate;
 import com.dooapp.fxform.model.PropertyElementController;
 import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.factory.DisposableNode;
+import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
+import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +38,7 @@ public class EnumPropertyDelegate implements NodeFactory<PropertyElementControll
 
     private final Logger logger = LoggerFactory.getLogger(EnumPropertyDelegate.class);
 
-    public Node createNode(final PropertyElementController<Enum> controller) throws NodeCreationException {
+    public DisposableNode createNode(final PropertyElementController<Enum> controller) throws NodeCreationException {
         Enum[] constants = new Enum[0];
         try {
             constants = (Enum[]) Util.getObjectPropertyGeneric(controller.getElement().getField()).getEnumConstants();
@@ -45,13 +48,14 @@ public class EnumPropertyDelegate implements NodeFactory<PropertyElementControll
         final ChoiceBox<Enum> choiceBox = new ChoiceBox<Enum>();
         choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
         choiceBox.getSelectionModel().select(controller.getValue());
-        choiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Enum>() {
+        final ChangeListener<Enum> enumChangeListener = new ChangeListener<Enum>() {
 
             public void changed(ObservableValue<? extends Enum> observableValue, Enum anEnum, Enum anEnum1) {
                 controller.setValue(anEnum1);
             }
-        });
-        controller.addListener(new ChangeListener() {
+        };
+        choiceBox.getSelectionModel().selectedItemProperty().addListener(enumChangeListener);
+        final ChangeListener controllerListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
                 if (o1 != null) {
                     choiceBox.getSelectionModel().select((Enum) o1);
@@ -59,7 +63,14 @@ public class EnumPropertyDelegate implements NodeFactory<PropertyElementControll
                     choiceBox.getSelectionModel().clearSelection();
                 }
             }
+        };
+        controller.addListener(controllerListener);
+        return new DisposableNodeWrapper(choiceBox, new Callback<Node, Void>() {
+            public Void call(Node node) {
+                choiceBox.getSelectionModel().selectedItemProperty().removeListener(enumChangeListener);
+                controller.removeListener(controllerListener);
+                return null;
+            }
         });
-        return choiceBox;
     }
 }

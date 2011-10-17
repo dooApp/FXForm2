@@ -14,7 +14,6 @@ package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.NodeCreationException;
-import javafx.scene.Node;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -23,6 +22,6 @@ import javafx.scene.Node;
  */
 public interface NodeFactory<V extends ElementController> {
 
-    public Node createNode(V controller) throws NodeCreationException;
+    public DisposableNode createNode(V controller) throws NodeCreationException;
 
 }

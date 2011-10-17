@@ -14,11 +14,14 @@ package com.dooapp.fxform.view.factory.delegate;
 
 import com.dooapp.fxform.model.PropertyElementController;
 import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.factory.DisposableNode;
+import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -27,26 +30,36 @@ import javafx.scene.control.TextField;
  */
 public class StringPropertyDelegate implements NodeFactory<PropertyElementController<String>> {
 
-    public Node createNode(final PropertyElementController<String> controller) throws NodeCreationException {
+    public DisposableNode createNode(final PropertyElementController<String> controller) throws NodeCreationException {
         final TextField text = new TextField();
         String value = controller.getValue();
         if (value != null) {
             text.setText(value);
         }
-        text.textProperty().addListener(new ChangeListener<String>() {
+        final ChangeListener textPropertyListener = new ChangeListener<String>() {
             public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
                 controller.setValue(s1);
             }
-        });
-        controller.addListener(new ChangeListener<String>() {
+        };
+        text.textProperty().addListener(textPropertyListener);
+        final ChangeListener<String> controllerListener = new ChangeListener<String>() {
             public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
                 if (s1 != null) {
-                    text.setText(s1);
+                    if (!text.getText().equals(s1)) {
+                        text.setText(s1);
+                    }
                 } else {
                     text.setText("");
                 }
             }
+        };
+        controller.addListener(controllerListener);
+        return new DisposableNodeWrapper(text, new Callback<Node, Void>() {
+            public Void call(Node node) {
+                text.textProperty().removeListener(textPropertyListener);
+                controller.removeListener(controllerListener);
+                return null;
+            }
         });
-        return text;
     }
 }

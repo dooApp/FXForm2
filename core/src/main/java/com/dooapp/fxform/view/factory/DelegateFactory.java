@@ -22,6 +22,7 @@ import com.dooapp.fxform.view.handler.TypeFieldHandler;
 import javafx.beans.property.*;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.util.Callback;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,8 +40,13 @@ public class DelegateFactory implements NodeFactory {
 
     private final static NodeFactory DEFAULT_FACTORY = new NodeFactory() {
 
-        public Node createNode(ElementController elementController) throws NodeCreationException {
-            return new Label(elementController.getElement().getField().getType() + " not supported");
+        public DisposableNode createNode(ElementController elementController) throws NodeCreationException {
+            return new DisposableNodeWrapper(new Label(elementController.getElement().getField().getType() + " not supported"),
+                    new Callback<Node, Void>() {
+                        public Void call(Node node) {
+                            return null;
+                        }
+                    });
         }
     };
 
@@ -73,7 +79,7 @@ public class DelegateFactory implements NodeFactory {
      * @return the created node
      * @throws NodeCreationException
      */
-    public Node createNode(ElementController controller) throws NodeCreationException {
+    public DisposableNode createNode(ElementController controller) throws NodeCreationException {
         // check user defined factories
         NodeFactory delegate = getDelegate(controller.getElement(), USER_MAP);
         // check user defined global factories

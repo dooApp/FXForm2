@@ -1,9 +1,12 @@
 .form-label {
     -fx-font-size: 20;
+    -fx-font-weight: bold;
+
 }
 
 .form-editor {
     -fx-font-size: 12;
+    -fx-text-fill: blue;
 }
 
 .form-title {

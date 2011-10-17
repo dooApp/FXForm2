@@ -38,7 +38,7 @@ public class AnnotationFactoryWrapper implements NodeFactory {
         this.delegate = delegate;
     }
 
-    public Node createNode(ElementController controller) throws NodeCreationException {
+    public DisposableNode createNode(ElementController controller) throws NodeCreationException {
         // check field annotation
         if (controller.getElement().getField().getAnnotation(FormFactory.class) != null) {
             // use factory provided by the annotation

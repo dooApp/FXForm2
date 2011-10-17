@@ -17,6 +17,7 @@ import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.util.Callback;
 
 /**
  * Factory creating a label bound to a string representation of the {@code Element}<br>
@@ -37,8 +38,8 @@ public class ReadOnlyFactory implements NodeFactory {
         this.formatProvider = formatProvider;
     }
 
-    public Node createNode(final ElementController controller) throws NodeCreationException {
-        Label label = new Label();
+    public DisposableNode createNode(final ElementController controller) throws NodeCreationException {
+        final Label label = new Label();
         label.textProperty().bind(new StringBinding() {
 
             {
@@ -54,6 +55,11 @@ public class ReadOnlyFactory implements NodeFactory {
                 }
             }
         });
-        return label;
+        return new DisposableNodeWrapper(label, new Callback<Node, Void>() {
+            public Void call(Node node) {
+                label.textProperty().unbind();
+                return null;
+            }
+        });
     }
 }

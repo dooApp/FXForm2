@@ -95,7 +95,6 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public FXForm(T source, NodeFactory labelFactory, NodeFactory tooltipFactory, NodeFactory editorFactory) {
         initBundle();
-        setSource(source);
         controllers.addConfigurer(new NodeFactoryConfigurer(labelFactory, LABEL_ID_SUFFIX, LABEL_STYLE) {
 
             @Override
@@ -134,6 +133,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
             }
         });
         this.setSkin(new DefaultSkin(this));
+        setSource(source);
     }
 
     public void dispose() {

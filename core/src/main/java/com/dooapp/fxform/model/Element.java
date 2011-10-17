@@ -118,7 +118,9 @@ public class Element<SourceType, WrappedType, FieldType extends ObservableValue<
 
     public void removeListener(ChangeListener changeListener) {
         changeListeners.remove(changeListener);
-        valueProperty().get().removeListener(changeListener);
+        if (valueProperty().get() != null) {
+            valueProperty().get().removeListener(changeListener);
+        }
     }
 
     public WrappedType getValue() {
@@ -132,10 +134,13 @@ public class Element<SourceType, WrappedType, FieldType extends ObservableValue<
 
     public void removeListener(InvalidationListener invalidationListener) {
         invalidationListeners.remove(invalidationListener);
-        valueProperty().removeListener(invalidationListener);
+        if (valueProperty().get() != null) {
+            valueProperty().removeListener(invalidationListener);
+        }
     }
 
     public void dispose() {
         value.dispose();
     }
+
 }

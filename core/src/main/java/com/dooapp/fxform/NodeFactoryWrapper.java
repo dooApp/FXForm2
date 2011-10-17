@@ -13,12 +13,12 @@ package com.dooapp.fxform;
 
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.factory.DisposableNode;
 import com.dooapp.fxform.view.factory.NodeFactory;
-import javafx.scene.Node;
 
 /**
  * Wrap a NodeFactory to add a specific style and set an id to the generated nodes.
- *
+ * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 26/08/11
  * Time: 10:09
@@ -37,10 +37,10 @@ public class NodeFactoryWrapper implements NodeFactory {
         this.style = style;
     }
 
-    public Node createNode(ElementController controller) throws NodeCreationException {
-        Node node = factory.createNode(controller);
-        node.setId(controller.getElement().getField().getName() + idSuffix);
-        node.getStyleClass().add(style);
+    public DisposableNode createNode(ElementController controller) throws NodeCreationException {
+        DisposableNode node = factory.createNode(controller);
+        node.getNode().setId(controller.getElement().getField().getName() + idSuffix);
+        node.getNode().getStyleClass().add(style);
         return node;
     }
 
