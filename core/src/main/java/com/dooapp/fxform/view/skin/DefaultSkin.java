@@ -16,8 +16,7 @@ import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.dooapp.fxform.view.factory.AutoHidableLabel;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -57,10 +56,8 @@ public class DefaultSkin extends FXFormSkin {
             Node editor = getEditor(controller);
             final Node label = getLabel(controller);
             controllerBox.getChildren().addAll(label, editor, getConstraint(controller));
-            if (controller.getTooltip().get() != null) {
-                Node node = getTooltip(controller);
-                controllerBox.getChildren().add(node);
-            }
+            Node node = getTooltip(controller);
+            controllerBox.getChildren().add(node);
         }
     }
 
@@ -71,7 +68,7 @@ public class DefaultSkin extends FXFormSkin {
     }
 
     private Node createTitleNode() {
-        Label label = new Label();
+        Label label = new AutoHidableLabel();
         label.getStyleClass().add("form-title");
         label.textProperty().bind(fxForm.titleProperty());
         return label;

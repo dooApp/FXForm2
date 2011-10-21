@@ -15,6 +15,7 @@ import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.factory.AutoHidableLabel;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -36,7 +37,7 @@ public class InlineSkin extends FXFormSkin {
     }
 
     private Node createTitleNode() {
-        Label label = new Label();
+        Label label = new AutoHidableLabel();
         label.getStyleClass().add("form-title");
         label.textProperty().bind(fxForm.titleProperty());
         return label;
@@ -63,9 +64,7 @@ public class InlineSkin extends FXFormSkin {
     protected void removeControllers(List<ElementController> removed) {
         for (ElementController controller : removed) {
             gridPane.getChildren().removeAll(getEditor(controller), getLabel(controller), getConstraint(controller));
-            if (controller.getTooltip().get() != null) {
-                gridPane.getChildren().remove(getTooltip(controller));
-            }
+            gridPane.getChildren().remove(getTooltip(controller));
         }
     }
 
@@ -73,9 +72,7 @@ public class InlineSkin extends FXFormSkin {
     protected void addControllers(List<ElementController> addedSubList) {
         for (final ElementController controller : addedSubList) {
             gridPane.addRow(row, getLabel(controller), getEditor(controller), getConstraint(controller));
-            if (controller.getTooltip().get() != null) {
-                gridPane.add(getTooltip(controller), 1, ++row);
-            }
+            gridPane.add(getTooltip(controller), 1, ++row);
             row++;
         }
     }

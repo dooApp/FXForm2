@@ -3,6 +3,7 @@
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
  * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
@@ -11,25 +12,39 @@
 
 package com.dooapp.fxform.view.factory;
 
-import com.dooapp.fxform.model.ElementController;
-import com.dooapp.fxform.view.NodeCreationException;
-import javafx.scene.Node;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
-import javafx.util.Callback;
 
 /**
- * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 26/08/11
- * Time: 11:50
+ * A label that is hidden when text is empty.<br>
+ * <br>
+ * Created at 21/10/11 11:12.<br>
+ *
+ * @author Antoine Mischler <antoine@dooapp.com>
  */
-public class DefaultTooltipFactory implements NodeFactory<ElementController> {
-    public DisposableNode createNode(ElementController controller) throws NodeCreationException {
-        Label label = new AutoHidableLabel();
-        label.textProperty().bind(controller.getTooltip());
-        return new DisposableNodeWrapper(label, new Callback<Node, Void>() {
-            public Void call(Node node) {
-                return null;
-            }
-        });
+public class AutoHidableLabel extends Label {
+
+    public AutoHidableLabel() {
+        setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
+        setMinSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
     }
+
+    @Override
+    protected double computePrefHeight(double v) {
+        if (getText() == null || getText().length() < 1) {
+            return 0.0;
+        } else {
+            return super.computePrefHeight(v);
+        }
+    }
+
+    @Override
+    protected double computePrefWidth(double v) {
+        if (getText() == null || getText().length() < 1) {
+            return 0.0;
+        } else {
+            return super.computePrefWidth(v);
+        }
+    }
+
 }
