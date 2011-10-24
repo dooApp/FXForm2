@@ -26,6 +26,7 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 /**
+ * A skin where elements are inlined (label, editor). The tooltip is displayed under the editor.
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 24/08/11
  * Time: 11:03

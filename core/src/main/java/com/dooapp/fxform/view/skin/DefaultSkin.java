@@ -25,6 +25,7 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 /**
+ * A "vertical" skin.
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 11/05/11
  * Time: 21:56
