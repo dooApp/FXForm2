@@ -107,7 +107,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
 
     protected abstract void addControllers(List<ElementController> addedSubList);
 
-    protected Node getLabel(ElementController controller) {
+    public Node getLabel(ElementController controller) {
         if (!labelMap.containsKey(controller)) {
             try {
                 labelMap.put(controller, controller.getLabelFactory().createNode(controller));
@@ -118,7 +118,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         return labelMap.get(controller).getNode();
     }
 
-    protected Node getTooltip(ElementController controller) {
+    public Node getTooltip(ElementController controller) {
         if (!tooltipMap.containsKey(controller)) {
             try {
                 tooltipMap.put(controller, controller.getTooltipFactory().createNode(controller));
@@ -129,7 +129,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         return tooltipMap.get(controller).getNode();
     }
 
-    protected Node getEditor(ElementController controller) {
+    public Node getEditor(ElementController controller) {
         if (!editorMap.containsKey(controller)) {
             try {
                 editorMap.put(controller, controller.getEditorFactory().createNode(controller));
@@ -140,7 +140,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         return editorMap.get(controller).getNode();
     }
 
-    protected Node getConstraint(ElementController controller) {
+    public Node getConstraint(ElementController controller) {
         if (!constraintMap.containsKey(controller)) {
             // maybe we should use a factory here too
             constraintMap.put(controller, createConstraintNode(controller));
