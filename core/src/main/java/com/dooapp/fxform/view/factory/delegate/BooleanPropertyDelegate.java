@@ -43,7 +43,7 @@ public class BooleanPropertyDelegate implements NodeFactory<PropertyElementContr
                 controller.setValue(aBoolean1);
             }
         };
-        checkBox.selectedProperty().addListener(controllerListener);
+        checkBox.selectedProperty().addListener(checkBoxListener);
         return new DisposableNodeWrapper(checkBox, new Callback<Node, Void>() {
             public Void call(Node node) {
                 checkBox.selectedProperty().removeListener(checkBoxListener);
