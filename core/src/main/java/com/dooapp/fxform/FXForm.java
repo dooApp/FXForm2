@@ -158,7 +158,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     private void createControllers() {
         if (source.get() == null)
             return;
-        logger.info("Creating controllers for " + source.get());
+        logger.debug("Creating controllers for " + source.get());
         controllers.clear();
         List<Field> fields = new ReflectionFieldProvider().getProperties(source.get());
         for (FieldFilter filter : filters) {

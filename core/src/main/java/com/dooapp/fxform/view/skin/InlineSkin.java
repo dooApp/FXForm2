@@ -22,6 +22,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.GridPaneBuilder;
 import javafx.scene.layout.VBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -32,6 +34,8 @@ import java.util.List;
  * Time: 11:03
  */
 public class InlineSkin extends FXFormSkin {
+
+    public final static Logger logger = LoggerFactory.getLogger(InlineSkin.class);
 
     public InlineSkin(FXForm fxForm) {
         super(fxForm);
@@ -64,8 +68,8 @@ public class InlineSkin extends FXFormSkin {
     @Override
     protected void removeControllers(List<ElementController> removed) {
         for (ElementController controller : removed) {
-            gridPane.getChildren().removeAll(getEditor(controller), getLabel(controller), getConstraint(controller));
-            gridPane.getChildren().remove(getTooltip(controller));
+            removeRow(GridPane.getRowIndex(getEditor(controller)));
+            removeRow(GridPane.getRowIndex(getTooltip(controller)));
         }
     }
 
@@ -76,6 +80,23 @@ public class InlineSkin extends FXFormSkin {
             gridPane.add(getTooltip(controller), 1, ++row);
             row++;
         }
+    }
+
+    /**
+     * Remove a row by moving all nodes under this row one row up.
+     *
+     * @param row
+     */
+    protected void removeRow(int row) {
+        for (Node node : gridPane.getChildrenUnmodifiable()) {
+            int nodeRow = GridPane.getRowIndex(node);
+            if (nodeRow == row) {
+                gridPane.getChildren().remove(node);
+            } else if (nodeRow > row) {
+                GridPane.setRowIndex(node, nodeRow - 1);
+            }
+        }
+        this.row--;
     }
 
     @Override

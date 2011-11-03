@@ -62,13 +62,13 @@ public abstract class FXFormSkin implements Skin<FXForm> {
 
     public Node getNode() {
         if (rootNode == null) {
-            logger.info("Creating skin node");
+            logger.debug("Creating skin node");
             try {
                 rootNode = createRootNode();
                 addControllers(fxForm.getControllers());
                 fxForm.getControllers().addListener(new ListChangeListener() {
                     public void onChanged(Change change) {
-                        logger.info("Updating controllers view");
+                        logger.debug("Updating controllers view");
                         while (change.next()) {
                             addControllers(change.getAddedSubList());
                             if (change.wasRemoved()) {
@@ -86,7 +86,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     }
 
     private void unregisterControllers(List<ElementController> removed) {
-        logger.info("Clearing controllers nodes");
+        logger.debug("Clearing controllers nodes");
         for (ElementController controller : removed) {
             unregisterController(controller, labelMap);
             unregisterController(controller, editorMap);
@@ -175,7 +175,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     }
 
     public void dispose() {
-        logger.info("Disposing skin");
+        logger.debug("Disposing skin");
         disposeNodes(labelMap);
         disposeNodes(editorMap);
         disposeNodes(tooltipMap);
