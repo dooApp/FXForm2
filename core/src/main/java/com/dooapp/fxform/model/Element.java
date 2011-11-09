@@ -124,7 +124,11 @@ public class Element<SourceType, WrappedType, FieldType extends ObservableValue<
     }
 
     public WrappedType getValue() {
-        return valueProperty().get().getValue();
+        if (valueProperty().get() != null) {
+            return valueProperty().get().getValue();
+        } else {
+            return null;
+        }
     }
 
     public void addListener(InvalidationListener invalidationListener) {
