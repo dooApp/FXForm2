@@ -47,6 +47,9 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         }
         final ChangeListener controllerListener = createControllerListener(textBox, controller);
         controller.addListener(controllerListener);
+
+        textBox.promptTextProperty().bind(controller.getPromptText());
+
         return new DisposableNodeWrapper(textBox, new Callback<Node, Void>() {
             public Void call(Node node) {
                 controller.removeListener(controllerListener);

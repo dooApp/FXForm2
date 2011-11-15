@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -41,6 +40,8 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
     public static String LABEL_SUFFIX = "-label";
 
     public static String TOOLTIP_SUFFIX = "-tooltip";
+
+    public static String PROMPT_TEXT_SUFFIX = "-prompt";
 
     protected final Element<?, WrappedType, ?> element;
 
@@ -101,6 +102,31 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
             protected String computeValue() {
                 try {
                     return resourceBundle.get().getString(element.getField().getName() + TOOLTIP_SUFFIX);
+                } catch (Exception e) {
+                    // label is undefined
+                    return null;
+                }
+            }
+        });
+        return stringProperty;
+    }
+
+    /**
+     * Get the prompt text for this field. Might return null if no prompt text has been defined.
+     *
+     * @return
+     */
+    public StringProperty getPromptText() {
+        StringProperty stringProperty = new SimpleStringProperty();
+        stringProperty.bind(new StringBinding() {
+            {
+                super.bind(resourceBundle);
+            }
+
+            @Override
+            protected String computeValue() {
+                try {
+                    return resourceBundle.get().getString(element.getField().getName() + PROMPT_TEXT_SUFFIX);
                 } catch (Exception e) {
                     // label is undefined
                     return null;

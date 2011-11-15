@@ -54,6 +54,9 @@ public class StringPropertyDelegate implements NodeFactory<PropertyElementContro
             }
         };
         controller.addListener(controllerListener);
+
+        text.promptTextProperty().bind(controller.getPromptText());
+
         return new DisposableNodeWrapper(text, new Callback<Node, Void>() {
             public Void call(Node node) {
                 text.textProperty().removeListener(textPropertyListener);
