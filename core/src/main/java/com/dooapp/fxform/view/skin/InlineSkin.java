@@ -16,8 +16,6 @@ import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.AutoHidableLabel;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -27,7 +25,6 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -93,8 +90,7 @@ public class InlineSkin extends FXFormSkin {
      */
     protected void removeRow(int row) {
         // copy children to another list since we are going to iterate on it and modify the children list
-        ObservableList<Node> children = FXCollections.observableList(new LinkedList<Node>(Arrays.asList(new Node[gridPane.getChildren().size()])));
-        FXCollections.copy(children, gridPane.getChildren());
+        List<Node> children = new LinkedList<Node>(gridPane.getChildren());
         for (Node node : children) {
             int nodeRow = GridPane.getRowIndex(node);
             if (nodeRow == row) {
