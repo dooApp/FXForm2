@@ -17,6 +17,7 @@ import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.AutoHidableLabel;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -90,8 +91,8 @@ public class InlineSkin extends FXFormSkin {
      * @param row
      */
     protected void removeRow(int row) {
-        List<Node> children = new LinkedList<Node>();
-        FXCollections.copy(gridPane.getChildren(), children);
+        ObservableList<Node> children = FXCollections.observableList(new LinkedList<Node>());
+        FXCollections.copy(children, gridPane.getChildren());
         for (Node node : children) {
             int nodeRow = GridPane.getRowIndex(node);
             if (nodeRow == row) {
