@@ -1,7 +1,7 @@
 FXForm 2
 ========
 
-Stop coding forms: FXForm 2 can do it for you!
+**Stop coding forms: FXForm 2 can do it for you!**
 
 About
 -----
