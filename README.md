@@ -19,20 +19,19 @@ Features
 --------
 
 Main features include:
-    * Automatic form generation and binding to bean properties
-    * CSS support
-    * Bean Validation handling (JSR 303)
-    * Fields reordering and filtering
-    * Tooltips
-    * Localization
-    * Custom factories
+
+* Automatic form generation and binding to bean properties
+* CSS support
+* Bean Validation handling (JSR 303)
+* Fields reordering and filtering
+* Tooltips
+* Localization
+* Custom factories
 
 Links
 -----
 
-A video by Betrand Goetzmann with [Grezi](https://bitbucket.org/bgoetzmann/grezi/wiki/Home) and FXForm2:
-
-<iframe src="http://www.screenr.com/embed/GvDs" width="650" height="396" frameborder="0"></iframe>
+A video by Betrand Goetzmann with [Grezi](https://bitbucket.org/bgoetzmann/grezi/wiki/Home) and FXForm2: [http://screenr.com/GvDs]
 
 Licensing
 ---------
