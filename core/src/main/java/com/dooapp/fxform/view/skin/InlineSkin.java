@@ -27,6 +27,7 @@ import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -91,7 +92,8 @@ public class InlineSkin extends FXFormSkin {
      * @param row
      */
     protected void removeRow(int row) {
-        ObservableList<Node> children = FXCollections.observableList(new LinkedList<Node>());
+        // copy children to another list since we are going to iterate on it and modify the children list
+        ObservableList<Node> children = FXCollections.observableList(new LinkedList<Node>(Arrays.asList(new Node[gridPane.getChildren().size()])));
         FXCollections.copy(children, gridPane.getChildren());
         for (Node node : children) {
             int nodeRow = GridPane.getRowIndex(node);
