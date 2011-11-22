@@ -48,7 +48,11 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         final ChangeListener controllerListener = createControllerListener(textBox, controller);
         controller.addListener(controllerListener);
 
-        textBox.promptTextProperty().bind(controller.getPromptText());
+        // TODO Try/Catch will be removed once 2.0.2 is released (http://javafx-jira.kenai.com/browse/RT-17280)
+        try {
+            textBox.promptTextProperty().bind(controller.getPromptText());
+        } catch (Exception e) {
+        }
 
         return new DisposableNodeWrapper(textBox, new Callback<Node, Void>() {
             public Void call(Node node) {

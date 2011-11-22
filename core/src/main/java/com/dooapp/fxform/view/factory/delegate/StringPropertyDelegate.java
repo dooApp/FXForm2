@@ -55,7 +55,11 @@ public class StringPropertyDelegate implements NodeFactory<PropertyElementContro
         };
         controller.addListener(controllerListener);
 
-        text.promptTextProperty().bind(controller.getPromptText());
+        // TODO Try/Catch will be removed once 2.0.2 is released (http://javafx-jira.kenai.com/browse/RT-17280)
+        try {
+            text.promptTextProperty().bind(controller.getPromptText());
+        } catch (Exception e) {
+        }
 
         return new DisposableNodeWrapper(text, new Callback<Node, Void>() {
             public Void call(Node node) {
