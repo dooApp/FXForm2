@@ -28,13 +28,16 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
 
     private final Logger logger = LoggerFactory.getLogger(PropertyElementController.class);
 
-    ValidatorFactory factory;
+    static ValidatorFactory factory;
+
     Validator validator;
 
     public PropertyElementController(PropertyElement element) {
         super(element);
         try {
-            factory = Validation.buildDefaultValidatorFactory();
+            if (factory == null) {
+                factory = Validation.buildDefaultValidatorFactory();
+            }
             validator = factory.getValidator();
         } catch (ValidationException e) {
             // validation is not activated, since no implementation has been provided
