@@ -21,6 +21,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.GridPaneBuilder;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +78,7 @@ public class InlineSkin extends FXFormSkin {
     @Override
     protected void addControllers(List<ElementController> addedSubList) {
         for (final ElementController controller : addedSubList) {
+            GridPane.setHgrow(getEditor(controller), Priority.ALWAYS);
             gridPane.addRow(row, getLabel(controller), getEditor(controller), getConstraint(controller));
             gridPane.add(getTooltip(controller), 1, ++row);
             row++;
