@@ -18,18 +18,17 @@ import javafx.scene.control.Label;
 import javafx.util.Callback;
 
 /**
- * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 26/08/11
- * Time: 11:50
+ * User: Antoine Mischler <antoine@dooapp.com> Date: 26/08/11 Time: 11:50
  */
 public class DefaultTooltipFactory implements NodeFactory<ElementController> {
-    public DisposableNode createNode(ElementController controller) throws NodeCreationException {
-        Label label = new AutoHidableLabel();
-        label.textProperty().bind(controller.getTooltip());
-        return new DisposableNodeWrapper(label, new Callback<Node, Void>() {
-            public Void call(Node node) {
-                return null;
-            }
-        });
-    }
+	public DisposableNode createNode(ElementController controller) throws NodeCreationException {
+		Label label = new AutoHidableLabel();
+		label.setWrapText(true);
+		label.textProperty().bind(controller.getTooltip());
+		return new DisposableNodeWrapper(label, new Callback<Node, Void>() {
+			public Void call(Node node) {
+				return null;
+			}
+		});
+	}
 }

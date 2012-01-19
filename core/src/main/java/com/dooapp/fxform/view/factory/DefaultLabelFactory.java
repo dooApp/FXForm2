@@ -11,26 +11,26 @@
 
 package com.dooapp.fxform.view.factory;
 
-import com.dooapp.fxform.model.ElementController;
-import com.dooapp.fxform.view.NodeCreationException;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.util.Callback;
 
+import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.view.NodeCreationException;
+
 /**
- * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 25/08/11
- * Time: 18:45
+ * User: Antoine Mischler <antoine@dooapp.com> Date: 25/08/11 Time: 18:45
  */
 public class DefaultLabelFactory implements NodeFactory<ElementController> {
 
-    public DisposableNode createNode(ElementController controller) throws NodeCreationException {
-        Label label = new Label();
-        label.textProperty().bind(controller.getLabel());
-        return new DisposableNodeWrapper(label, new Callback<Node, Void>() {
-            public Void call(Node node) {
-                return null;
-            }
-        });
-    }
+	public DisposableNode createNode(ElementController controller) throws NodeCreationException {
+		Label label = new Label();
+		label.setMinWidth(Label.USE_PREF_SIZE);
+		label.textProperty().bind(controller.getLabel());
+		return new DisposableNodeWrapper(label, new Callback<Node, Void>() {
+			public Void call(Node node) {
+				return null;
+			}
+		});
+	}
 }
