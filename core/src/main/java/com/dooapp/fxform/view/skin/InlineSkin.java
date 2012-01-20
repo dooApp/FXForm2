@@ -78,7 +78,7 @@ public class InlineSkin extends FXFormSkin {
     @Override
     protected void addControllers(List<ElementController> addedSubList) {
         for (final ElementController controller : addedSubList) {
-            GridPane.setHgrow(getEditor(controller), Priority.ALWAYS);
+            GridPane.setHgrow(getEditor(controller), Priority.SOMETIMES);
             gridPane.addRow(row, getLabel(controller), getEditor(controller), getConstraint(controller));
             gridPane.add(getTooltip(controller), 1, ++row);
             row++;

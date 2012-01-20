@@ -26,6 +26,7 @@ public class DefaultLabelFactory implements NodeFactory<ElementController> {
 	public DisposableNode createNode(ElementController controller) throws NodeCreationException {
 		Label label = new Label();
 		label.setMinWidth(Label.USE_PREF_SIZE);
+        label.setMaxWidth(Label.USE_PREF_SIZE);
 		label.textProperty().bind(controller.getLabel());
 		return new DisposableNodeWrapper(label, new Callback<Node, Void>() {
 			public Void call(Node node) {
