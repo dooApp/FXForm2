@@ -65,6 +65,8 @@ public class Demo extends Application {
 
         private final ObjectProperty<Subject> subject = new SimpleObjectProperty<Subject>();
 
+        private final DoubleProperty age = new SimpleDoubleProperty();
+
         private MyBean(String name, String email, String message, String website, boolean subscribe, Subject subject) {
             this.name.set(name);
             this.email.set(email);

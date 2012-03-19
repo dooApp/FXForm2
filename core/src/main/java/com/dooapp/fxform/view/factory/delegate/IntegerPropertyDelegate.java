@@ -16,6 +16,7 @@ import com.dooapp.fxform.view.factory.FormatProvider;
 
 import java.text.Format;
 import java.text.ParseException;
+import java.text.ParsePosition;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -29,7 +30,13 @@ public class IntegerPropertyDelegate extends AbstractNumberPropertyDelegate<Inte
     }
 
     @Override
-    protected Integer parse(Format format, String text) throws ParseException {
-        return ((Number) format.parseObject(text)).intValue();
+    protected Number parse(Format format, ParsePosition parsePosition, String text) throws ParseException {
+        Number number = (Number) format.parseObject(text, parsePosition);
+        if (number != null) {
+            return number.intValue();
+        } else {
+            return null;
+        }
     }
+
 }

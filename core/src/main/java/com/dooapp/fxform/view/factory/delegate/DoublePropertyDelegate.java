@@ -16,6 +16,7 @@ import com.dooapp.fxform.view.factory.FormatProvider;
 
 import java.text.Format;
 import java.text.ParseException;
+import java.text.ParsePosition;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -30,8 +31,13 @@ public class DoublePropertyDelegate extends AbstractNumberPropertyDelegate<Doubl
     }
 
     @Override
-    protected Double parse(Format format, String text) throws ParseException {
-        return ((Number) format.parseObject(text)).doubleValue();
+    protected Number parse(Format format, ParsePosition parsePosition, String text) throws ParseException {
+        Number number = (Number) format.parseObject(text, parsePosition);
+        if (number != null) {
+            return number.doubleValue();
+        } else {
+            return null;
+        }
     }
 
 }

@@ -17,14 +17,17 @@ import com.dooapp.fxform.view.factory.DisposableNode;
 import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
 import com.dooapp.fxform.view.factory.FormatProvider;
 import com.dooapp.fxform.view.factory.NodeFactory;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.sun.javafx.event.EventDispatchChainImpl;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.event.EventDispatchChain;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 
 import java.text.Format;
 import java.text.ParseException;
+import java.text.ParsePosition;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com> Date: 17/04/11 Time: 17:31
@@ -39,13 +42,26 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
     }
 
     public DisposableNode createNode(final PropertyElementController<T> controller) {
-        final TextField textBox = new TextField();
-        final ChangeListener textBoxListener = createTextBoxListener(controller, textBox);
+        // Fix strange focus behavior - see https://github.com/fxexperience/code/blob/master/FXExperienceControls/src/com/fxexperience/javafx/scene/control/skin/InputFieldSkin.java
+        final TextField textBox = new TextField() {
+            public void handleFocus(boolean b) {
+                setFocused(b);
+            }
+
+            @Override
+            public EventDispatchChain buildEventDispatchChain(EventDispatchChain tail) {
+                EventDispatchChain chain = new EventDispatchChainImpl();
+                chain.append(this.getEventDispatcher());
+                return chain;
+            }
+        };
+        textBox.setFocusTraversable(false);
+        final InvalidationListener textBoxListener = createTextBoxListener(controller, textBox);
         textBox.textProperty().addListener(textBoxListener);
         if (controller.getValue() != null) {
             textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
         }
-        final ChangeListener controllerListener = createControllerListener(textBox, controller);
+        final InvalidationListener controllerListener = createControllerListener(textBox, controller);
         controller.addListener(controllerListener);
 
         // TODO Try/Catch will be removed once 2.0.2 is released (http://javafx-jira.kenai.com/browse/RT-17280)
@@ -63,29 +79,42 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         });
     }
 
-    protected ChangeListener<String> createTextBoxListener(final PropertyElementController<T> controller, final TextField textBox) {
-        return new ChangeListener<String>() {
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
+
+    protected InvalidationListener createTextBoxListener(final PropertyElementController<T> controller, final TextField textBox) {
+        return new InvalidationListener() {
+
+            public void invalidated(Observable observable) {
                 if (textBox.getText().trim().length() > 0) {
                     try {
-                        Number parsed = parse(formatProvider.getFormat(controller.getElement()), textBox.getText());
+                        ParsePosition parsePosition = new ParsePosition(0);
+                        parsePosition.setIndex(0);
+                        Number parsed = parse(formatProvider.getFormat(controller.getElement()), parsePosition, textBox.getText());
+                        if (parsePosition.getIndex() != textBox.getText().length()) {
+                            throw new ParseException(textBox.getText().substring(parsePosition.getIndex()), parsePosition.getIndex());
+                        }
                         controller.setValue((T) parsed);
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        controller.getConstraintViolations().clear();
+                        controller.getConstraintViolations().add(new ParseErrorConstraintViolation(e.getMessage()));
                     }
                 }
             }
         };
     }
 
-    protected ChangeListener createControllerListener(final TextField textBox, final PropertyElementController<T> controller) {
-        return new ChangeListener() {
-            public void changed(ObservableValue observableValue, Object o, Object o1) {
-                textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
+    protected InvalidationListener createControllerListener(final TextField textBox, final PropertyElementController<T> controller) {
+        return new InvalidationListener() {
+
+            public void invalidated(Observable observable) {
+                if (controller.getValue() != null) {
+                    textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
+                } else {
+                    textBox.textProperty().set("");
+                }
             }
         };
     }
 
-    protected abstract Number parse(Format format, String text) throws ParseException;
+    protected abstract Number parse(Format format, ParsePosition parsePosition, String text) throws ParseException;
 
 }
