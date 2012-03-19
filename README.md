@@ -28,6 +28,12 @@ Main features include:
 * Localization
 * Custom factories
 
+Key benefits
+------------
+* Don't waste time coding forms, focus on styling
+* Less code and improved quality
+* Easy to use and to customize
+
 Links
 -----
 
