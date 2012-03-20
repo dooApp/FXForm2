@@ -17,10 +17,8 @@ import com.dooapp.fxform.view.factory.DisposableNode;
 import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
 import com.dooapp.fxform.view.factory.FormatProvider;
 import com.dooapp.fxform.view.factory.NodeFactory;
-import com.sun.javafx.event.EventDispatchChainImpl;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.event.EventDispatchChain;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
@@ -42,20 +40,7 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
     }
 
     public DisposableNode createNode(final PropertyElementController<T> controller) {
-        // Fix strange focus behavior - see https://github.com/fxexperience/code/blob/master/FXExperienceControls/src/com/fxexperience/javafx/scene/control/skin/InputFieldSkin.java
-        final TextField textBox = new TextField() {
-            public void handleFocus(boolean b) {
-                setFocused(b);
-            }
-
-            @Override
-            public EventDispatchChain buildEventDispatchChain(EventDispatchChain tail) {
-                EventDispatchChain chain = new EventDispatchChainImpl();
-                chain.append(this.getEventDispatcher());
-                return chain;
-            }
-        };
-        textBox.setFocusTraversable(false);
+        final TextField textBox = new TextField();
         final InvalidationListener textBoxListener = createTextBoxListener(controller, textBox);
         textBox.textProperty().addListener(textBoxListener);
         if (controller.getValue() != null) {
@@ -63,12 +48,7 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         }
         final InvalidationListener controllerListener = createControllerListener(textBox, controller);
         controller.addListener(controllerListener);
-
-        // TODO Try/Catch will be removed once 2.0.2 is released (http://javafx-jira.kenai.com/browse/RT-17280)
-        try {
-            textBox.promptTextProperty().bind(controller.getPromptText());
-        } catch (Exception e) {
-        }
+        textBox.promptTextProperty().bind(controller.getPromptText());
 
         return new DisposableNodeWrapper(textBox, new Callback<Node, Void>() {
             public Void call(Node node) {
@@ -92,6 +72,7 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
                         if (parsePosition.getIndex() != textBox.getText().length()) {
                             throw new ParseException(textBox.getText().substring(parsePosition.getIndex()), parsePosition.getIndex());
                         }
+                        controller.getConstraintViolations().clear();
                         controller.setValue((T) parsed);
                     } catch (ParseException e) {
                         controller.getConstraintViolations().clear();
