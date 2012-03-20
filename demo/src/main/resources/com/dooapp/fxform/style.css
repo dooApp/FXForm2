@@ -9,6 +9,10 @@
     -fx-text-fill: blue;
 }
 
+.form-editor-invalid {
+    -fx-text-fill: red;
+}
+
 .form-title {
     -fx-font-size: 20;
     -fx-text-fill: dimgray;

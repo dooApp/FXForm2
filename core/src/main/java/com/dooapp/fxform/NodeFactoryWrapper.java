@@ -15,6 +15,9 @@ import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.DisposableNode;
 import com.dooapp.fxform.view.factory.NodeFactory;
+import javafx.collections.ListChangeListener;
+
+import javax.validation.ConstraintViolation;
 
 /**
  * Wrap a NodeFactory to add a specific style and set an id to the generated nodes.
@@ -25,22 +28,36 @@ import com.dooapp.fxform.view.factory.NodeFactory;
  */
 public class NodeFactoryWrapper implements NodeFactory {
 
+    public final static String INVALID = "-invalid";
+
     protected final NodeFactory factory;
 
     private final String idSuffix;
 
     private final String style;
 
+    private final String invalidStyle;
+
     public NodeFactoryWrapper(NodeFactory factory, String idSuffix, String style) {
         this.factory = factory;
         this.idSuffix = idSuffix;
         this.style = style;
+        this.invalidStyle = style + INVALID;
     }
 
-    public DisposableNode createNode(ElementController controller) throws NodeCreationException {
-        DisposableNode node = factory.createNode(controller);
+    public DisposableNode createNode(final ElementController controller) throws NodeCreationException {
+        final DisposableNode node = factory.createNode(controller);
         node.getNode().setId(controller.getElement().getField().getName() + idSuffix);
         node.getNode().getStyleClass().add(style);
+        controller.getConstraintViolations().addListener(new ListChangeListener<ConstraintViolation>() {
+            public void onChanged(Change<? extends ConstraintViolation> change) {
+                if (!controller.getConstraintViolations().isEmpty()) {
+                    node.getNode().getStyleClass().add(invalidStyle);
+                } else {
+                    node.getNode().getStyleClass().remove(invalidStyle);
+                }
+            }
+        });
         return node;
     }
 
