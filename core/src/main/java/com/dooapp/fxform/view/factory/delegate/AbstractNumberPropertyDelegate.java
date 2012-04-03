@@ -19,6 +19,8 @@ import com.dooapp.fxform.view.factory.FormatProvider;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
@@ -46,7 +48,7 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         if (controller.getValue() != null) {
             textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
         }
-        final InvalidationListener controllerListener = createControllerListener(textBox, controller);
+        final ChangeListener controllerListener = createControllerListener(textBox, controller);
         controller.addListener(controllerListener);
         textBox.promptTextProperty().bind(controller.getPromptText());
 
@@ -83,10 +85,10 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         };
     }
 
-    protected InvalidationListener createControllerListener(final TextField textBox, final PropertyElementController<T> controller) {
-        return new InvalidationListener() {
+    protected ChangeListener createControllerListener(final TextField textBox, final PropertyElementController<T> controller) {
+        return new ChangeListener() {
 
-            public void invalidated(Observable observable) {
+            public void changed(ObservableValue observableValue, Object o, Object o1) {
                 if (controller.getValue() != null) {
                     textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
                 } else {
