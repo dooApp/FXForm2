@@ -80,6 +80,8 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
                         controller.getConstraintViolations().clear();
                         controller.getConstraintViolations().add(new ParseErrorConstraintViolation(e.getMessage()));
                     }
+                } else {
+                    controller.getConstraintViolations().clear();
                 }
             }
         };
@@ -90,7 +92,13 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
 
             public void changed(ObservableValue observableValue, Object o, Object o1) {
                 if (controller.getValue() != null) {
-                    textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
+                    Number currentTextboxNumber = null;
+                    try {
+                        currentTextboxNumber = parse(formatProvider.getFormat(controller.getElement()), new ParsePosition(0), textBox.getText());
+                    } catch (ParseException e) {
+                    }
+                    if (currentTextboxNumber != null && o1 != null && currentTextboxNumber.doubleValue() != ((Number) o1).doubleValue())
+                        textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
                 } else {
                     textBox.textProperty().set("");
                 }
