@@ -39,6 +39,8 @@ Links
 
 A video by Betrand Goetzmann with [Grezi](https://bitbucket.org/bgoetzmann/grezi/wiki/Home) and FXForm2: [http://screenr.com/GvDs]
 
+JavaFX [Third Party Tools and Utilities](http://www.oracle.com/technetwork/java/javafx/tools/index.html)
+
 Licensing
 ---------
 
