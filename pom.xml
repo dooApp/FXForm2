@@ -56,10 +56,11 @@
     <dependencies>
         <!-- Should be installed manually, see https://github.com/dooApp/FXForm2/wiki/Add-FXForm2-to-your-project-dependencies -->
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>javafx-runtime</artifactId>
-            <version>2.0-beta</version>
-            <scope>provided</scope>
+            <groupId>javafx</groupId>
+            <artifactId>javafx</artifactId>
+            <scope>system</scope>
+            <version>2.2</version>
+            <systemPath>${java.home}/../jre/lib/jfxrt.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
