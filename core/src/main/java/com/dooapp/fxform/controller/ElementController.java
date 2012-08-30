@@ -14,6 +14,7 @@ package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.model.ObservableElement;
 import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.factory.ConstraintNodeFactory;
 import com.dooapp.fxform.view.factory.DisposableNode;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.binding.StringBinding;
@@ -50,6 +51,8 @@ public class ElementController<WrappedType> {
     private final NodeFactory tooltipFactory;
 
     private final NodeFactory labelFactory;
+
+    private final NodeFactory constraintFactory = new ConstraintNodeFactory();
 
     private DisposableNode editor;
 
@@ -168,18 +171,6 @@ public class ElementController<WrappedType> {
      * Dispose this controller. The controller should clear all existing bindings.
      */
     public void dispose() {
-        if (editor != null) {
-            editor.dispose();
-            editor = null;
-        }
-        if (label != null) {
-            label.dispose();
-            label = null;
-        }
-        if (tooltip != null) {
-            tooltip.dispose();
-            tooltip = null;
-        }
         element.dispose();
     }
 
@@ -212,8 +203,12 @@ public class ElementController<WrappedType> {
         return constraintViolations;
     }
 
-    public ObservableElement getElement() {
+    public ObservableElement<WrappedType> getElement() {
         return element;
+    }
+
+    public DisposableNode getConstraint() throws NodeCreationException {
+        return constraintFactory.createNode(this);
     }
 
 }

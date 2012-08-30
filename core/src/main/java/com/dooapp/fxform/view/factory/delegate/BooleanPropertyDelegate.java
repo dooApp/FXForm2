@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.PropertyElementController;
+import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.view.factory.DisposableNode;
 import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
 import com.dooapp.fxform.view.factory.NodeFactory;
@@ -31,23 +31,23 @@ public class BooleanPropertyDelegate implements NodeFactory<PropertyElementContr
 
     public DisposableNode createNode(final PropertyElementController<Boolean> controller) {
         final CheckBox checkBox = new CheckBox();
-        checkBox.setSelected(controller.getValue());
+        checkBox.setSelected(controller.getElement().getValue());
         final ChangeListener<Boolean> controllerListener = new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
                 checkBox.setSelected(aBoolean1);
             }
         };
-        controller.addListener(controllerListener);
+        controller.getElement().addListener(controllerListener);
         final ChangeListener<Boolean> checkBoxListener = new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
-                controller.setValue(aBoolean1);
+                controller.getElement().setValue(aBoolean1);
             }
         };
         checkBox.selectedProperty().addListener(checkBoxListener);
         return new DisposableNodeWrapper(checkBox, new Callback<Node, Void>() {
             public Void call(Node node) {
                 checkBox.selectedProperty().removeListener(checkBoxListener);
-                controller.removeListener(controllerListener);
+                controller.getElement().removeListener(controllerListener);
                 return null;
             }
         });

@@ -12,11 +12,15 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.controller.ElementController;
+import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.filter.FieldFilter;
 import com.dooapp.fxform.filter.NonVisualFilter;
-import com.dooapp.fxform.model.*;
+import com.dooapp.fxform.model.FormException;
+import com.dooapp.fxform.model.impl.FieldObservableElement;
+import com.dooapp.fxform.model.impl.FieldPropertyElement;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
-import com.dooapp.fxform.utils.ConfigurationStore;
+import com.dooapp.fxform.view.FXFormSkinFactory;
 import com.dooapp.fxform.view.factory.*;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import javafx.beans.property.*;
@@ -65,9 +69,15 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     private final ObservableList<FieldFilter> filters = FXCollections.observableList(new LinkedList<FieldFilter>());
 
-    private final ConfigurationStore<ElementController> controllers = new ConfigurationStore<ElementController>();
+    private final ObservableList<ElementController> controllers = FXCollections.observableList(new LinkedList<ElementController>());
 
     private final ObjectProperty<ResourceBundle> resourceBundle = new SimpleObjectProperty<ResourceBundle>();
+
+    private final NodeFactory labelFactory;
+
+    private final NodeFactory tooltipFactory;
+
+    private final NodeFactory editorFactory;
 
     public void setTitle(String title) {
         this.title.set(title);
@@ -95,27 +105,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public FXForm(T source, NodeFactory labelFactory, NodeFactory tooltipFactory, NodeFactory editorFactory) {
         initBundle();
-        controllers.addConfigurer(new NodeFactoryConfigurer(labelFactory, LABEL_ID_SUFFIX, LABEL_STYLE) {
-
-            @Override
-            protected void applyTo(NodeFactory factory, ElementController controller) {
-                controller.setLabelFactory(factory);
-            }
-        });
-        controllers.addConfigurer(new NodeFactoryConfigurer(tooltipFactory, TOOLTIP_ID_SUFFIX, TOOLTIP_STYLE) {
-
-            @Override
-            protected void applyTo(NodeFactory factory, ElementController controller) {
-                controller.setTooltipFactory(factory);
-            }
-        });
-        controllers.addConfigurer(new NodeFactoryConfigurer(new AnnotationFactoryWrapper(editorFactory), EDITOR_ID_SUFFIX, EDITOR_STYLE) {
-
-            @Override
-            protected void applyTo(NodeFactory factory, ElementController controller) {
-                controller.setEditorFactory(factory);
-            }
-        });
+        getStyleClass().add("fxform");
         this.source.addListener(new ChangeListener<T>() {
             public void changed(ObservableValue<? extends T> observableValue, T t, T t1) {
                 if (t1 == null) {
@@ -132,6 +122,9 @@ public class FXForm<T> extends Control implements FormAPI<T> {
                 createControllers();
             }
         });
+        this.labelFactory = new NodeFactoryWrapper(labelFactory, LABEL_ID_SUFFIX, LABEL_STYLE);
+        this.tooltipFactory = new NodeFactoryWrapper(tooltipFactory, TOOLTIP_ID_SUFFIX, TOOLTIP_STYLE);
+        this.editorFactory = new NodeFactoryWrapper(new AnnotationFactoryWrapper(editorFactory), EDITOR_ID_SUFFIX, EDITOR_STYLE);
         this.setSkin(new DefaultSkin(this));
         setSource(source);
     }
@@ -144,14 +137,9 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         controllers.clear();
     }
 
-    private void applyBindings(ElementController controller) {
-        controller.resourceBundleProperty().bind(resourceBundle);
-        controller.getElement().sourceProperty().bind(source);
-    }
-
     private void clearBindings(ElementController controller) {
         controller.resourceBundleProperty().unbind();
-        controller.getElement().sourceProperty().unbind();
+        controller.getElement().dispose();
         source.unbind();
     }
 
@@ -166,17 +154,18 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         }
         for (Field field : fields) {
             try {
-                Element<T, ?, ?> element = null;
+                FieldObservableElement<T, ?, ?> element = null;
                 ElementController controller = null;
                 if (Property.class.isAssignableFrom(field.getType())) {
-                    element = new PropertyElement(field);
-                    controller = new PropertyElementController((PropertyElement) element);
+                    element = new FieldPropertyElement(field);
+                    controller = new PropertyElementController((FieldPropertyElement) element, editorFactory, tooltipFactory, labelFactory);
                 } else if (ReadOnlyProperty.class.isAssignableFrom(field.getType())) {
-                    element = new Element(field);
-                    controller = new ElementController(element);
+                    element = new FieldObservableElement(field);
+                    controller = new ElementController(element, editorFactory, tooltipFactory, labelFactory);
                 }
                 if (element != null) {
-                    applyBindings(controller);
+                    controller.resourceBundleProperty().bind(resourceBundle);
+                    element.sourceProperty().bind(source);
                     controllers.add(controller);
                 }
             } catch (FormException e) {
@@ -235,10 +224,6 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         return controllers;
     }
 
-    public ConfigurationStore<ElementController> getStore() {
-        return controllers;
-    }
-
     public T getSource() {
         return source.get();
     }
@@ -276,4 +261,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         return resourceBundle.get();
     }
 
+    /**@Override
+    protected String getUserAgentStylesheet() {
+        return getClass().getResource("/com/dooapp/fxform/fxform.css").toExternalForm();
+    }*/
 }

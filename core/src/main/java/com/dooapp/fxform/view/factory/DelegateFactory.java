@@ -12,12 +12,12 @@
 
 package com.dooapp.fxform.view.factory;
 
-import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.controller.ElementController;
+import com.dooapp.fxform.model.ObservableElement;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.delegate.*;
+import com.dooapp.fxform.view.handler.ElementHandler;
 import com.dooapp.fxform.view.handler.EnumHandler;
-import com.dooapp.fxform.view.handler.FieldHandler;
 import com.dooapp.fxform.view.handler.TypeFieldHandler;
 import javafx.beans.property.*;
 import javafx.scene.Node;
@@ -32,7 +32,7 @@ import java.util.Map;
  * Date: 11/04/11
  * Time: 22:59
  * <p/>
- * Factory implementation based on delegates mapped by FieldHandler.
+ * Factory implementation based on delegates mapped by ElementHandler.
  */
 public class DelegateFactory implements NodeFactory {
 
@@ -41,7 +41,7 @@ public class DelegateFactory implements NodeFactory {
     private final static NodeFactory DEFAULT_FACTORY = new NodeFactory() {
 
         public DisposableNode createNode(ElementController elementController) throws NodeCreationException {
-            return new DisposableNodeWrapper(new Label(elementController.getElement().getField().getType() + " not supported"),
+            return new DisposableNodeWrapper(new Label(elementController.getElement().getType() + " not supported"),
                     new Callback<Node, Void>() {
                         public Void call(Node node) {
                             return null;
@@ -50,11 +50,11 @@ public class DelegateFactory implements NodeFactory {
         }
     };
 
-    private final static Map<FieldHandler, NodeFactory> DEFAULT_MAP = new HashMap();
+    private final static Map<ElementHandler, NodeFactory> DEFAULT_MAP = new HashMap();
 
-    private final static Map<FieldHandler, NodeFactory> GLOBAL_MAP = new HashMap();
+    private final static Map<ElementHandler, NodeFactory> GLOBAL_MAP = new HashMap();
 
-    private final Map<FieldHandler, NodeFactory> USER_MAP = new HashMap();
+    private final Map<ElementHandler, NodeFactory> USER_MAP = new HashMap();
 
     public DelegateFactory() {
         this(new FormatProviderImpl());
@@ -97,20 +97,20 @@ public class DelegateFactory implements NodeFactory {
         return delegate.createNode(controller);
     }
 
-    private NodeFactory getDelegate(Element element, Map<FieldHandler, NodeFactory> map) {
-        for (FieldHandler handler : map.keySet()) {
-            if (handler.handle(element.getField())) {
+    private NodeFactory getDelegate(ObservableElement element, Map<ElementHandler, NodeFactory> map) {
+        for (ElementHandler handler : map.keySet()) {
+            if (handler.handle(element)) {
                 return map.get(handler);
             }
         }
         return null;
     }
 
-    public static void addGlobalFactory(FieldHandler handler, NodeFactory factory) {
+    public static void addGlobalFactory(ElementHandler handler, NodeFactory factory) {
         GLOBAL_MAP.put(handler, factory);
     }
 
-    public void addFactory(FieldHandler handler, NodeFactory factory) {
+    public void addFactory(ElementHandler handler, NodeFactory factory) {
         USER_MAP.put(handler, factory);
     }
 

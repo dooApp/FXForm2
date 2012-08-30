@@ -12,7 +12,8 @@
 
 package com.dooapp.fxform.view.factory;
 
-import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.ObservableElement;
+import com.dooapp.fxform.model.impl.FieldObservableElement;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
@@ -29,12 +30,12 @@ import java.text.NumberFormat;
  */
 public class FormatProviderImpl implements FormatProvider {
 
-    public Format getFormat(Element element) {
-        if (IntegerProperty.class.isAssignableFrom(element.getField().getType())) {
+    public Format getFormat(ObservableElement element) {
+        if (IntegerProperty.class.isAssignableFrom(element.getType())) {
             return NumberFormat.getIntegerInstance();
-        } else if (LongProperty.class.isAssignableFrom(element.getField().getType())) {
+        } else if (LongProperty.class.isAssignableFrom(element.getType())) {
             return NumberFormat.getNumberInstance();
-        } else if (DoubleProperty.class.isAssignableFrom(element.getField().getType())) {
+        } else if (DoubleProperty.class.isAssignableFrom(element.getType())) {
             return NumberFormat.getNumberInstance();
         }
         return new ToStringFormat();

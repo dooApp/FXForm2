@@ -13,11 +13,11 @@
 package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.annotation.FormFactory;
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.controller.ElementController;
+import com.dooapp.fxform.model.impl.FieldObservableElement;
 import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.property.ObjectProperty;
-import javafx.scene.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,18 +40,22 @@ public class AnnotationFactoryWrapper implements NodeFactory {
 
     public DisposableNode createNode(ElementController controller) throws NodeCreationException {
         // check field annotation
-        if (controller.getElement().getField().getAnnotation(FormFactory.class) != null) {
-            // use factory provided by the annotation
-            try {
-                return controller.getElement().getField().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
-            } catch (Exception e) {
-                logger.warn("The factory provided by the annotation @FormFactory on field " + controller.getElement() + " failed creating node", e);
+        if (FieldObservableElement.class.isAssignableFrom(controller.getElement().getClass())) {
+            FieldObservableElement fieldObservableElement = (FieldObservableElement) controller.getElement();
+            if (fieldObservableElement.getField().getAnnotation(FormFactory.class) != null) {
+                // use factory provided by the annotation
+                try {
+                    return fieldObservableElement.getField().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
+                } catch (Exception e) {
+                    logger.warn("The factory provided by the annotation @FormFactory on field " + controller.getElement() + " failed creating node", e);
+                }
             }
         }
+
         // check FormFactory annotation
-        if (ObjectProperty.class.isAssignableFrom(controller.getElement().getField().getType())) {
+        if (ObjectProperty.class.isAssignableFrom(controller.getElement().getType())) {
             try {
-                Class genericClass = Util.getObjectPropertyGeneric(controller.getElement().getField());
+                Class genericClass = controller.getElement().getValueType();
                 if (genericClass.getAnnotation(FormFactory.class) != null) {
                     return ((FormFactory) genericClass.getAnnotation(FormFactory.class)).value().newInstance().createNode(controller);
                 }

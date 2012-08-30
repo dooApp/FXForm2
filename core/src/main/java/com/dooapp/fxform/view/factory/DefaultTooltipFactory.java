@@ -11,7 +11,7 @@
 
 package com.dooapp.fxform.view.factory;
 
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -24,7 +24,7 @@ public class DefaultTooltipFactory implements NodeFactory<ElementController> {
 	public DisposableNode createNode(ElementController controller) throws NodeCreationException {
 		Label label = new AutoHidableLabel();
 		label.setWrapText(true);
-		label.textProperty().bind(controller.getTooltip());
+		label.textProperty().bind(controller.tooltipProperty());
 		return new DisposableNodeWrapper(label, new Callback<Node, Void>() {
 			public Void call(Node node) {
 				return null;

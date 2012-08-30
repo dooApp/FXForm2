@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory;
 
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.Node;
@@ -20,7 +20,7 @@ import javafx.scene.control.Label;
 import javafx.util.Callback;
 
 /**
- * Factory creating a label bound to a string representation of the {@code Element}<br>
+ * Factory creating a label bound to a string representation of the {@code FieldObservableElement}<br>
  * <br>
  * Created at 20/09/11 10:45.<br>
  *
@@ -43,12 +43,12 @@ public class ReadOnlyFactory implements NodeFactory {
         label.textProperty().bind(new StringBinding() {
 
             {
-                bind(controller);
+                bind(controller.getElement());
             }
 
             @Override
             protected String computeValue() {
-                if (controller.getValue() != null) {
+                if (controller.getElement().getValue() != null) {
                     return formatProvider.getFormat(controller.getElement()).format(controller.getElement().getValue());
                 } else {
                     return "";

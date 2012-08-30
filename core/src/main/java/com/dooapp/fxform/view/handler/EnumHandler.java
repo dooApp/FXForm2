@@ -12,22 +12,20 @@
 
 package com.dooapp.fxform.view.handler;
 
-import com.dooapp.fxform.reflection.Util;
-
-import java.lang.reflect.Field;
+import com.dooapp.fxform.model.ObservableElement;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 09/09/11
  * Time: 14:50
  */
-public class EnumHandler implements FieldHandler {
+public class EnumHandler implements ElementHandler {
 
-    public boolean handle(Field field) {
+    public boolean handle(ObservableElement element) {
         try {
-            return Util.getObjectPropertyGeneric(field).isEnum();
+            return element.getValueType().isEnum();
         } catch (Exception e) {
+            return false;
         }
-        return false;
     }
 }

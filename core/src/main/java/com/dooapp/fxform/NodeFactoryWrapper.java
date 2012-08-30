@@ -11,7 +11,7 @@
 
 package com.dooapp.fxform;
 
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.DisposableNode;
 import com.dooapp.fxform.view.factory.NodeFactory;
@@ -47,7 +47,7 @@ public class NodeFactoryWrapper implements NodeFactory {
 
     public DisposableNode createNode(final ElementController controller) throws NodeCreationException {
         final DisposableNode node = factory.createNode(controller);
-        node.getNode().setId(controller.getElement().getField().getName() + idSuffix);
+        node.getNode().setId(controller.getElement().getName() + idSuffix);
         node.getNode().getStyleClass().add(style);
         controller.getConstraintViolations().addListener(new ListChangeListener<ConstraintViolation>() {
             public void onChanged(Change<? extends ConstraintViolation> change) {

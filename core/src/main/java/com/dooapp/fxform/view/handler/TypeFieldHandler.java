@@ -12,6 +12,8 @@
 
 package com.dooapp.fxform.view.handler;
 
+import com.dooapp.fxform.model.ObservableElement;
+
 import java.lang.reflect.Field;
 
 /**
@@ -21,7 +23,7 @@ import java.lang.reflect.Field;
  * <p/>
  * Handler matching for a given field type.
  */
-public class TypeFieldHandler implements FieldHandler {
+public class TypeFieldHandler implements ElementHandler {
 
     private final Class clazz;
 
@@ -29,8 +31,8 @@ public class TypeFieldHandler implements FieldHandler {
         this.clazz = clazz;
     }
 
-    public boolean handle(Field field) {
-        return clazz.isAssignableFrom(field.getType());
+    public boolean handle(ObservableElement element) {
+        return clazz.isAssignableFrom(element.getType());
     }
 
 }

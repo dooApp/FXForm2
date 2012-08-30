@@ -13,25 +13,14 @@
 package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.model.ElementController;
-import com.dooapp.fxform.view.factory.DisposableNode;
-import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
+import com.dooapp.fxform.controller.ElementController;
 import javafx.collections.ListChangeListener;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.Skin;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.ConstraintViolation;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -44,15 +33,9 @@ public abstract class FXFormSkin implements Skin<FXForm> {
 
     private final Logger logger = LoggerFactory.getLogger(FXFormSkin.class);
 
-    private final static Image WARNING = new Image(FXFormSkin.class.getResource("warning.png").toExternalForm());
-
     protected FXForm fxForm;
-    private Node rootNode;
 
-    private final Map<ElementController, DisposableNode> labelMap = new HashMap<ElementController, DisposableNode>();
-    private final Map<ElementController, DisposableNode> tooltipMap = new HashMap<ElementController, DisposableNode>();
-    private final Map<ElementController, DisposableNode> editorMap = new HashMap<ElementController, DisposableNode>();
-    private final Map<ElementController, DisposableNode> constraintMap = new HashMap<ElementController, DisposableNode>();
+    private Node rootNode;
 
     public FXFormSkin(FXForm fxForm) {
         this.fxForm = fxForm;
@@ -97,19 +80,8 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     private void unregisterControllers(List<ElementController> removed) {
         logger.debug("Clearing controllers nodes");
         for (ElementController controller : removed) {
-            unregisterController(controller, labelMap);
-            unregisterController(controller, editorMap);
-            unregisterController(controller, tooltipMap);
-            unregisterController(controller, constraintMap);
+            controller.dispose();
         }
-    }
-
-    private void unregisterController(ElementController elementController, Map<ElementController, DisposableNode> map) {
-        DisposableNode node = map.get(elementController);
-        if (node != null) {
-            node.dispose();
-        }
-        map.remove(elementController);
     }
 
     protected abstract void removeControllers(List<ElementController> removed);
@@ -117,87 +89,56 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     protected abstract void addControllers(List<ElementController> addedSubList);
 
     public Node getLabel(ElementController controller) {
-        if (!labelMap.containsKey(controller)) {
-            try {
-                labelMap.put(controller, controller.getLabelFactory().createNode(controller));
-            } catch (NodeCreationException e) {
-                e.printStackTrace();
-            }
+        try {
+            return controller.getLabel().getNode();
+        } catch (NodeCreationException e) {
+            logger.warn(e.getMessage(), e);
         }
-        return labelMap.get(controller).getNode();
+        return null;
     }
 
     public Node getTooltip(ElementController controller) {
-        if (!tooltipMap.containsKey(controller)) {
-            try {
-                tooltipMap.put(controller, controller.getTooltipFactory().createNode(controller));
-            } catch (NodeCreationException e) {
-                e.printStackTrace();
-            }
+        try {
+            return controller.getTooltip().getNode();
+        } catch (NodeCreationException e) {
+            logger.warn(e.getMessage(), e);
         }
-        return tooltipMap.get(controller).getNode();
+        return null;
     }
 
     public Node getEditor(ElementController controller) {
-        if (!editorMap.containsKey(controller)) {
-            try {
-                editorMap.put(controller, controller.getEditorFactory().createNode(controller));
-            } catch (NodeCreationException e) {
-                e.printStackTrace();
-            }
+        try {
+            return controller.getEditor().getNode();
+        } catch (NodeCreationException e) {
+            logger.warn(e.getMessage(), e);
         }
-        return editorMap.get(controller).getNode();
+        return null;
     }
 
     public Node getConstraint(ElementController controller) {
-        if (!constraintMap.containsKey(controller)) {
-            // maybe we should use a factory here too
-            constraintMap.put(controller, createConstraintNode(controller));
+        try {
+            return controller.getConstraint().getNode();
+        } catch (NodeCreationException e) {
+            logger.warn(e.getMessage(), e);
         }
-        return constraintMap.get(controller).getNode();
-    }
-
-    protected DisposableNode createConstraintNode(final ElementController controller) {
-        final VBox constraintsBox = new VBox();
-        constraintsBox.setAlignment(Pos.CENTER_LEFT);
-        controller.getConstraintViolations().addListener(new ListChangeListener() {
-            public void onChanged(Change change) {
-                constraintsBox.getChildren().clear();
-                for (Object o : controller.getConstraintViolations()) {
-                    ConstraintViolation constraintViolation = (ConstraintViolation) o;
-                    Label errorLabel = new Label(constraintViolation.getMessage());
-                    ImageView warningView = new ImageView(WARNING);
-                    warningView.setFitHeight(15);
-                    warningView.setPreserveRatio(true);
-                    warningView.setSmooth(true);
-                    errorLabel.setGraphic(warningView);
-                    constraintsBox.getChildren().add(errorLabel);
-                }
-            }
-        });
-        return new DisposableNodeWrapper(constraintsBox, new Callback<Node, Void>() {
-            public Void call(Node node) {
-                // nothing to dispose
-                return null;
-            }
-        });
+        return null;
     }
 
     public void dispose() {
         logger.debug("Disposing skin");
-        disposeNodes(labelMap);
-        disposeNodes(editorMap);
-        disposeNodes(tooltipMap);
-        disposeNodes(constraintMap);
+        for (Object controller : fxForm.getControllers()) {
+            ElementController controller1 = (ElementController) controller;
+            //try {
+                //controller1.getConstraint().dispose();
+                //controller1.getEditor().dispose();
+                //controller1.getLabel().dispose();
+                //controller1.getTooltip().dispose();
+            //} catch (NodeCreationException e) {
+            //    logger.warn(e.getMessage(), e);
+            //}
+        }
         fxForm.getControllers().removeListener(getControllersListener());
         fxForm = null;
-    }
-
-    private void disposeNodes(Map<ElementController, DisposableNode> map) {
-        for (ElementController controller : map.keySet()) {
-            map.get(controller).dispose();
-        }
-        map.clear();
     }
 
     public FXForm getSkinnable() {

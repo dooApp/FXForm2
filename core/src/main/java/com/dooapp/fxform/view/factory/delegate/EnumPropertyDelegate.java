@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.PropertyElementController;
+import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.DisposableNode;
@@ -41,17 +41,17 @@ public class EnumPropertyDelegate implements NodeFactory<PropertyElementControll
     public DisposableNode createNode(final PropertyElementController<Enum> controller) throws NodeCreationException {
         Enum[] constants = new Enum[0];
         try {
-            constants = (Enum[]) Util.getObjectPropertyGeneric(controller.getElement().getField()).getEnumConstants();
+            constants = (Enum[]) controller.getElement().getValueType().getEnumConstants();
         } catch (Exception e) {
             logger.warn("Could not retrieve enum constants from controller " + controller, e);
         }
         final ChoiceBox<Enum> choiceBox = new ChoiceBox<Enum>();
         choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
-        choiceBox.getSelectionModel().select(controller.getValue());
+        choiceBox.getSelectionModel().select(controller.getElement().getValue());
         final ChangeListener<Enum> enumChangeListener = new ChangeListener<Enum>() {
 
             public void changed(ObservableValue<? extends Enum> observableValue, Enum anEnum, Enum anEnum1) {
-                controller.setValue(anEnum1);
+                controller.getElement().setValue(anEnum1);
             }
         };
         choiceBox.getSelectionModel().selectedItemProperty().addListener(enumChangeListener);
@@ -64,11 +64,11 @@ public class EnumPropertyDelegate implements NodeFactory<PropertyElementControll
                 }
             }
         };
-        controller.addListener(controllerListener);
+        controller.getElement().addListener(controllerListener);
         return new DisposableNodeWrapper(choiceBox, new Callback<Node, Void>() {
             public Void call(Node node) {
                 choiceBox.getSelectionModel().selectedItemProperty().removeListener(enumChangeListener);
-                controller.removeListener(controllerListener);
+                controller.getElement().removeListener(controllerListener);
                 return null;
             }
         });
