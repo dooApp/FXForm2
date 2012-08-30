@@ -10,14 +10,14 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.model;
+package com.dooapp.fxform.controller;
 
+import com.dooapp.fxform.model.ObservableElement;
+import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.factory.DisposableNode;
 import com.dooapp.fxform.view.factory.NodeFactory;
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
@@ -31,9 +31,9 @@ import java.util.ResourceBundle;
  * Date: 26/04/11
  * Time: 11:14
  * <p/>
- * The controller of a Element.
+ * The controller of a FieldObservableElement.
  */
-public class ElementController<WrappedType> implements ObservableValue<WrappedType> {
+public class ElementController<WrappedType> {
 
     private final static Logger logger = LoggerFactory.getLogger(ElementController.class);
 
@@ -43,13 +43,19 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
 
     public static String PROMPT_TEXT_SUFFIX = "-prompt";
 
-    protected final Element<?, WrappedType, ?> element;
+    protected final ObservableElement<WrappedType> element;
 
-    private final ObjectProperty<NodeFactory> editorFactory = new SimpleObjectProperty<NodeFactory>();
+    private final NodeFactory editorFactory;
 
-    private final ObjectProperty<NodeFactory> tooltipFactory = new SimpleObjectProperty<NodeFactory>();
+    private final NodeFactory tooltipFactory;
 
-    private final ObjectProperty<NodeFactory> labelFactory = new SimpleObjectProperty<NodeFactory>();
+    private final NodeFactory labelFactory;
+
+    private DisposableNode editor;
+
+    private DisposableNode label;
+
+    private DisposableNode tooltip;
 
     private final ObjectProperty<ResourceBundle> resourceBundle = new SimpleObjectProperty<ResourceBundle>();
 
@@ -57,8 +63,11 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
 
     protected ObservableList<ConstraintViolation> constraintViolations = FXCollections.observableArrayList();
 
-    public ElementController(Element element) {
+    public ElementController(ObservableElement<WrappedType> element, NodeFactory editorFactory, NodeFactory tooltipFactory, NodeFactory labelFactory) {
         this.element = element;
+        this.editorFactory = editorFactory;
+        this.tooltipFactory = tooltipFactory;
+        this.labelFactory = labelFactory;
     }
 
     /**
@@ -66,7 +75,7 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
      *
      * @return
      */
-    public StringProperty getLabel() {
+    public StringProperty labelProperty() {
         StringProperty stringProperty = new SimpleStringProperty();
         stringProperty.bind(new StringBinding() {
             {
@@ -76,10 +85,10 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
             @Override
             protected String computeValue() {
                 try {
-                    return resourceBundle.get().getString(element.getField().getName() + LABEL_SUFFIX);
+                    return resourceBundle.get().getString(element.getName() + LABEL_SUFFIX);
                 } catch (Exception e) {
                     // label is undefined
-                    return (element.getField().getName());
+                    return (element.getName());
                 }
             }
         });
@@ -91,7 +100,7 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
      *
      * @return
      */
-    public StringProperty getTooltip() {
+    public StringProperty tooltipProperty() {
         StringProperty stringProperty = new SimpleStringProperty();
         stringProperty.bind(new StringBinding() {
             {
@@ -101,7 +110,7 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
             @Override
             protected String computeValue() {
                 try {
-                    return resourceBundle.get().getString(element.getField().getName() + TOOLTIP_SUFFIX);
+                    return resourceBundle.get().getString(element.getName() + TOOLTIP_SUFFIX);
                 } catch (Exception e) {
                     // label is undefined
                     return null;
@@ -116,7 +125,7 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
      *
      * @return
      */
-    public StringProperty getPromptText() {
+    public StringProperty promptTextProperty() {
         StringProperty stringProperty = new SimpleStringProperty();
         stringProperty.bind(new StringBinding() {
             {
@@ -126,7 +135,7 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
             @Override
             protected String computeValue() {
                 try {
-                    return resourceBundle.get().getString(element.getField().getName() + PROMPT_TEXT_SUFFIX);
+                    return resourceBundle.get().getString(element.getName() + PROMPT_TEXT_SUFFIX);
                 } catch (Exception e) {
                     // label is undefined
                     return null;
@@ -159,6 +168,18 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
      * Dispose this controller. The controller should clear all existing bindings.
      */
     public void dispose() {
+        if (editor != null) {
+            editor.dispose();
+            editor = null;
+        }
+        if (label != null) {
+            label.dispose();
+            label = null;
+        }
+        if (tooltip != null) {
+            tooltip.dispose();
+            tooltip = null;
+        }
         element.dispose();
     }
 
@@ -166,67 +187,33 @@ public class ElementController<WrappedType> implements ObservableValue<WrappedTy
         return resourceBundle;
     }
 
-    public ObjectProperty<NodeFactory> editorFactory() {
-        return editorFactory;
+    public DisposableNode getEditor() throws NodeCreationException {
+        if (editor == null) {
+            editor = editorFactory.createNode(this);
+        }
+        return editor;
     }
 
-    public ObjectProperty<NodeFactory> tooltipFactory() {
-        return tooltipFactory;
+    public DisposableNode getTooltip() throws NodeCreationException {
+        if (tooltip == null) {
+            tooltip = tooltipFactory.createNode(this);
+        }
+        return tooltip;
     }
 
-    public ObjectProperty<NodeFactory> labelFactory() {
-        return labelFactory;
-    }
-
-    public NodeFactory getEditorFactory() {
-        return editorFactory().get();
-    }
-
-    public NodeFactory getTooltipFactory() {
-        return tooltipFactory.get();
-    }
-
-    public NodeFactory getLabelFactory() {
-        return labelFactory().get();
-    }
-
-    public void setEditorFactory(NodeFactory nodeFactory) {
-        this.editorFactory.set(nodeFactory);
-    }
-
-    public void setTooltipFactory(NodeFactory nodeFactory) {
-        this.tooltipFactory().set(nodeFactory);
-    }
-
-    public void setLabelFactory(NodeFactory labelFactory) {
-        this.labelFactory.set(labelFactory);
+    public DisposableNode getLabel() throws NodeCreationException {
+        if (label == null) {
+            label = labelFactory.createNode(this);
+        }
+        return label;
     }
 
     public ObservableList<ConstraintViolation> getConstraintViolations() {
         return constraintViolations;
     }
 
-    public void addListener(ChangeListener<? super WrappedType> changeListener) {
-        element.addListener(changeListener);
-    }
-
-    public void removeListener(ChangeListener<? super WrappedType> changeListener) {
-        element.removeListener(changeListener);
-    }
-
-    public WrappedType getValue() {
-        return element.getValue();
-    }
-
-    public void addListener(InvalidationListener invalidationListener) {
-        element.addListener(invalidationListener);
-    }
-
-    public void removeListener(InvalidationListener invalidationListener) {
-        element.removeListener(invalidationListener);
-    }
-
-    public Element getElement() {
+    public ObservableElement getElement() {
         return element;
     }
+
 }

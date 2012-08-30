@@ -10,52 +10,19 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.model;
+package com.dooapp.fxform.view.handler;
 
-import javafx.beans.value.WritableValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.validation.*;
-import java.util.Set;
+import java.lang.reflect.Field;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 07/09/11
- * Time: 14:52
+ * Date: 16/04/11
+ * Time: 23:35
+ * <p/>
+ * Interface used to match delegate and fields.
  */
-public class PropertyElementController<WrappedType> extends ElementController<WrappedType> implements WritableValue<WrappedType> {
+public interface ElementHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(PropertyElementController.class);
-
-    static ValidatorFactory factory;
-
-    Validator validator;
-
-    public PropertyElementController(PropertyElement element) {
-        super(element);
-        try {
-            if (factory == null) {
-                factory = Validation.buildDefaultValidatorFactory();
-            }
-            validator = factory.getValidator();
-        } catch (ValidationException e) {
-            // validation is not activated, since no implementation has been provided
-            logger.trace("Validation disabled", e);
-        }
-    }
-
-    public void setValue(WrappedType o1) {
-        // mark controller as dirty
-        dirty().set(true);
-        if (validator != null) {
-            Set<ConstraintViolation<Object>> constraintViolationSet = validator.validateValue((Class<Object>) (element.getSource().getClass()), element.getField().getName(), o1);
-            constraintViolations.clear();
-            constraintViolations.addAll(constraintViolationSet);
-        }
-        if (constraintViolations.size() == 0) {
-            ((PropertyElement) element).setValue(o1);
-        }
-    }
+    public boolean handle(Field field);
 
 }
