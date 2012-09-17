@@ -1,5 +1,6 @@
 package com.dooapp.fxform.model;
 
+import com.dooapp.fxform.annotation.FormFactory;
 import javafx.beans.value.ObservableValue;
 
 /**

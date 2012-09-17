@@ -128,14 +128,14 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         logger.debug("Disposing skin");
         for (Object controller : fxForm.getControllers()) {
             ElementController controller1 = (ElementController) controller;
-            try {
-                controller1.getConstraint().dispose();
-                controller1.getEditor().dispose();
-                controller1.getLabel().dispose();
-                controller1.getTooltip().dispose();
-            } catch (NodeCreationException e) {
-                logger.warn(e.getMessage(), e);
-            }
+            //try {
+                //controller1.getConstraint().dispose();
+                //controller1.getEditor().dispose();
+                //controller1.getLabel().dispose();
+                //controller1.getTooltip().dispose();
+            //} catch (NodeCreationException e) {
+            //    logger.warn(e.getMessage(), e);
+            //}
         }
         fxForm.getControllers().removeListener(getControllersListener());
         fxForm = null;
