@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory;
 
-import com.dooapp.fxform.controller.ElementController;
+import com.dooapp.fxform.model.ElementController;
 import com.dooapp.fxform.view.NodeCreationException;
 
 /**

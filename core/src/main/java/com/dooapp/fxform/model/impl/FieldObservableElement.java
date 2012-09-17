@@ -14,15 +14,12 @@ package com.dooapp.fxform.model.impl;
 
 import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.ObservableElement;
-import com.dooapp.fxform.reflection.Util;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -35,8 +32,6 @@ import java.util.List;
  * Model object wrapping an object field.
  */
 public class FieldObservableElement<SourceType, WrappedType, FieldType extends ObservableValue<WrappedType>> implements ObservableElement<WrappedType> {
-
-    private final Logger logger = LoggerFactory.getLogger(FieldObservableElement.class);
 
     protected final Field field;
 
@@ -143,26 +138,9 @@ public class FieldObservableElement<SourceType, WrappedType, FieldType extends O
 
     public void dispose() {
         value.dispose();
-        source.unbind();
-    }
-
-    public Class<? extends ObservableValue<WrappedType>> getType() {
-        return (Class<? extends ObservableValue<WrappedType>>) field.getType();
-    }
-
-    public Class<? extends WrappedType> getValueType() {
-        try {
-            return Util.getObjectPropertyGeneric(field);
-        } catch (Exception e) {
-        }
-        return null;
     }
 
     public String getName() {
         return field.getName();
-    }
-
-    public Field getField() {
-        return field;
     }
 }

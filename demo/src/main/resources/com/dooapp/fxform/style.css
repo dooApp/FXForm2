@@ -24,8 +24,8 @@
 }
 
 .form-content-box {
-    -fx-background-color : linear-gradient(from 0% 0% to 0% 20%, rgba(225,225,225,1), white);
+    -fx-background-color : linear (0%,0%) to (0%,20%) stops (0%, rgba(225,225,225,1)) (100%, white);
     -fx-background-radius : 5, 5, 5, 5;
-    -fx-border-color: linear-gradient(from 0% 0% to 0% 20%, dimgray, white);
+    -fx-border-color: linear (0%,0%) to (0%,20%) stops (0%, dimgray) (100%, white);
     -fx-border-radius: 5;
 }

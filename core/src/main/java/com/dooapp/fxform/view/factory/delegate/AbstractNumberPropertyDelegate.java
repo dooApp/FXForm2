@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.controller.PropertyElementController;
+import com.dooapp.fxform.model.PropertyElementController;
 import com.dooapp.fxform.view.factory.DisposableNode;
 import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
 import com.dooapp.fxform.view.factory.FormatProvider;
@@ -45,16 +45,16 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         final TextField textBox = new TextField();
         final InvalidationListener textBoxListener = createTextBoxListener(controller, textBox);
         textBox.textProperty().addListener(textBoxListener);
-        if (controller.getElement().getValue() != null) {
-            textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getElement().getValue()));
+        if (controller.getValue() != null) {
+            textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
         }
         final ChangeListener controllerListener = createControllerListener(textBox, controller);
-        controller.getElement().addListener(controllerListener);
-        textBox.promptTextProperty().bind(controller.promptTextProperty());
+        controller.addListener(controllerListener);
+        textBox.promptTextProperty().bind(controller.getPromptText());
 
         return new DisposableNodeWrapper(textBox, new Callback<Node, Void>() {
             public Void call(Node node) {
-                controller.getElement().removeListener(controllerListener);
+                controller.removeListener(controllerListener);
                 textBox.textProperty().removeListener(textBoxListener);
                 return null;
             }
@@ -75,7 +75,7 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
                             throw new ParseException(textBox.getText().substring(parsePosition.getIndex()), parsePosition.getIndex());
                         }
                         controller.getConstraintViolations().clear();
-                        controller.getElement().setValue((T) parsed);
+                        controller.setValue((T) parsed);
                     } catch (ParseException e) {
                         controller.getConstraintViolations().clear();
                         controller.getConstraintViolations().add(new ParseErrorConstraintViolation(e.getMessage()));
@@ -91,14 +91,14 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         return new ChangeListener() {
 
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                if (controller.getElement().getValue() != null) {
+                if (controller.getValue() != null) {
                     Number currentTextboxNumber = null;
                     try {
                         currentTextboxNumber = parse(formatProvider.getFormat(controller.getElement()), new ParsePosition(0), textBox.getText());
                     } catch (ParseException e) {
                     }
                     if (currentTextboxNumber != null && o1 != null && currentTextboxNumber.doubleValue() != ((Number) o1).doubleValue())
-                        textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getElement().getValue()));
+                        textBox.textProperty().setValue(formatProvider.getFormat(controller.getElement()).format(controller.getValue()));
                 } else {
                     textBox.textProperty().set("");
                 }

@@ -12,9 +12,8 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.annotation.FormFactory;
-import com.dooapp.fxform.annotation.NonVisual;
 import com.dooapp.fxform.filter.ReorderFilter;
-import com.dooapp.fxform.controller.PropertyElementController;
+import com.dooapp.fxform.model.PropertyElementController;
 import com.dooapp.fxform.view.FXFormSkinFactory;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.DisposableNode;

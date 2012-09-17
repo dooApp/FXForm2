@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.controller.PropertyElementController;
+import com.dooapp.fxform.model.PropertyElementController;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.DisposableNode;
 import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
@@ -32,13 +32,13 @@ public class StringPropertyDelegate implements NodeFactory<PropertyElementContro
 
     public DisposableNode createNode(final PropertyElementController<String> controller) throws NodeCreationException {
         final TextField text = new TextField();
-        String value = controller.getElement().getValue();
+        String value = controller.getValue();
         if (value != null) {
             text.setText(value);
         }
         final ChangeListener textPropertyListener = new ChangeListener<String>() {
             public void changed(ObservableValue<? extends String> observableValue, String s, String s1) {
-                controller.getElement().setValue(s1);
+                controller.setValue(s1);
             }
         };
         text.textProperty().addListener(textPropertyListener);
@@ -53,13 +53,18 @@ public class StringPropertyDelegate implements NodeFactory<PropertyElementContro
                 }
             }
         };
-        controller.getElement().addListener(controllerListener);
-        text.promptTextProperty().bind(controller.promptTextProperty());
+        controller.addListener(controllerListener);
+
+        // TODO Try/Catch will be removed once 2.0.2 is released (http://javafx-jira.kenai.com/browse/RT-17280)
+        try {
+            text.promptTextProperty().bind(controller.getPromptText());
+        } catch (Exception e) {
+        }
 
         return new DisposableNodeWrapper(text, new Callback<Node, Void>() {
             public Void call(Node node) {
                 text.textProperty().removeListener(textPropertyListener);
-                controller.getElement().removeListener(controllerListener);
+                controller.removeListener(controllerListener);
                 return null;
             }
         });

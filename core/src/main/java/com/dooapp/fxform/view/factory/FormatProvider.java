@@ -12,8 +12,7 @@
 
 package com.dooapp.fxform.view.factory;
 
-import com.dooapp.fxform.model.ObservableElement;
-import com.dooapp.fxform.model.impl.FieldObservableElement;
+import com.dooapp.fxform.model.Element;
 
 import java.text.Format;
 
@@ -26,6 +25,6 @@ import java.text.Format;
  */
 public interface FormatProvider {
 
-    public Format getFormat(ObservableElement element);
+    public Format getFormat(Element element);
 
 }

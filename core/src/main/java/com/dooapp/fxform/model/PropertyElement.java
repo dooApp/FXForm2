@@ -12,7 +12,10 @@
 
 package com.dooapp.fxform.model;
 
+import javafx.beans.property.Property;
 import javafx.beans.value.WritableValue;
+
+import java.lang.reflect.Field;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -20,5 +23,17 @@ import javafx.beans.value.WritableValue;
  * Time: 12:11
  * An observable and writable form field.
  */
-public interface PropertyElement<T> extends ObservableElement<T>, WritableValue<T> {
+public class PropertyElement<SourceType, WrappedType> extends Element<SourceType, WrappedType, Property<WrappedType>> implements WritableValue<WrappedType> {
+
+    public PropertyElement(Field field) throws FormException {
+        super(field);
+        if (!WritableValue.class.isAssignableFrom(field.getType())) {
+            throw new FormException("Trying to create a writable element with a non-writable field: " + field.getType());
+        }
+    }
+
+    public void setValue(WrappedType o) {
+        valueProperty().get().setValue(o);
+    }
+
 }

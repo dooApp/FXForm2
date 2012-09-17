@@ -11,8 +11,6 @@
 
 package com.dooapp.fxform.view.handler;
 
-import com.dooapp.fxform.model.ObservableElement;
-
 import java.lang.reflect.Field;
 
 /**
@@ -21,7 +19,7 @@ import java.lang.reflect.Field;
  * Date: 25/08/11
  * Time: 17:38
  */
-public class NamedFieldHandler implements ElementHandler {
+public class NamedFieldHandler implements FieldHandler {
 
     private final String name;
 
@@ -29,8 +27,8 @@ public class NamedFieldHandler implements ElementHandler {
         this.name = name;
     }
 
-    public boolean handle(ObservableElement element) {
-        return name.equals(element.getName());
+    public boolean handle(Field field) {
+        return name.equals(field.getName());
     }
 
 }

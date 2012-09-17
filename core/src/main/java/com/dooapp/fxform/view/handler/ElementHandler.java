@@ -12,8 +12,6 @@
 
 package com.dooapp.fxform.view.handler;
 
-import com.dooapp.fxform.model.ObservableElement;
-
 import java.lang.reflect.Field;
 
 /**
@@ -25,6 +23,6 @@ import java.lang.reflect.Field;
  */
 public interface ElementHandler {
 
-    public boolean handle(ObservableElement element);
+    public boolean handle(Field field);
 
 }
