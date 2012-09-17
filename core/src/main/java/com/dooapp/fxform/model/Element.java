@@ -10,10 +10,8 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.model.impl;
+package com.dooapp.fxform.model;
 
-import com.dooapp.fxform.model.FormException;
-import com.dooapp.fxform.model.ObservableElement;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
@@ -31,7 +29,7 @@ import java.util.List;
  * Time: 22:22
  * Model object wrapping an object field.
  */
-public class FieldObservableElement<SourceType, WrappedType, FieldType extends ObservableValue<WrappedType>> implements ObservableElement<WrappedType> {
+public class Element<SourceType, WrappedType, FieldType extends ObservableValue<WrappedType>> implements ObservableValue<WrappedType> {
 
     protected final Field field;
 
@@ -49,7 +47,7 @@ public class FieldObservableElement<SourceType, WrappedType, FieldType extends O
                 return null;
             }
             try {
-                return (FieldType) field.get(getSource());
+                return (FieldType) getField().get(getSource());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -61,7 +59,7 @@ public class FieldObservableElement<SourceType, WrappedType, FieldType extends O
 
     private List<InvalidationListener> invalidationListeners = new LinkedList<InvalidationListener>();
 
-    public FieldObservableElement(Field field) throws FormException {
+    public Element(Field field) throws FormException {
         this.field = field;
         if (!ObservableValue.class.isAssignableFrom(field.getType())) {
             throw new FormException("Trying to create an observable element with a non-observable field " + field.getType());
@@ -87,6 +85,10 @@ public class FieldObservableElement<SourceType, WrappedType, FieldType extends O
         });
     }
 
+    public Field getField() {
+        return field;
+    }
+
     public SourceType getSource() {
         return source.get();
     }
@@ -98,6 +100,11 @@ public class FieldObservableElement<SourceType, WrappedType, FieldType extends O
     public ObjectProperty<SourceType> sourceProperty() {
         return source;
     }
+
+    //@Override
+    //public String toString() {
+    //    return field.getName() + "[" + getSource().getClass() + "]";
+    //}
 
     public ObjectBinding<FieldType> valueProperty() {
         return value;
@@ -140,7 +147,4 @@ public class FieldObservableElement<SourceType, WrappedType, FieldType extends O
         value.dispose();
     }
 
-    public String getName() {
-        return field.getName();
-    }
 }
