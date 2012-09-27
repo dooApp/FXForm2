@@ -12,9 +12,9 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.PropertyElementController;
-import com.dooapp.fxform.view.factory.DisposableNode;
-import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
+import com.dooapp.fxform.controller.PropertyElementController;
+import com.dooapp.fxform.view.factory.FXFormNode;
+import com.dooapp.fxform.view.factory.FXFormNodeWrapper;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -29,7 +29,7 @@ import javafx.util.Callback;
  */
 public class BooleanPropertyDelegate implements NodeFactory<PropertyElementController<Boolean>> {
 
-    public DisposableNode createNode(final PropertyElementController<Boolean> controller) {
+    public FXFormNode createNode(final PropertyElementController<Boolean> controller) {
         final CheckBox checkBox = new CheckBox();
         checkBox.setSelected(controller.getValue());
         final ChangeListener<Boolean> controllerListener = new ChangeListener<Boolean>() {
@@ -44,7 +44,7 @@ public class BooleanPropertyDelegate implements NodeFactory<PropertyElementContr
             }
         };
         checkBox.selectedProperty().addListener(checkBoxListener);
-        return new DisposableNodeWrapper(checkBox, new Callback<Node, Void>() {
+        return new FXFormNodeWrapper(checkBox, new Callback<Node, Void>() {
             public Void call(Node node) {
                 checkBox.selectedProperty().removeListener(checkBoxListener);
                 controller.removeListener(controllerListener);

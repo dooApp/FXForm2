@@ -11,7 +11,7 @@
 
 package com.dooapp.fxform;
 
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.utils.Configurer;
 import com.dooapp.fxform.view.factory.NodeFactory;
 

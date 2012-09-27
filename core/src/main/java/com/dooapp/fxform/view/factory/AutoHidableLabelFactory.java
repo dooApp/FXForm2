@@ -3,7 +3,6 @@
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *
  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
  * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
@@ -12,32 +11,18 @@
 
 package com.dooapp.fxform.view.factory;
 
-import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.util.Callback;
 
 /**
- * TODO write documentation<br>
- * <br>
- * Created at 17/10/11 15:54.<br>
- *
- * @author Antoine Mischler <antoine@dooapp.com>
+ * User: Antoine Mischler <antoine@dooapp.com> Date: 26/08/11 Time: 11:50
  */
-public class DisposableNodeWrapper implements DisposableNode {
+public class AutoHidableLabelFactory implements Callback<Void, FXFormNode> {
 
-    private final Node node;
-
-    private final Callback<Node, Void> callback;
-
-    public DisposableNodeWrapper(Node node, Callback<Node, Void> callback) {
-        this.node = node;
-        this.callback = callback;
+    public FXFormNode call(Void aVoid) {
+        final Label label = new AutoHidableLabel();
+        label.setWrapText(true);
+        return new FXFormNodeWrapper(label, label.textProperty());
     }
 
-    public void dispose() {
-        callback.call(node);
-    }
-
-    public Node getNode() {
-        return node;
-    }
 }

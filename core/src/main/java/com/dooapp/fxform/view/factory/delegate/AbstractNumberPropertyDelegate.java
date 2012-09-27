@@ -12,11 +12,10 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.PropertyElementController;
-import com.dooapp.fxform.view.factory.DisposableNode;
-import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
-import com.dooapp.fxform.view.factory.FormatProvider;
-import com.dooapp.fxform.view.factory.NodeFactory;
+import com.dooapp.fxform.controller.PropertyElementController;
+import com.dooapp.fxform.view.factory.*;
+import com.dooapp.fxform.view.factory.FXFormNodeWrapper;
+import com.dooapp.fxform.view.factory.FXFormNode;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -41,7 +40,7 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         this.formatProvider = formatProvider;
     }
 
-    public DisposableNode createNode(final PropertyElementController<T> controller) {
+    public FXFormNode createNode(final PropertyElementController<T> controller) {
         final TextField textBox = new TextField();
         final InvalidationListener textBoxListener = createTextBoxListener(controller, textBox);
         textBox.textProperty().addListener(textBoxListener);
@@ -52,7 +51,7 @@ public abstract class AbstractNumberPropertyDelegate<T extends Number> implement
         controller.addListener(controllerListener);
         textBox.promptTextProperty().bind(controller.getPromptText());
 
-        return new DisposableNodeWrapper(textBox, new Callback<Node, Void>() {
+        return new FXFormNodeWrapper(textBox, new Callback<Node, Void>() {
             public Void call(Node node) {
                 controller.removeListener(controllerListener);
                 textBox.textProperty().removeListener(textBoxListener);

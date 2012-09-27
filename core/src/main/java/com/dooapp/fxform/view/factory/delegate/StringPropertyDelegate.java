@@ -12,10 +12,10 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.PropertyElementController;
+import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.factory.DisposableNode;
-import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
+import com.dooapp.fxform.view.factory.FXFormNode;
+import com.dooapp.fxform.view.factory.FXFormNodeWrapper;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -30,7 +30,7 @@ import javafx.util.Callback;
  */
 public class StringPropertyDelegate implements NodeFactory<PropertyElementController<String>> {
 
-    public DisposableNode createNode(final PropertyElementController<String> controller) throws NodeCreationException {
+    public FXFormNode createNode(final PropertyElementController<String> controller) throws NodeCreationException {
         final TextField text = new TextField();
         String value = controller.getValue();
         if (value != null) {
@@ -61,7 +61,7 @@ public class StringPropertyDelegate implements NodeFactory<PropertyElementContro
         } catch (Exception e) {
         }
 
-        return new DisposableNodeWrapper(text, new Callback<Node, Void>() {
+        return new FXFormNodeWrapper(text, new Callback<Node, Void>() {
             public Void call(Node node) {
                 text.textProperty().removeListener(textPropertyListener);
                 controller.removeListener(controllerListener);

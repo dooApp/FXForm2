@@ -13,11 +13,10 @@
 package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.annotation.FormFactory;
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.property.ObjectProperty;
-import javafx.scene.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +37,7 @@ public class AnnotationFactoryWrapper implements NodeFactory {
         this.delegate = delegate;
     }
 
-    public DisposableNode createNode(ElementController controller) throws NodeCreationException {
+    public FXFormNode createNode(ElementController controller) throws NodeCreationException {
         // check field annotation
         if (controller.getElement().getField().getAnnotation(FormFactory.class) != null) {
             // use factory provided by the annotation

@@ -12,11 +12,11 @@
 
 package com.dooapp.fxform.view.factory.delegate;
 
-import com.dooapp.fxform.model.PropertyElementController;
+import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.factory.DisposableNode;
-import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
+import com.dooapp.fxform.view.factory.FXFormNode;
+import com.dooapp.fxform.view.factory.FXFormNodeWrapper;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -38,7 +38,7 @@ public class EnumPropertyDelegate implements NodeFactory<PropertyElementControll
 
     private final Logger logger = LoggerFactory.getLogger(EnumPropertyDelegate.class);
 
-    public DisposableNode createNode(final PropertyElementController<Enum> controller) throws NodeCreationException {
+    public FXFormNode createNode(final PropertyElementController<Enum> controller) throws NodeCreationException {
         Enum[] constants = new Enum[0];
         try {
             constants = (Enum[]) Util.getObjectPropertyGeneric(controller.getElement().getField()).getEnumConstants();
@@ -65,7 +65,7 @@ public class EnumPropertyDelegate implements NodeFactory<PropertyElementControll
             }
         };
         controller.addListener(controllerListener);
-        return new DisposableNodeWrapper(choiceBox, new Callback<Node, Void>() {
+        return new FXFormNodeWrapper(choiceBox, new Callback<Node, Void>() {
             public Void call(Node node) {
                 choiceBox.getSelectionModel().selectedItemProperty().removeListener(enumChangeListener);
                 controller.removeListener(controllerListener);

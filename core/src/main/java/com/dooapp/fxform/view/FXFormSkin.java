@@ -13,9 +13,10 @@
 package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.model.ElementController;
-import com.dooapp.fxform.view.factory.DisposableNode;
-import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
+import com.dooapp.fxform.controller.ElementController;
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.view.factory.FXFormNode;
+import com.dooapp.fxform.view.factory.FXFormNodeWrapper;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -29,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,12 +47,8 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     private final static Image WARNING = new Image(FXFormSkin.class.getResource("warning.png").toExternalForm());
 
     protected FXForm fxForm;
-    private Node rootNode;
 
-    private final Map<ElementController, DisposableNode> labelMap = new HashMap<ElementController, DisposableNode>();
-    private final Map<ElementController, DisposableNode> tooltipMap = new HashMap<ElementController, DisposableNode>();
-    private final Map<ElementController, DisposableNode> editorMap = new HashMap<ElementController, DisposableNode>();
-    private final Map<ElementController, DisposableNode> constraintMap = new HashMap<ElementController, DisposableNode>();
+    private Node rootNode;
 
     public FXFormSkin(FXForm fxForm) {
         this.fxForm = fxForm;
@@ -104,8 +100,8 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         }
     }
 
-    private void unregisterController(ElementController elementController, Map<ElementController, DisposableNode> map) {
-        DisposableNode node = map.get(elementController);
+    private void unregisterController(ElementController elementController, Map<ElementController, FXFormNode> map) {
+        FXFormNode node = map.get(elementController);
         if (node != null) {
             node.dispose();
         }
@@ -157,7 +153,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         return constraintMap.get(controller).getNode();
     }
 
-    protected DisposableNode createConstraintNode(final ElementController controller) {
+    protected FXFormNode createConstraintNode(final ElementController controller) {
         final VBox constraintsBox = new VBox();
         constraintsBox.setAlignment(Pos.CENTER_LEFT);
         controller.getConstraintViolations().addListener(new ListChangeListener() {
@@ -175,7 +171,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
                 }
             }
         });
-        return new DisposableNodeWrapper(constraintsBox, new Callback<Node, Void>() {
+        return new FXFormNodeWrapper(constraintsBox, new Callback<Node, Void>() {
             public Void call(Node node) {
                 // nothing to dispose
                 return null;
@@ -193,11 +189,15 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         fxForm = null;
     }
 
-    private void disposeNodes(Map<ElementController, DisposableNode> map) {
+    private void disposeNodes(Map<ElementController, FXFormNode> map) {
         for (ElementController controller : map.keySet()) {
             map.get(controller).dispose();
         }
         map.clear();
+    }
+
+    public ElementNodes getOrCreateElementNodes(Element element) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
     }
 
     public FXForm getSkinnable() {

@@ -12,12 +12,16 @@
 
 package com.dooapp.fxform.model;
 
+import com.dooapp.fxform.view.factory.Disposable;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WritableValue;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -29,122 +33,6 @@ import java.util.List;
  * Time: 22:22
  * Model object wrapping an object field.
  */
-public class Element<SourceType, WrappedType, FieldType extends ObservableValue<WrappedType>> implements ObservableValue<WrappedType> {
-
-    protected final Field field;
-
-    private final ObjectProperty<SourceType> source = new SimpleObjectProperty<SourceType>();
-
-    private final ObjectBinding<FieldType> value = new ObjectBinding<FieldType>() {
-
-        {
-            super.bind(sourceProperty());
-        }
-
-        @Override
-        protected FieldType computeValue() {
-            if (getSource() == null) {
-                return null;
-            }
-            try {
-                return (FieldType) getField().get(getSource());
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    };
-
-    private List<ChangeListener> changeListeners = new LinkedList<ChangeListener>();
-
-    private List<InvalidationListener> invalidationListeners = new LinkedList<InvalidationListener>();
-
-    public Element(Field field) throws FormException {
-        this.field = field;
-        if (!ObservableValue.class.isAssignableFrom(field.getType())) {
-            throw new FormException("Trying to create an observable element with a non-observable field " + field.getType());
-        }
-        valueProperty().addListener(new ChangeListener<FieldType>() {
-
-            public void changed(ObservableValue<? extends FieldType> observableValue, FieldType fieldType, FieldType fieldType1) {
-                for (InvalidationListener invalidationListener : invalidationListeners) {
-                    fieldType.removeListener(invalidationListener);
-                    if (fieldType1 != null) {
-                        fieldType1.addListener(invalidationListener);
-                    }
-                    invalidationListener.invalidated(observableValue);
-                }
-                for (ChangeListener changeListener : changeListeners) {
-                    fieldType.removeListener(changeListener);
-                    if (fieldType1 != null) {
-                        fieldType1.addListener(changeListener);
-                        changeListener.changed(observableValue, fieldType.getValue(), fieldType1.getValue());
-                    }
-                }
-            }
-        });
-    }
-
-    public Field getField() {
-        return field;
-    }
-
-    public SourceType getSource() {
-        return source.get();
-    }
-
-    public void setSource(SourceType source) {
-        this.source.set(source);
-    }
-
-    public ObjectProperty<SourceType> sourceProperty() {
-        return source;
-    }
-
-    //@Override
-    //public String toString() {
-    //    return field.getName() + "[" + getSource().getClass() + "]";
-    //}
-
-    public ObjectBinding<FieldType> valueProperty() {
-        return value;
-    }
-
-    public void addListener(ChangeListener changeListener) {
-        changeListeners.add(changeListener);
-        valueProperty().get().addListener(changeListener);
-
-    }
-
-    public void removeListener(ChangeListener changeListener) {
-        changeListeners.remove(changeListener);
-        if (valueProperty().get() != null) {
-            valueProperty().get().removeListener(changeListener);
-        }
-    }
-
-    public WrappedType getValue() {
-        if (valueProperty().get() != null) {
-            return valueProperty().get().getValue();
-        } else {
-            return null;
-        }
-    }
-
-    public void addListener(InvalidationListener invalidationListener) {
-        invalidationListeners.add(invalidationListener);
-        valueProperty().addListener(invalidationListener);
-    }
-
-    public void removeListener(InvalidationListener invalidationListener) {
-        invalidationListeners.remove(invalidationListener);
-        if (valueProperty().get() != null) {
-            valueProperty().removeListener(invalidationListener);
-        }
-    }
-
-    public void dispose() {
-        value.dispose();
-    }
+public interface Element<WrappedType> extends ReadOnlyProperty<WrappedType>, Disposable {
 
 }

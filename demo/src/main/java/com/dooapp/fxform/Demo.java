@@ -11,16 +11,14 @@
 
 package com.dooapp.fxform;
 
-import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.filter.ReorderFilter;
-import com.dooapp.fxform.model.PropertyElementController;
+import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.view.FXFormSkinFactory;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.factory.DisposableNode;
-import com.dooapp.fxform.view.factory.DisposableNodeWrapper;
+import com.dooapp.fxform.view.factory.FXFormNode;
+import com.dooapp.fxform.view.factory.FXFormNodeWrapper;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.application.Application;
-import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
@@ -33,7 +31,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.log4j.BasicConfigurator;
-import org.hibernate.validator.constraints.Email;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -44,51 +41,12 @@ import org.hibernate.validator.constraints.Email;
 public class Demo extends Application {
 
     /**
-     * The bean to be edited.
-     */
-    private static class MyBean {
-
-        private static enum Subject {
-            CONTACT, QUESTION, BUG, FEEDBACK
-        }
-
-        private final StringProperty name = new SimpleStringProperty();
-
-        private final StringProperty email = new SimpleStringProperty();
-
-        @FormFactory(TextAreaFactory.class)
-        private final StringProperty message = new SimpleStringProperty();
-
-        private final StringProperty website = new SimpleStringProperty();
-
-        private final BooleanProperty subscribe = new SimpleBooleanProperty();
-
-        private final ObjectProperty<Subject> subject = new SimpleObjectProperty<Subject>();
-
-        private final DoubleProperty age = new SimpleDoubleProperty();
-
-        private MyBean(String name, String email, String message, String website, boolean subscribe, Subject subject) {
-            this.name.set(name);
-            this.email.set(email);
-            this.message.set(message);
-            this.website.set(website);
-            this.subscribe.set(subscribe);
-            this.subject.set(subject);
-        }
-
-        @Email
-        public String getEmail() {
-            return email.get();
-        }
-    }
-
-    /**
      * Example of custom factory
      */
     public static class TextAreaFactory implements NodeFactory<PropertyElementController<String>> {
-        public DisposableNode createNode(PropertyElementController<String> controller) throws NodeCreationException {
+        public FXFormNode createNode(PropertyElementController<String> controller) throws NodeCreationException {
             TextArea textArea = new TextArea();
-            return new DisposableNodeWrapper(textArea, new Callback<Node, Void>() {
+            return new FXFormNodeWrapper(textArea, new Callback<Node, Void>() {
                 public Void call(Node node) {
                     return null;
                 }

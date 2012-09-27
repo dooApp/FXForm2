@@ -12,54 +12,31 @@
 
 package com.dooapp.fxform.view.factory;
 
-import com.dooapp.fxform.model.ElementController;
-import com.dooapp.fxform.view.NodeCreationException;
-import javafx.beans.binding.StringBinding;
+import com.dooapp.fxform.model.Element;
+import javafx.beans.property.Property;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.util.Callback;
 
 /**
- * Factory creating a label bound to a string representation of the {@code Element}<br>
+ * This interface is used the enrich a Node with additional information.<br>
  * <br>
- * Created at 20/09/11 10:45.<br>
+ * Created at 17/10/11 15:53.<br>
  *
  * @author Antoine Mischler <antoine@dooapp.com>
  */
-public class ReadOnlyFactory implements NodeFactory {
+public interface FXFormNode<N extends Node> extends DisposableNode<N> {
 
-    private final FormatProvider formatProvider;
+    /**
+     * Get the property of the view to bind to the model.
+     *
+     * @return
+     */
+    public Property getProperty();
 
-    public ReadOnlyFactory() {
-        this(new FormatProviderImpl());
-    }
+    /**
+     * This method is called before the node is bound to the model if initialization is required.
+     *
+     * @param element
+     */
+    public void init(Element element);
 
-    public ReadOnlyFactory(FormatProvider formatProvider) {
-        this.formatProvider = formatProvider;
-    }
-
-    public DisposableNode createNode(final ElementController controller) throws NodeCreationException {
-        final Label label = new Label();
-        label.textProperty().bind(new StringBinding() {
-
-            {
-                bind(controller);
-            }
-
-            @Override
-            protected String computeValue() {
-                if (controller.getValue() != null) {
-                    return formatProvider.getFormat(controller.getElement()).format(controller.getElement().getValue());
-                } else {
-                    return "";
-                }
-            }
-        });
-        return new DisposableNodeWrapper(label, new Callback<Node, Void>() {
-            public Void call(Node node) {
-                label.textProperty().unbind();
-                return null;
-            }
-        });
-    }
 }

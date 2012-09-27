@@ -13,14 +13,13 @@
 package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.ElementController;
+import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.delegate.*;
 import com.dooapp.fxform.view.handler.EnumHandler;
 import com.dooapp.fxform.view.handler.FieldHandler;
 import com.dooapp.fxform.view.handler.TypeFieldHandler;
 import javafx.beans.property.*;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.util.Callback;
 
@@ -34,27 +33,23 @@ import java.util.Map;
  * <p/>
  * Factory implementation based on delegates mapped by FieldHandler.
  */
-public class DelegateFactory implements NodeFactory {
+public class DelegateFactory implements Callback<Void, FXFormNode> {
 
     private final FormatProvider formatProvider;
 
-    private final static NodeFactory DEFAULT_FACTORY = new NodeFactory() {
+    private final static Callback<Void, FXFormNode> DEFAULT_FACTORY = new Callback<Void, FXFormNode>() {
 
-        public DisposableNode createNode(ElementController elementController) throws NodeCreationException {
-            return new DisposableNodeWrapper(new Label(elementController.getElement().getField().getType() + " not supported"),
-                    new Callback<Node, Void>() {
-                        public Void call(Node node) {
-                            return null;
-                        }
-                    });
+        public FXFormNode call(Void aVoid) {
+            Label label = new Label("No factory available");
+            return new FXFormNodeWrapper(label);
         }
     };
 
-    private final static Map<FieldHandler, NodeFactory> DEFAULT_MAP = new HashMap();
+    private final static Map<FieldHandler, Callback<Void, FXFormNode>> DEFAULT_MAP = new HashMap();
 
-    private final static Map<FieldHandler, NodeFactory> GLOBAL_MAP = new HashMap();
+    private final static Map<FieldHandler, Callback<Void, FXFormNode>> GLOBAL_MAP = new HashMap();
 
-    private final Map<FieldHandler, NodeFactory> USER_MAP = new HashMap();
+    private final Map<FieldHandler, Callback<Void, FXFormNode>> USER_MAP = new HashMap();
 
     public DelegateFactory() {
         this(new FormatProviderImpl());
@@ -71,17 +66,38 @@ public class DelegateFactory implements NodeFactory {
         DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new DoublePropertyDelegate(formatProvider));
     }
 
+
+    public FXFormNode createNode(ElementController controller) throws NodeCreationException {
+
+    }
+
+    private Callback<Void, FXFormNode> getDelegate(Element element, Map<FieldHandler, Callback<Void, FXFormNode>> map) {
+        for (FieldHandler handler : map.keySet()) {
+            if (handler.handle(element.getField())) {
+                return map.get(handler);
+            }
+        }
+        return null;
+    }
+
+    public static void addGlobalFactory(FieldHandler handler, Callback<Void, FXFormNode> factory) {
+        GLOBAL_MAP.put(handler, factory);
+    }
+
+    public void addFactory(FieldHandler handler, Callback<Void, FXFormNode> factory) {
+        USER_MAP.put(handler, factory);
+    }
+
     /**
      * Create the node by trying to find a delegate factory.
      * This method will lookup in the user map, the global map and finally in the default map.
      *
-     * @param controller
      * @return the created node
      * @throws NodeCreationException
      */
-    public DisposableNode createNode(ElementController controller) throws NodeCreationException {
+    public FXFormNode call(Void aVoid) {
         // check user defined factories
-        NodeFactory delegate = getDelegate(controller.getElement(), USER_MAP);
+        Callback<Void, FXFormNode> delegate = getDelegate(controller.getElement(), USER_MAP);
         // check user defined global factories
         if (delegate == null) {
             delegate = getDelegate(controller.getElement(), GLOBAL_MAP);
@@ -94,24 +110,6 @@ public class DelegateFactory implements NodeFactory {
         if (delegate == null) {
             delegate = DEFAULT_FACTORY;
         }
-        return delegate.createNode(controller);
+        return delegate.call(aVoid);
     }
-
-    private NodeFactory getDelegate(Element element, Map<FieldHandler, NodeFactory> map) {
-        for (FieldHandler handler : map.keySet()) {
-            if (handler.handle(element.getField())) {
-                return map.get(handler);
-            }
-        }
-        return null;
-    }
-
-    public static void addGlobalFactory(FieldHandler handler, NodeFactory factory) {
-        GLOBAL_MAP.put(handler, factory);
-    }
-
-    public void addFactory(FieldHandler handler, NodeFactory factory) {
-        USER_MAP.put(handler, factory);
-    }
-
 }
