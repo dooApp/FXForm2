@@ -13,6 +13,7 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.adapter.Adapter;
+import com.dooapp.fxform.adapter.DefaultAdapter;
 import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.filter.FieldFilter;
@@ -28,6 +29,7 @@ import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.factory.DefaultFactoryProvider;
 import com.dooapp.fxform.view.factory.FactoryProvider;
 import com.dooapp.fxform.view.factory.impl.AutoHidableLabelFactory;
+import com.dooapp.fxform.view.factory.impl.DefaultConstraintFactory;
 import com.dooapp.fxform.view.factory.impl.LabelFactory;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import javafx.beans.property.*;
@@ -70,6 +72,10 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     public static final String TOOLTIP_ID_SUFFIX = "-form-tooltip";
 
     public static final String TOOLTIP_STYLE = "form-tooltip";
+
+    public static final String CONSTRAINT_ID_SUFFIX = "-form-constraint";
+
+    public final static String INVALID = "-invalid";
 
     private final ObjectProperty<T> source = new SimpleObjectProperty<T>();
 
@@ -135,7 +141,14 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public FXForm(T source, FactoryProvider labelFactoryProvider, FactoryProvider tooltipFactoryProvider, FactoryProvider editorFactoryProvider) {
         initBundle();
-
+        setEditorFactoryProvider(editorFactoryProvider);
+        setLabelFactoryProvider(labelFactoryProvider);
+        setTooltipFactoryProvider(tooltipFactoryProvider);
+        setConstraintFactoryProvider(new FactoryProvider() {
+            public Callback<Void, FXFormNode> getFactory(Element element) {
+                return new DefaultConstraintFactory();
+            }
+        });
         this.source.addListener(new ChangeListener<T>() {
             public void changed(ObservableValue<? extends T> observableValue, T t, T t1) {
                 if (t1 == null) {
@@ -175,27 +188,37 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         logger.debug("Creating controllers for " + source.get());
         controllers.clear();
         List<Field> fields = new ReflectionFieldProvider().getProperties(source.get());
-        for (FieldFilter filter : filters) {
-            fields = filter.filter(fields);
-        }
+        List<Element> elements = new LinkedList<Element>();
         for (Field field : fields) {
             try {
                 Element element = null;
-                ElementController controller = null;
+
                 if (Property.class.isAssignableFrom(field.getType())) {
                     element = new PropertyFieldElement(field);
                     ((PropertyFieldElement) element).sourceProperty().bind(source);
-                    controller = new PropertyElementController(this, (PropertyElement) element);
                 } else {
                     element = new ReadOnlyPropertyFieldElement(field);
                     ((ReadOnlyPropertyFieldElement) element).sourceProperty().bind(source);
-                    controller = new ElementController(this, element);
                 }
                 if (element != null) {
-                    controllers.add(controller);
+                    elements.add(element);
                 }
             } catch (FormException e) {
                 logger.warn(e.getMessage(), e);
+            }
+        }
+        for (FieldFilter filter : filters) {
+            elements = filter.filter(elements);
+        }
+        for (Element element : elements) {
+            ElementController controller = null;
+            if (PropertyFieldElement.class.isAssignableFrom(element.getClass())) {
+                controller = new PropertyElementController(this, (PropertyElement) element);
+            } else {
+                controller = new ElementController(this, element);
+            }
+            if (controller != null) {
+                controllers.add(controller);
             }
         }
     }
@@ -340,6 +363,6 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     }
 
     public Adapter getAdapter(FXFormNode node, Element element) {
-        return null;
+        return new DefaultAdapter();
     }
 }

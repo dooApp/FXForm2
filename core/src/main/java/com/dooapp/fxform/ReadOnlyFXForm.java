@@ -12,8 +12,11 @@
 
 package com.dooapp.fxform;
 
-import com.dooapp.fxform.view.factory.FormatProvider;
-import com.dooapp.fxform.view.factory.ReadOnlyFactory;
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.view.FXFormNode;
+import com.dooapp.fxform.view.factory.FactoryProvider;
+import com.dooapp.fxform.view.factory.impl.LabelFactory;
+import javafx.util.Callback;
 
 /**
  * A read-only form<br>
@@ -25,19 +28,19 @@ import com.dooapp.fxform.view.factory.ReadOnlyFactory;
 public class ReadOnlyFXForm<T> extends FXForm<T> {
 
     public ReadOnlyFXForm() {
-        super(new ReadOnlyFactory());
-    }
-
-    public ReadOnlyFXForm(FormatProvider formatProvider) {
-        super(new ReadOnlyFactory(formatProvider));
+        super(new FactoryProvider() {
+            public Callback<Void, FXFormNode> getFactory(Element element) {
+                return new LabelFactory();
+            }
+        });
     }
 
     public ReadOnlyFXForm(T source) {
-        super(source, new ReadOnlyFactory());
-    }
-
-    public ReadOnlyFXForm(T source, FormatProvider formatProvider) {
-        super(source, new ReadOnlyFactory(formatProvider));
+        super(source, new FactoryProvider() {
+            public Callback<Void, FXFormNode> getFactory(Element element) {
+                return new LabelFactory();
+            }
+        });
     }
 
 }

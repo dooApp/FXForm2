@@ -12,12 +12,9 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.filter.ReorderFilter;
-import com.dooapp.fxform.controller.PropertyElementController;
-import com.dooapp.fxform.view.FXFormSkinFactory;
-import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormNodeWrapper;
-import com.dooapp.fxform.view.factory.NodeFactory;
+import com.dooapp.fxform.view.FXFormSkinFactory;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -43,14 +40,11 @@ public class Demo extends Application {
     /**
      * Example of custom factory
      */
-    public static class TextAreaFactory implements NodeFactory<PropertyElementController<String>> {
-        public FXFormNode createNode(PropertyElementController<String> controller) throws NodeCreationException {
+    public static class TextAreaFactory implements Callback<Void, FXFormNode> {
+
+        public FXFormNode call(Void aVoid) {
             TextArea textArea = new TextArea();
-            return new FXFormNodeWrapper(textArea, new Callback<Node, Void>() {
-                public Void call(Node node) {
-                    return null;
-                }
-            });
+            return new FXFormNodeWrapper(textArea, textArea.textProperty());
         }
     }
 

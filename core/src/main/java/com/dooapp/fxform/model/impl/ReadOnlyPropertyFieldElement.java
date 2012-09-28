@@ -144,15 +144,14 @@ public class ReadOnlyPropertyFieldElement<SourceType, WrappedType> implements El
     }
 
     public Object getBean() {
-        return source;
+        return getSource();
     }
 
     public String getName() {
         return field.getName();
     }
 
-    public Class<WrappedType> getType() {
-        //TODO write this method
-        throw new UnsupportedOperationException("Not implemented");
+    public Class<?> getType() {
+        return field.getType();
     }
 }

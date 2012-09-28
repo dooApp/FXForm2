@@ -1,6 +1,7 @@
 package com.dooapp.fxform.filter;
 
 import com.dooapp.fxform.TestUtils;
+import com.dooapp.fxform.model.Element;
 import org.junit.Before;
 import org.junit.Ignore;
 
@@ -17,9 +18,9 @@ public abstract class AbstractFilterTest {
 
     private FieldFilter filter;
 
-    private List<Field> toFilter;
+    private List<Element> toFilter;
 
-    protected List<Field> filtered;
+    protected List<Element> filtered;
 
     @Before
     public void setUp() throws Exception {

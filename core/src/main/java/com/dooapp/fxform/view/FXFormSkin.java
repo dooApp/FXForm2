@@ -47,7 +47,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
 
         private final FXFormNode constraint;
 
-        protected ElementNodes(FXFormNode label, FXFormNode editor, FXFormNode tooltip, FXFormNode constraint) {
+        public ElementNodes(FXFormNode label, FXFormNode editor, FXFormNode tooltip, FXFormNode constraint) {
             this.label = label;
             this.editor = editor;
             this.tooltip = tooltip;
@@ -123,8 +123,21 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         return ((ElementNodes) getNode().getProperties().get(element)).getConstraint();
     }
 
-    protected abstract ElementNodes createElementNodes(Element element);
+    protected FXFormNode createLabel(Element element) {
+        return fxForm.getLabelFactoryProvider().getFactory(element).call(null);
+    }
 
+    protected FXFormNode createEditor(Element element) {
+        return fxForm.getEditorFactoryProvider().getFactory(element).call(null);
+    }
+
+    protected FXFormNode createTooltip(Element element) {
+        return fxForm.getTooltipFactoryProvider().getFactory(element).call(null);
+    }
+
+    protected FXFormNode createConstraint(Element element) {
+        return fxForm.getConstraintFactoryProvider().getFactory(element).call(null);
+    }
 
     /**
      * protected FXFormNode createConstraintNode(final ElementController controller) {
@@ -158,7 +171,16 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     }
 
     public void removeElement(Element element) {
+        ElementNodes elementNodes = (ElementNodes) getNode().getProperties().get(element);
+        if (elementNodes != null) {
+            deleteElementNodes(elementNodes);
+        }
         getNode().getProperties().remove(element);
+
     }
+
+    protected abstract ElementNodes createElementNodes(Element element);
+
+    protected abstract void deleteElementNodes(ElementNodes elementNodes);
 
 }

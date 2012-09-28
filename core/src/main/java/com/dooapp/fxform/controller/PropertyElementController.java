@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
+import java.util.ArrayList;
 
 /**
  * Created at 27/09/12 13:51.<br>
@@ -22,13 +23,14 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
      */
     private static final Logger logger = LoggerFactory.getLogger(PropertyElementController.class);
 
-    protected ObservableList<ConstraintViolation> constraintViolations = FXCollections.observableArrayList();
+    protected ObservableList<ConstraintViolation> constraintViolations;
 
     private final NodeController constraintController;
 
     public PropertyElementController(FXForm fxForm, PropertyElement element) {
         super(fxForm, element);
         constraintController = new ConstraintController(fxForm, element, constraintViolations);
+        updateSkin((FXFormSkin) fxForm.getSkin());
     }
 
     public ObservableList<ConstraintViolation> getConstraintViolations() {
@@ -37,11 +39,14 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
 
     @Override
     protected NodeController createEditorController(FXForm fxForm, Element element) {
+        constraintViolations = FXCollections.observableArrayList(new ArrayList<ConstraintViolation>());
         return new PropertyEditorController(fxForm, element, constraintViolations);
     }
 
     @Override
     protected void updateSkin(FXFormSkin skin) {
-        constraintController.setNode(skin.getConstraint(element));
+        super.updateSkin(skin);
+        if (constraintController != null)
+            constraintController.setNode(skin.getConstraint(element));
     }
 }

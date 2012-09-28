@@ -13,7 +13,8 @@
 package com.dooapp.fxform.view.skin;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.controller.ElementController;
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.control.AutoHidableLabel;
@@ -21,8 +22,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-
-import java.util.List;
 
 /**
  * A "vertical" skin.
@@ -52,21 +51,25 @@ public class DefaultSkin extends FXFormSkin {
         return titleBox;
     }
 
-    protected void addControllers(List<ElementController> controllers) {
-        for (final ElementController controller : controllers) {
-            Node editor = getEditor(controller);
-            final Node label = getLabel(controller);
-            controllerBox.getChildren().addAll(label, editor, getConstraint(controller));
-            Node node = getTooltip(controller);
-            controllerBox.getChildren().add(node);
-        }
+    @Override
+    protected ElementNodes createElementNodes(Element element) {
+        FXFormNode editor = createEditor(element);
+        FXFormNode label = createLabel(element);
+        FXFormNode constraint = createConstraint(element);
+        FXFormNode tooltip = createTooltip(element);
+        controllerBox.getChildren().addAll(label.getNode(), editor.getNode(), constraint.getNode());
+        controllerBox.getChildren().add(tooltip.getNode());
+        return new ElementNodes(label, editor, tooltip, constraint);
     }
 
-    protected void removeControllers(List<ElementController> controllers) {
-        for (ElementController controller : controllers) {
-            controllerBox.getChildren().removeAll(getLabel(controller), getEditor(controller), getTooltip(controller), getConstraint(controller));
-        }
+    @Override
+    protected void deleteElementNodes(ElementNodes elementNodes) {
+        controllerBox.getChildren().removeAll(elementNodes.getConstraint().getNode(),
+                elementNodes.getEditor().getNode(),
+                elementNodes.getLabel().getNode(),
+                elementNodes.getTooltip().getNode());
     }
+
 
     private Node createTitleNode() {
         Label label = new AutoHidableLabel();

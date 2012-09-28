@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform.model;
 
-import com.dooapp.fxform.view.Disposable;
+import com.dooapp.fxform.utils.Disposable;
 import javafx.beans.property.ReadOnlyProperty;
 
 /**
@@ -23,6 +23,6 @@ import javafx.beans.property.ReadOnlyProperty;
  */
 public interface Element<WrappedType> extends ReadOnlyProperty<WrappedType>, Disposable {
 
-    public Class<WrappedType> getType();
+    public Class<?> getType();
 
 }

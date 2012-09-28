@@ -16,6 +16,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dooapp.fxform.model.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +33,8 @@ public class IncludeFilter extends AbstractNameFilter implements FieldFilter {
 		super(names);
 	}
 
-	public List<Field> filter(List<Field> toFilter) {
-		List<Field> filtered = new ArrayList<Field>();
+	public List<Element> filter(List<Element> toFilter) {
+		List<Element> filtered = new ArrayList<Element>();
 		for (String name : names) {
 			try {
 				filtered.add(extractFieldByName(toFilter, name));

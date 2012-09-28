@@ -1,9 +1,13 @@
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.FormException;
+import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import org.junit.Ignore;
 
 import java.lang.reflect.Field;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -21,8 +25,8 @@ public class TestUtils {
      * @param fields
      * @return
      */
-    public static boolean containsNamedField(String name, List<Field> fields) {
-        for (Field field : fields) {
+    public static boolean containsNamedField(String name, List<Element> fields) {
+        for (Element field : fields) {
             if (name.equals(field.getName())) {
                 return true;
             }
@@ -35,8 +39,17 @@ public class TestUtils {
      *
      * @return
      */
-    public static List<Field> getTestFields() {
-        return new ReflectionFieldProvider().getProperties(new TestBean());
+    public static List<Element> getTestFields() {
+        List<Field> fields = new ReflectionFieldProvider().getProperties(new TestBean());
+        List<Element> elements = new LinkedList<Element>();
+        for (Field field: fields) {
+            try {
+                elements.add(new ReadOnlyPropertyFieldElement(field));
+            } catch (FormException e) {
+                e.printStackTrace();
+            }
+        }
+        return elements;
     }
 
 }

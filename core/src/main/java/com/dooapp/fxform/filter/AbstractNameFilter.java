@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.filter;
 
+import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.FormException;
 
 import java.lang.reflect.Field;
@@ -30,8 +31,8 @@ public abstract class AbstractNameFilter implements FieldFilter {
         this.names = names;
     }
 
-    protected Field extractFieldByName(List<Field> remaining, String name) throws FormException {
-        for (Field field : remaining) {
+    protected Element extractFieldByName(List<Element> remaining, String name) throws FormException {
+        for (Element field : remaining) {
             if (name.equals(field.getName())) {
                 remaining.remove(field);
                 return field;

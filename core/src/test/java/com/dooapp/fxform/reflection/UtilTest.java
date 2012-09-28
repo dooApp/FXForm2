@@ -2,10 +2,11 @@ package com.dooapp.fxform.reflection;
 
 import com.dooapp.fxform.TestEnum;
 import com.dooapp.fxform.TestUtils;
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -16,9 +17,9 @@ import java.util.List;
 public class UtilTest {
     @Test
     public void testGetObjectPropertyGeneric() throws Exception {
-        List<Field> fields = TestUtils.getTestFields();
-        Field objectPropertyField = fields.get(4);
-        Class clazz = Util.getObjectPropertyGeneric(objectPropertyField);
+        List<Element> fields = TestUtils.getTestFields();
+        Element objectPropertyField = fields.get(4);
+        Class clazz = Util.getObjectPropertyGeneric(((ReadOnlyPropertyFieldElement) objectPropertyField).getField());
         Assert.assertEquals(TestEnum.class, clazz);
     }
 }

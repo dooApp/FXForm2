@@ -15,6 +15,7 @@ package com.dooapp.fxform.filter;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import com.dooapp.fxform.model.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ public class ExcludeFilter extends AbstractNameFilter implements FieldFilter {
 		super(names);
 	}
 
-	public List<Field> filter(List<Field> toFilter) {
+	public List<Element> filter(List<Element> toFilter) {
 		for (String name : names) {
 			try {
 				extractFieldByName(toFilter, name);

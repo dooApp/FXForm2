@@ -12,7 +12,8 @@
 package com.dooapp.fxform.view.skin;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.controller.ElementController;
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.control.AutoHidableLabel;
@@ -68,22 +69,24 @@ public class InlineSkin extends FXFormSkin {
     }
 
     @Override
-    protected void removeControllers(List<ElementController> removed) {
-        for (ElementController controller : removed) {
-            removeRow(GridPane.getRowIndex(getEditor(controller)));
-            removeRow(GridPane.getRowIndex(getTooltip(controller)));
-        }
+    protected ElementNodes createElementNodes(Element element) {
+        GridPane.setHgrow(getEditor(element).getNode(), Priority.SOMETIMES);
+        FXFormNode editor = createEditor(element);
+        FXFormNode label = createLabel(element);
+        FXFormNode constraint = createConstraint(element);
+        FXFormNode tooltip = createTooltip(element);
+        gridPane.addRow(row, label.getNode(), editor.getNode(), constraint.getNode());
+        gridPane.add(tooltip.getNode(), 1, ++row);
+        row++;
+        return new ElementNodes(label, editor, tooltip, constraint);
     }
 
     @Override
-    protected void addControllers(List<ElementController> addedSubList) {
-        for (final ElementController controller : addedSubList) {
-            GridPane.setHgrow(getEditor(controller), Priority.SOMETIMES);
-            gridPane.addRow(row, getLabel(controller), getEditor(controller), getConstraint(controller));
-            gridPane.add(getTooltip(controller), 1, ++row);
-            row++;
-        }
+    protected void deleteElementNodes(ElementNodes elementNodes) {
+        removeRow(GridPane.getRowIndex(elementNodes.getEditor().getNode()));
+        removeRow(GridPane.getRowIndex(elementNodes.getTooltip().getNode()));
     }
+
 
     /**
      * Remove a row by moving all nodes under this row one row up.

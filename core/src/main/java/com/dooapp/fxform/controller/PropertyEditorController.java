@@ -6,6 +6,7 @@ import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

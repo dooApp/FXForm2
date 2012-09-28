@@ -2,7 +2,7 @@ package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.view.Disposable;
+import com.dooapp.fxform.utils.Disposable;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -37,7 +37,7 @@ public abstract class NodeController implements Disposable {
                     fxFormNode.dispose();
                 }
                 if (fxFormNode1 != null) {
-                    fxFormNode.init(NodeController.this.element);
+                    fxFormNode1.init(NodeController.this.element);
                     bind(fxFormNode1);
                 }
             }
