@@ -13,53 +13,54 @@
 package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.annotation.FormFactory;
-import com.dooapp.fxform.controller.ElementController;
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.FXFormNode;
-import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.property.ObjectProperty;
+import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This factory adds @FormFactory annotation support to a wrapped factory.
+ * Factory provider based on the @FormFactory annotation.
  * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 07/09/11
  * Time: 16:20
  */
-public class AnnotationFactoryProvider implements NodeFactory {
+public class AnnotationFactoryProvider implements FactoryProvider {
 
     private Logger logger = LoggerFactory.getLogger(AnnotationFactoryProvider.class);
 
-    private final NodeFactory delegate;
-
-    public AnnotationFactoryProvider(NodeFactory delegate) {
-        this.delegate = delegate;
-    }
-
-    public FXFormNode createNode(ElementController controller) throws NodeCreationException {
+    /**
+     * Might return null if no FormFactory annotation if defined neither on the field nor on the field type.
+     *
+     * @param element
+     * @return
+     */
+    public Callback<Void, FXFormNode> getFactory(Element element) {
+        ReadOnlyPropertyFieldElement property = ((ReadOnlyPropertyFieldElement) element);
         // check field annotation
-        if (controller.getElement().getField().getAnnotation(FormFactory.class) != null) {
+        if (property.getField().getAnnotation(FormFactory.class) != null) {
             // use factory provided by the annotation
             try {
-                return controller.getElement().getField().getAnnotation(FormFactory.class).value().newInstance().createNode(controller);
+                return property.getField().getAnnotation(FormFactory.class).value().newInstance();
             } catch (Exception e) {
-                logger.warn("The factory provided by the annotation @FormFactory on field " + controller.getElement() + " failed creating node", e);
+                logger.warn("The factory provided by the annotation @FormFactory on field " + element + " failed creating node", e);
             }
         }
         // check FormFactory annotation
-        if (ObjectProperty.class.isAssignableFrom(controller.getElement().getField().getType())) {
+        if (ObjectProperty.class.isAssignableFrom(property.getField().getType())) {
             try {
-                Class genericClass = Util.getObjectPropertyGeneric(controller.getElement().getField());
+                Class genericClass = Util.getObjectPropertyGeneric(property.getField());
                 if (genericClass.getAnnotation(FormFactory.class) != null) {
-                    return ((FormFactory) genericClass.getAnnotation(FormFactory.class)).value().newInstance().createNode(controller);
+                    return ((FormFactory) genericClass.getAnnotation(FormFactory.class)).value().newInstance();
                 }
             } catch (Exception e) {
                 // ignore
             }
         }
-        return delegate.createNode(controller);
+        return null;
     }
-
 }

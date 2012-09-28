@@ -13,7 +13,6 @@
 package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.view.factory.DisposableNode;
 import javafx.beans.property.Property;
 import javafx.scene.Node;
 

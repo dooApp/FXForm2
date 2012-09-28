@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.filter.FieldFilter;
@@ -23,7 +24,11 @@ import com.dooapp.fxform.model.impl.PropertyFieldElement;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.utils.ConfigurationStore;
-import com.dooapp.fxform.view.factory.*;
+import com.dooapp.fxform.view.FXFormNode;
+import com.dooapp.fxform.view.factory.DefaultFactoryProvider;
+import com.dooapp.fxform.view.factory.FactoryProvider;
+import com.dooapp.fxform.view.factory.impl.AutoHidableLabelFactory;
+import com.dooapp.fxform.view.factory.impl.LabelFactory;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -76,39 +81,59 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     private final ObjectProperty<ResourceBundle> resourceBundle = new SimpleObjectProperty<ResourceBundle>();
 
-    private final ObjectProperty<Callback<Void, FXFormNode>> editorFactory = new SimpleObjectProperty<Callback<Void, FXFormNode>>();
+    private final ObjectProperty<FactoryProvider> editorFactoryProvider = new SimpleObjectProperty<FactoryProvider>();
 
-    private final ObjectProperty<Callback<Void, FXFormNode>> tooltipFactory = new SimpleObjectProperty<Callback<Void, FXFormNode>>();
+    private final ObjectProperty<FactoryProvider> tooltipFactoryProvider = new SimpleObjectProperty<FactoryProvider>();
 
-    private final ObjectProperty<Callback<Void, FXFormNode>> labelFactory = new SimpleObjectProperty<Callback<Void, FXFormNode>>();
+    private final ObjectProperty<FactoryProvider> labelFactoryProvider = new SimpleObjectProperty<FactoryProvider>();
 
-    private final ObjectProperty<Callback<Void, FXFormNode>> constraintFactory = new SimpleObjectProperty<Callback<Void, FXFormNode>>();
+    private final ObjectProperty<FactoryProvider> constraintFactoryProvider = new SimpleObjectProperty<FactoryProvider>();
 
     public void setTitle(String title) {
         this.title.set(title);
     }
 
     public FXForm() {
-        this(new DelegateFactory());
+        this(new DefaultFactoryProvider());
     }
 
     public FXForm(T source) {
-        this(source, new DelegateFactory());
+        this(source, new DefaultFactoryProvider());
     }
 
-    public FXForm(Callback<Void, FXFormNode> editorFactory) {
-        this(null, new LabelFactory(), new AutoHidableLabelFactory(), editorFactory);
+    public FXForm(FactoryProvider editorFactoryProvider) {
+        this(null,
+                new FactoryProvider() {
+                    public Callback<Void, FXFormNode> getFactory(Element element) {
+                        return new LabelFactory();
+                    }
+                }, new FactoryProvider() {
+                    public Callback<Void, FXFormNode> getFactory(Element element) {
+                        return new AutoHidableLabelFactory();
+                    }
+                }, editorFactoryProvider
+        );
     }
 
-    public FXForm(T source, Callback<Void, FXFormNode> editorFactory) {
-        this(source, new LabelFactory(), new AutoHidableLabelFactory(), editorFactory);
+    public FXForm(T source, FactoryProvider editorFactoryProvider) {
+        this(source,
+                new FactoryProvider() {
+                    public Callback<Void, FXFormNode> getFactory(Element element) {
+                        return new LabelFactory();
+                    }
+                }, new FactoryProvider() {
+                    public Callback<Void, FXFormNode> getFactory(Element element) {
+                        return new AutoHidableLabelFactory();
+                    }
+                }, editorFactoryProvider
+        );
     }
 
-    public FXForm(Callback<Void, FXFormNode> labelFactory, Callback<Void, FXFormNode> tooltipFactory, Callback<Void, FXFormNode> editorFactory) {
-        this(null, labelFactory, tooltipFactory, editorFactory);
+    public FXForm(FactoryProvider labelFactoryProvider, FactoryProvider tooltipFactoryProvider, FactoryProvider editorFactoryProvider) {
+        this(null, labelFactoryProvider, tooltipFactoryProvider, editorFactoryProvider);
     }
 
-    public FXForm(T source, Callback<Void, FXFormNode> labelFactory, Callback<Void, FXFormNode> tooltipFactory, Callback<Void, FXFormNode> editorFactory) {
+    public FXForm(T source, FactoryProvider labelFactoryProvider, FactoryProvider tooltipFactoryProvider, FactoryProvider editorFactoryProvider) {
         initBundle();
 
         this.source.addListener(new ChangeListener<T>() {
@@ -266,52 +291,52 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         return resourceBundle.get();
     }
 
-    public Callback<Void, FXFormNode> getEditorFactory() {
-        return editorFactory.get();
+    public FactoryProvider getEditorFactoryProvider() {
+        return editorFactoryProvider.get();
     }
 
-    public Callback<Void, FXFormNode> getTooltipFactory() {
-        return tooltipFactory.get();
+    public FactoryProvider getTooltipFactoryProvider() {
+        return tooltipFactoryProvider.get();
     }
 
-    public Callback<Void, FXFormNode> getLabelFactory() {
-        return labelFactory.get();
+    public FactoryProvider getLabelFactoryProvider() {
+        return labelFactoryProvider.get();
     }
 
-    public Callback<Void, FXFormNode> getConstraintFactory() {
-        return constraintFactory.get();
+    public FactoryProvider getConstraintFactoryProvider() {
+        return constraintFactoryProvider.get();
     }
 
-    public void setEditorFactory(Callback<Void, FXFormNode> editorFactory1) {
-        editorFactory.set(editorFactory1);
+    public void setEditorFactoryProvider(FactoryProvider editorFactoryProvider1) {
+        editorFactoryProvider.set(editorFactoryProvider1);
     }
 
-    public void setLabelFactory(Callback<Void, FXFormNode> labelFactory1) {
-        labelFactory.set(labelFactory1);
+    public void setLabelFactoryProvider(FactoryProvider labelFactoryProvider1) {
+        labelFactoryProvider.set(labelFactoryProvider1);
     }
 
-    public void setTooltipFactory(Callback<Void, FXFormNode> tooltipFactory1) {
-        tooltipFactory.set(tooltipFactory1);
+    public void setTooltipFactoryProvider(FactoryProvider tooltipFactoryProvider1) {
+        tooltipFactoryProvider.set(tooltipFactoryProvider1);
     }
 
-    public void setConstraintFactory(Callback<Void, FXFormNode> constraintFactory1) {
-        constraintFactory.set(constraintFactory1);
+    public void setConstraintFactoryProvider(FactoryProvider constraintFactoryProvider1) {
+        constraintFactoryProvider.set(constraintFactoryProvider1);
     }
 
-    public ObjectProperty<Callback<Void, FXFormNode>> editorFactory() {
-        return editorFactory;
+    public ObjectProperty<FactoryProvider> editorFactoryProvider() {
+        return editorFactoryProvider;
     }
 
-    public ObjectProperty<Callback<Void, FXFormNode>> labelFactory() {
-        return labelFactory;
+    public ObjectProperty<FactoryProvider> labelFactoryProvider() {
+        return labelFactoryProvider;
     }
 
-    public ObjectProperty<Callback<Void, FXFormNode>> tooltipFactory() {
-        return tooltipFactory;
+    public ObjectProperty<FactoryProvider> tooltipFactoryProvider() {
+        return tooltipFactoryProvider;
     }
 
-    public ObjectProperty<Callback<Void, FXFormNode>> constraintFactory() {
-        return constraintFactory;
+    public ObjectProperty<FactoryProvider> constraintFactoryProvider() {
+        return constraintFactoryProvider;
     }
 
     public Adapter getAdapter(FXFormNode node, Element element) {

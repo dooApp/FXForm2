@@ -2,7 +2,7 @@ package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.view.factory.FXFormNode;
+import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.binding.ObjectBinding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

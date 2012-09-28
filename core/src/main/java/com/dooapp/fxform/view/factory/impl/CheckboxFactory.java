@@ -12,13 +12,8 @@
 
 package com.dooapp.fxform.view.factory.impl;
 
-import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormNodeWrapper;
-import com.dooapp.fxform.view.factory.NodeFactory;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.util.Callback;
 
@@ -27,29 +22,10 @@ import javafx.util.Callback;
  * Date: 16/04/11
  * Time: 23:57
  */
-public class CheckboxFactory implements NodeFactory<PropertyElementController<Boolean>> {
+public class CheckboxFactory implements Callback<Void, FXFormNode> {
 
-    public FXFormNode createNode(final PropertyElementController<Boolean> controller) {
+    public FXFormNode call(Void aVoid) {
         final CheckBox checkBox = new CheckBox();
-        checkBox.setSelected(controller.getValue());
-        final ChangeListener<Boolean> controllerListener = new ChangeListener<Boolean>() {
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
-                checkBox.setSelected(aBoolean1);
-            }
-        };
-        controller.addListener(controllerListener);
-        final ChangeListener<Boolean> checkBoxListener = new ChangeListener<Boolean>() {
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
-                controller.setValue(aBoolean1);
-            }
-        };
-        checkBox.selectedProperty().addListener(checkBoxListener);
-        return new FXFormNodeWrapper(checkBox, new Callback<Node, Void>() {
-            public Void call(Node node) {
-                checkBox.selectedProperty().removeListener(checkBoxListener);
-                controller.removeListener(controllerListener);
-                return null;
-            }
-        });
+        return new FXFormNodeWrapper(checkBox, checkBox.selectedProperty());
     }
 }

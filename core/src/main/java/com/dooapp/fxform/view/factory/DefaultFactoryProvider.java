@@ -17,7 +17,7 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormNodeWrapper;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.factory.delegate.*;
+import com.dooapp.fxform.view.factory.impl.*;
 import com.dooapp.fxform.handler.EnumHandler;
 import com.dooapp.fxform.handler.FieldHandler;
 import com.dooapp.fxform.handler.TypeFieldHandler;
@@ -53,18 +53,13 @@ public class DefaultFactoryProvider implements FactoryProvider {
     private final Map<ElementHandler, Callback<Void, FXFormNode>> USER_MAP = new HashMap();
 
     public DefaultFactoryProvider() {
-        this(new FormatProviderImpl());
-    }
-
-    public DefaultFactoryProvider(FormatProvider formatProvider) {
-        this.formatProvider = formatProvider;
         // register default delegates
-        DEFAULT_MAP.put(new TypeFieldHandler(StringProperty.class), new StringPropertyDelegate());
-        DEFAULT_MAP.put(new TypeFieldHandler(BooleanProperty.class), new BooleanPropertyDelegate());
-        DEFAULT_MAP.put(new EnumHandler(), new EnumPropertyDelegate());
-        DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new IntegerPropertyDelegate(formatProvider));
-        DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new LongPropertyDelegate(formatProvider));
-        DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new DoublePropertyDelegate(formatProvider));
+        DEFAULT_MAP.put(new TypeFieldHandler(StringProperty.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(BooleanProperty.class), new CheckboxFactory());
+        DEFAULT_MAP.put(new EnumHandler(), new ChoiceBoxFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new TextFieldFactory());
     }
 
     private Callback<Void, FXFormNode> getDelegate(Element element, Map<ElementHandler, Callback<Void, FXFormNode>> map) {

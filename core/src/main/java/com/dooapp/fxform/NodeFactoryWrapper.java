@@ -13,7 +13,7 @@ package com.dooapp.fxform;
 
 import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.factory.FXFormNode;
+import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.factory.NodeFactory;
 import javafx.collections.ListChangeListener;
 

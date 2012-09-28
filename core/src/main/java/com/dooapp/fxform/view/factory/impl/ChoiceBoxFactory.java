@@ -12,17 +12,14 @@
 
 package com.dooapp.fxform.view.factory.impl;
 
-import com.dooapp.fxform.controller.PropertyElementController;
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import com.dooapp.fxform.reflection.Util;
-import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.FXFormNode;
-import com.dooapp.fxform.view.FXFormNodeWrapper;
-import com.dooapp.fxform.view.factory.NodeFactory;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.dooapp.fxform.view.control.BindableChoiceBox;
+import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.scene.Node;
-import javafx.scene.control.ChoiceBox;
 import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,43 +31,36 @@ import java.util.Arrays;
  * Date: 17/04/11
  * Time: 00:19
  */
-public class ChoiceBoxFactory implements NodeFactory<PropertyElementController<Enum>> {
+public class ChoiceBoxFactory implements Callback<Void, FXFormNode> {
 
     private final Logger logger = LoggerFactory.getLogger(ChoiceBoxFactory.class);
 
-    public FXFormNode createNode(final PropertyElementController<Enum> controller) throws NodeCreationException {
-        Enum[] constants = new Enum[0];
-        try {
-            constants = (Enum[]) Util.getObjectPropertyGeneric(controller.getElement().getField()).getEnumConstants();
-        } catch (Exception e) {
-            logger.warn("Could not retrieve enum constants from controller " + controller, e);
-        }
-        final ChoiceBox<Enum> choiceBox = new ChoiceBox<Enum>();
-        choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
-        choiceBox.getSelectionModel().select(controller.getValue());
-        final ChangeListener<Enum> enumChangeListener = new ChangeListener<Enum>() {
+    public FXFormNode call(Void aVoid) {
+        final BindableChoiceBox<Enum> choiceBox = new BindableChoiceBox<Enum>();
+        return new FXFormNode() {
 
-            public void changed(ObservableValue<? extends Enum> observableValue, Enum anEnum, Enum anEnum1) {
-                controller.setValue(anEnum1);
+            public Property getProperty() {
+                return choiceBox.selectedItemProperty();
             }
-        };
-        choiceBox.getSelectionModel().selectedItemProperty().addListener(enumChangeListener);
-        final ChangeListener controllerListener = new ChangeListener() {
-            public void changed(ObservableValue observableValue, Object o, Object o1) {
-                if (o1 != null) {
-                    choiceBox.getSelectionModel().select((Enum) o1);
-                } else {
-                    choiceBox.getSelectionModel().clearSelection();
+
+            public void init(Element element) {
+                Enum[] constants = new Enum[0];
+                try {
+                    constants = (Enum[]) Util.getObjectPropertyGeneric(((ReadOnlyPropertyFieldElement) element).getField()).getEnumConstants();
+                } catch (Exception e) {
+                    logger.warn("Could not retrieve enum constants from element " + element, e);
                 }
+                choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
+                choiceBox.getSelectionModel().select((Enum) element.getValue());
+            }
+
+            public Node getNode() {
+                return choiceBox;
+            }
+
+            public void dispose() {
+                choiceBox.setItems(FXCollections.<Enum>emptyObservableList());
             }
         };
-        controller.addListener(controllerListener);
-        return new FXFormNodeWrapper(choiceBox, new Callback<Node, Void>() {
-            public Void call(Node node) {
-                choiceBox.getSelectionModel().selectedItemProperty().removeListener(enumChangeListener);
-                controller.removeListener(controllerListener);
-                return null;
-            }
-        });
     }
 }

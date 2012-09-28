@@ -3,6 +3,7 @@ package com.dooapp.fxform.controller;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
+import com.dooapp.fxform.view.FXFormSkin;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
@@ -23,8 +24,11 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
 
     protected ObservableList<ConstraintViolation> constraintViolations = FXCollections.observableArrayList();
 
+    private final NodeController constraintController;
+
     public PropertyElementController(FXForm fxForm, PropertyElement element) {
         super(fxForm, element);
+        constraintController = new ConstraintController(fxForm, element, constraintViolations);
     }
 
     public ObservableList<ConstraintViolation> getConstraintViolations() {
@@ -36,4 +40,8 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
         return new PropertyEditorController(fxForm, element, constraintViolations);
     }
 
+    @Override
+    protected void updateSkin(FXFormSkin skin) {
+        constraintController.setNode(skin.getConstraint(element));
+    }
 }

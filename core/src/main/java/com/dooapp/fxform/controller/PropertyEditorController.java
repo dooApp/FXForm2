@@ -3,7 +3,7 @@ package com.dooapp.fxform.controller;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
-import com.dooapp.fxform.view.factory.FXFormNode;
+import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;

@@ -11,6 +11,9 @@
 
 package com.dooapp.fxform.handler;
 
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
+
 import java.lang.reflect.Field;
 
 /**
@@ -19,7 +22,7 @@ import java.lang.reflect.Field;
  * Date: 25/08/11
  * Time: 17:38
  */
-public class NamedFieldHandler implements FieldHandler {
+public class NamedFieldHandler implements ElementHandler {
 
     private final String name;
 
@@ -27,8 +30,7 @@ public class NamedFieldHandler implements FieldHandler {
         this.name = name;
     }
 
-    public boolean handle(Field field) {
-        return name.equals(field.getName());
+    public boolean handle(Element element) {
+        return name.equals(element.getName());
     }
-
 }

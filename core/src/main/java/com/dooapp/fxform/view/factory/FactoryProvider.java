@@ -1,17 +1,16 @@
 package com.dooapp.fxform.view.factory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.view.FXFormNode;
+import javafx.util.Callback;
 
 /**
  * Created at 28/09/12 10:45.<br>
  *
  * @author Antoine Mischler <antoine@dooapp.com>
  */
-public class FactoryProvider {
-    /**
-     * The logger
-     */
-    private static final Logger logger = LoggerFactory.getLogger(FactoryProvider.class);
+public interface FactoryProvider {
+
+    public Callback<Void, FXFormNode> getFactory(Element element);
 
 }

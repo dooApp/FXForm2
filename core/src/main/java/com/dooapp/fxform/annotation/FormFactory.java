@@ -11,6 +11,9 @@
 
 package com.dooapp.fxform.annotation;
 
+import com.dooapp.fxform.view.FXFormNode;
+import javafx.util.Callback;
+
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,6 +29,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FormFactory {
 
-    Class<? extends com.dooapp.fxform.view.factory.NodeFactory> value();
+    Class<? extends Callback<Void, FXFormNode>> value();
 
 }

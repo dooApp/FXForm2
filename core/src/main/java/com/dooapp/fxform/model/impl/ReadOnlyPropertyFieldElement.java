@@ -150,4 +150,9 @@ public class ReadOnlyPropertyFieldElement<SourceType, WrappedType> implements El
     public String getName() {
         return field.getName();
     }
+
+    public Class<WrappedType> getType() {
+        //TODO write this method
+        throw new UnsupportedOperationException("Not implemented");
+    }
 }

@@ -12,20 +12,8 @@
 
 package com.dooapp.fxform.model;
 
-import com.dooapp.fxform.view.factory.Disposable;
-import javafx.beans.InvalidationListener;
-import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
+import com.dooapp.fxform.view.Disposable;
 import javafx.beans.property.ReadOnlyProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.beans.value.WritableValue;
-
-import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -34,5 +22,7 @@ import java.util.List;
  * Model object wrapping an object field.
  */
 public interface Element<WrappedType> extends ReadOnlyProperty<WrappedType>, Disposable {
+
+    public Class<WrappedType> getType();
 
 }

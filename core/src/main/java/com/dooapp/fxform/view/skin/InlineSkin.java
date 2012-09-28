@@ -15,7 +15,7 @@ import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.factory.AutoHidableLabel;
+import com.dooapp.fxform.view.control.AutoHidableLabel;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;

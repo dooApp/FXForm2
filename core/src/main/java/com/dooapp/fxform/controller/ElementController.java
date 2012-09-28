@@ -14,7 +14,6 @@ package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.view.ElementNodes;
 import com.dooapp.fxform.view.FXFormSkin;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -64,11 +63,10 @@ public class ElementController<WrappedType> {
         return new EditorController(fxForm, element);
     }
 
-    private void updateSkin(FXFormSkin skin) {
-        ElementNodes elementNodes = skin.getOrCreateElementNodes(element);
-        editorController.setNode(elementNodes.getEditor());
-        labelController.setNode(elementNodes.getLabel());
-        tooltipController.setNode(elementNodes.getTooltip());
+    protected void updateSkin(FXFormSkin skin) {
+        editorController.setNode(skin.getEditor(element));
+        labelController.setNode(skin.getLabel(element));
+        tooltipController.setNode(skin.getTooltip(element));
     }
 
     /**
@@ -80,6 +78,7 @@ public class ElementController<WrappedType> {
         tooltipController.dispose();
         editorController.dispose();
         fxForm.skinProperty().removeListener(changeListener);
+        ((FXFormSkin) fxForm.getSkin()).removeElement(element);
     }
 
     public Element getElement() {

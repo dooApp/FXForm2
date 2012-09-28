@@ -2,8 +2,8 @@ package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.view.factory.Disposable;
-import com.dooapp.fxform.view.factory.FXFormNode;
+import com.dooapp.fxform.view.Disposable;
+import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
