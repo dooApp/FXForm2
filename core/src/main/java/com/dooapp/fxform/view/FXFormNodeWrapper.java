@@ -13,6 +13,8 @@
 package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.view.property.DefaultPropertyProvider;
+import com.dooapp.fxform.view.property.PropertyProvider;
 import javafx.beans.property.Property;
 import javafx.scene.Node;
 import javafx.util.Callback;

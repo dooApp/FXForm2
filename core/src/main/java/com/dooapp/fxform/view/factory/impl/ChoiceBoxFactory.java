@@ -16,10 +16,11 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.FXFormNode;
-import com.dooapp.fxform.view.control.BindableChoiceBox;
+import com.dooapp.fxform.view.property.ChoiceBoxDefaultProperty;
 import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
 import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
 import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +37,13 @@ public class ChoiceBoxFactory implements Callback<Void, FXFormNode> {
     private final Logger logger = LoggerFactory.getLogger(ChoiceBoxFactory.class);
 
     public FXFormNode call(Void aVoid) {
-        final BindableChoiceBox<Enum> choiceBox = new BindableChoiceBox<Enum>();
+        final ChoiceBox<Enum> choiceBox = new ChoiceBox<Enum>();
         return new FXFormNode() {
 
+            private final Property property = new ChoiceBoxDefaultProperty(choiceBox);
+
             public Property getProperty() {
-                return choiceBox.selectedItemProperty();
+                return property;
             }
 
             public void init(Element element) {

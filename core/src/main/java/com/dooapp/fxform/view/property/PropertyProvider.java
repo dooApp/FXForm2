@@ -11,7 +11,7 @@ import javafx.scene.Node;
 public interface PropertyProvider<N extends Node> {
 
     /**
-     * Provides the default property for this node.
+     * Provides the default property for this node. This is the property that should be bound to the model.
      *
      * @param node
      * @return

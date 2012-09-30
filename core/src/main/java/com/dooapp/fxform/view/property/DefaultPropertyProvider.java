@@ -1,8 +1,5 @@
 package com.dooapp.fxform.view.property;
 
-import com.dooapp.fxform.view.PropertyProvider;
-import com.dooapp.fxform.view.control.BindableChoiceBox;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -53,8 +50,7 @@ public class DefaultPropertyProvider implements PropertyProvider {
         map.put(ChoiceBox.class, new PropertyProvider<ChoiceBox>() {
             @Override
             public Property getProperty(ChoiceBox node) {
-                return new ObjectProperty() {
-                }
+                return new ChoiceBoxDefaultProperty(node);
             }
         });
         map.put(CheckBox.class, new PropertyProvider<CheckBox>() {
