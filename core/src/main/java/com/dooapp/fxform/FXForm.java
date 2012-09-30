@@ -12,8 +12,8 @@
 
 package com.dooapp.fxform;
 
-import com.dooapp.fxform.adapter.Adapter;
-import com.dooapp.fxform.adapter.DefaultAdapter;
+import com.dooapp.fxform.adapter.AdapterProvider;
+import com.dooapp.fxform.adapter.DefaultAdapterProvider;
 import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.filter.FieldFilter;
@@ -75,7 +75,9 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public static final String CONSTRAINT_ID_SUFFIX = "-form-constraint";
 
-    public final static String INVALID = "-invalid";
+    public static final String CONSTRAINT_STYLE = "form-constraint";
+
+    public final static String INVALID_STYLE = "-invalid";
 
     private final ObjectProperty<T> source = new SimpleObjectProperty<T>();
 
@@ -94,6 +96,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     private final ObjectProperty<FactoryProvider> labelFactoryProvider = new SimpleObjectProperty<FactoryProvider>();
 
     private final ObjectProperty<FactoryProvider> constraintFactoryProvider = new SimpleObjectProperty<FactoryProvider>();
+
+    private final ObjectProperty<AdapterProvider> adapterProvider = new SimpleObjectProperty<AdapterProvider>();
 
     public void setTitle(String title) {
         this.title.set(title);
@@ -141,6 +145,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public FXForm(T source, FactoryProvider labelFactoryProvider, FactoryProvider tooltipFactoryProvider, FactoryProvider editorFactoryProvider) {
         initBundle();
+        setAdapterProvider(new DefaultAdapterProvider());
         setEditorFactoryProvider(editorFactoryProvider);
         setLabelFactoryProvider(labelFactoryProvider);
         setTooltipFactoryProvider(tooltipFactoryProvider);
@@ -362,7 +367,16 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         return constraintFactoryProvider;
     }
 
-    public Adapter getAdapter(FXFormNode node, Element element) {
-        return new DefaultAdapter();
+    public AdapterProvider getAdapterProvider() {
+        return adapterProvider.get();
     }
+
+    public void setAdapterProvider(AdapterProvider adapterProvider1) {
+        this.adapterProvider.set(adapterProvider1);
+    }
+
+    public ObjectProperty<AdapterProvider> adapterProviderProperty() {
+        return adapterProvider;
+    }
+
 }

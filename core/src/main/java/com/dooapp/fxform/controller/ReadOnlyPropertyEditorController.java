@@ -4,6 +4,7 @@ import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.StringProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,13 +13,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author Antoine Mischler <antoine@dooapp.com>
  */
-public class EditorController extends NodeController {
+public class ReadOnlyPropertyEditorController extends NodeController {
     /**
      * The logger
      */
-    private static final Logger logger = LoggerFactory.getLogger(EditorController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReadOnlyPropertyEditorController.class);
 
-    public EditorController(FXForm fxForm, Element element) {
+    public ReadOnlyPropertyEditorController(FXForm fxForm, Element element) {
         super(fxForm, element);
     }
 
@@ -31,7 +32,7 @@ public class EditorController extends NodeController {
 
             @Override
             protected Object computeValue() {
-                return getFxForm().getAdapter(getNode(), getElement()).adaptTo(getElement());
+                return getFxForm().getAdapterProvider().getAdapter(StringProperty.class, getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement());
             }
         });
     }

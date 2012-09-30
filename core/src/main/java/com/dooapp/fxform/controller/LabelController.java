@@ -4,6 +4,7 @@ import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.StringProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ public class LabelController extends NodeController {
                     // label is undefined
                     label = (getElement().getName());
                 }
-                return getFxForm().getAdapter(getNode(), getElement()).adaptTo(label);
+                return getFxForm().getAdapterProvider().getAdapter(StringProperty.class, getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(label);
             }
         });
     }

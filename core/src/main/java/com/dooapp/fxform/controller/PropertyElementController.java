@@ -5,6 +5,7 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.view.FXFormSkin;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,21 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
         super(fxForm, element);
         constraintController = new ConstraintController(fxForm, element, constraintViolations);
         updateSkin((FXFormSkin) fxForm.getSkin());
+        constraintViolations.addListener(new ListChangeListener<ConstraintViolation>() {
+
+            @Override
+            public void onChanged(Change<? extends ConstraintViolation> change) {
+                if (constraintViolations.size() > 0) {
+                    labelController.getNode().getNode().getStyleClass().add(FXForm.LABEL_STYLE + FXForm.INVALID_STYLE);
+                    editorController.getNode().getNode().getStyleClass().add(FXForm.EDITOR_STYLE + FXForm.INVALID_STYLE);
+                    tooltipController.getNode().getNode().getStyleClass().add(FXForm.TOOLTIP_STYLE + FXForm.INVALID_STYLE);
+                } else {
+                    labelController.getNode().getNode().getStyleClass().remove(FXForm.LABEL_STYLE + FXForm.INVALID_STYLE);
+                    editorController.getNode().getNode().getStyleClass().remove(FXForm.EDITOR_STYLE + FXForm.INVALID_STYLE);
+                    tooltipController.getNode().getNode().getStyleClass().remove(FXForm.TOOLTIP_STYLE + FXForm.INVALID_STYLE);
+                }
+            }
+        });
     }
 
     public ObservableList<ConstraintViolation> getConstraintViolations() {

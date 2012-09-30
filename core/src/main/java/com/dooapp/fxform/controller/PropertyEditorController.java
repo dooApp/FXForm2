@@ -6,7 +6,6 @@ import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +57,7 @@ public class PropertyEditorController extends NodeController {
     protected void bind(final FXFormNode fxFormNode) {
         viewChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                Object newValue = getFxForm().getAdapter(getNode(), getElement()).adaptFrom(o1);
+                Object newValue = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptFrom(o1);
                 if (validator != null) {
                     Set<ConstraintViolation<Object>> constraintViolationSet = validator.validateValue((Class<Object>) (getElement().getBean().getClass()), getElement().getName(), newValue);
                     constraintViolations.clear();
@@ -72,11 +71,12 @@ public class PropertyEditorController extends NodeController {
         fxFormNode.getProperty().addListener(viewChangeListener);
         modelChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                Object newValue = getFxForm().getAdapter(getNode(), getElement()).adaptTo(o1);
-                fxFormNode.getProperty().setValue(o1);
+                Object newValue = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(o1);
+                fxFormNode.getProperty().setValue(newValue);
             }
         };
         getElement().addListener(modelChangeListener);
+        fxFormNode.getProperty().setValue(getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue()));
     }
 
     @Override

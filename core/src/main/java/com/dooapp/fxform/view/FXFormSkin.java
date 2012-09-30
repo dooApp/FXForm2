@@ -14,9 +14,11 @@ package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.view.factory.AnnotationFactoryProvider;
+import com.dooapp.fxform.view.factory.FactoryProvider;
 import javafx.scene.Node;
 import javafx.scene.control.Skin;
-import javafx.scene.image.Image;
+import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,11 +33,11 @@ public abstract class FXFormSkin implements Skin<FXForm> {
 
     private final Logger logger = LoggerFactory.getLogger(FXFormSkin.class);
 
-    private final static Image WARNING = new Image(FXFormSkin.class.getResource("warning.png").toExternalForm());
-
     protected FXForm fxForm;
 
     private Node rootNode;
+
+    private AnnotationFactoryProvider annotationFactoryProvider = new AnnotationFactoryProvider();
 
     protected static class ElementNodes {
 
@@ -52,6 +54,10 @@ public abstract class FXFormSkin implements Skin<FXForm> {
             this.editor = editor;
             this.tooltip = tooltip;
             this.constraint = constraint;
+            label.getNode().getStyleClass().add(FXForm.LABEL_STYLE);
+            editor.getNode().getStyleClass().add(FXForm.EDITOR_STYLE);
+            tooltip.getNode().getStyleClass().add(FXForm.TOOLTIP_STYLE);
+            constraint.getNode().getStyleClass().add(FXForm.CONSTRAINT_STYLE);
         }
 
         public FXFormNode getLabel() {
@@ -123,44 +129,32 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         return ((ElementNodes) getNode().getProperties().get(element)).getConstraint();
     }
 
+    protected FXFormNode createFXFormNode(Element element, FactoryProvider factoryProvider, String suffixId) {
+        FXFormNode fxFormNode = factoryProvider.getFactory(element).call(null);
+        fxFormNode.getNode().setId(element.getName() + suffixId);
+        return fxFormNode;
+    }
+
     protected FXFormNode createLabel(Element element) {
-        return fxForm.getLabelFactoryProvider().getFactory(element).call(null);
+        return createFXFormNode(element, fxForm.getLabelFactoryProvider(), FXForm.LABEL_ID_SUFFIX);
     }
 
     protected FXFormNode createEditor(Element element) {
-        return fxForm.getEditorFactoryProvider().getFactory(element).call(null);
+        Callback<Void, FXFormNode> factory = annotationFactoryProvider.getFactory(element);
+        if (factory != null) {
+            return factory.call(null);
+        } else {
+            return createFXFormNode(element, fxForm.getEditorFactoryProvider(), FXForm.EDITOR_ID_SUFFIX);
+        }
     }
 
     protected FXFormNode createTooltip(Element element) {
-        return fxForm.getTooltipFactoryProvider().getFactory(element).call(null);
+        return createFXFormNode(element, fxForm.getTooltipFactoryProvider(), FXForm.TOOLTIP_ID_SUFFIX);
     }
 
     protected FXFormNode createConstraint(Element element) {
-        return fxForm.getConstraintFactoryProvider().getFactory(element).call(null);
+        return createFXFormNode(element, fxForm.getConstraintFactoryProvider(), FXForm.CONSTRAINT_ID_SUFFIX);
     }
-
-    /**
-     * protected FXFormNode createConstraintNode(final ElementController controller) {
-     * final VBox constraintsBox = new VBox();
-     * constraintsBox.setAlignment(Pos.CENTER_LEFT);
-     * controller.getConstraintViolations().addListener(new ListChangeListener() {
-     * public void onChanged(Change change) {
-     * constraintsBox.getChildren().clear();
-     * for (Object o : controller.getConstraintViolations()) {
-     * ConstraintViolation constraintViolation = (ConstraintViolation) o;
-     * Label errorLabel = new Label(constraintViolation.getMessage());
-     * ImageView warningView = new ImageView(WARNING);
-     * warningView.setFitHeight(15);
-     * warningView.setPreserveRatio(true);
-     * warningView.setSmooth(true);
-     * errorLabel.setGraphic(warningView);
-     * constraintsBox.getChildren().add(errorLabel);
-     * }
-     * }
-     * });
-     * return new FXFormNodeWrapper(constraintsBox);
-     * }
-     */
 
     public void dispose() {
         fxForm = null;
@@ -176,7 +170,6 @@ public abstract class FXFormSkin implements Skin<FXForm> {
             deleteElementNodes(elementNodes);
         }
         getNode().getProperties().remove(element);
-
     }
 
     protected abstract ElementNodes createElementNodes(Element element);

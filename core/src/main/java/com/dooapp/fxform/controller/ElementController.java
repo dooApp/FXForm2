@@ -34,11 +34,11 @@ public class ElementController<WrappedType> {
 
     protected final Element<WrappedType> element;
 
-    private final NodeController editorController;
+    protected final NodeController editorController;
 
-    private final NodeController labelController;
+    protected final NodeController labelController;
 
-    private final NodeController tooltipController;
+    protected final NodeController tooltipController;
 
     private final ChangeListener<Skin<?>> changeListener;
 
@@ -60,7 +60,7 @@ public class ElementController<WrappedType> {
     }
 
     protected NodeController createEditorController(FXForm fxForm, Element element) {
-        return new EditorController(fxForm, element);
+        return new ReadOnlyPropertyEditorController(fxForm, element);
     }
 
     protected void updateSkin(FXFormSkin skin) {
