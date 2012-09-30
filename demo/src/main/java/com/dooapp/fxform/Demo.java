@@ -14,7 +14,9 @@ package com.dooapp.fxform;
 import com.dooapp.fxform.filter.ReorderFilter;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormNodeWrapper;
+import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.FXFormSkinFactory;
+import com.dooapp.fxform.view.skin.FXMLSkin;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -91,10 +93,21 @@ public class Demo extends Application {
      */
     private Node createSkinSelector() {
         ChoiceBox<FXFormSkinFactory> choiceBox = new ChoiceBox<FXFormSkinFactory>();
-        choiceBox.getItems().addAll(FXFormSkinFactory.DEFAULT_FACTORY, FXFormSkinFactory.INLINE_FACTORY);
+        choiceBox.getItems().addAll(FXFormSkinFactory.DEFAULT_FACTORY, FXFormSkinFactory.INLINE_FACTORY, new FXFormSkinFactory() {
+            @Override
+            public FXFormSkin createSkin(FXForm form) {
+                return new FXMLSkin(form, Demo.class.getResource("Demo_form.fxml"));
+            }
+
+            @Override
+            public String toString() {
+                return "FXML Skin (Demo_form.fxml)";
+            }
+        });
         choiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<FXFormSkinFactory>() {
             public void changed(ObservableValue<? extends FXFormSkinFactory> observableValue, FXFormSkinFactory fxFormSkinFactory, FXFormSkinFactory fxFormSkinFactory1) {
                 fxForm.setSkin(fxFormSkinFactory1.createSkin(fxForm));
+                root.getScene().getWindow().sizeToScene();
             }
         });
         choiceBox.getSelectionModel().selectFirst();

@@ -61,8 +61,11 @@ public class FXMLSkin extends FXFormSkin {
 
 
     private FXFormNode lookupNode(Element element, String suffix) {
-        return new FXFormNodeWrapper(getNode().lookup(element.getName() + suffix));
+        Node node = getNode().lookup("#" + element.getName() + suffix);
+        if (node != null)
+            return new FXFormNodeWrapper(node);
+        else
+            return null;
     }
-
 
 }

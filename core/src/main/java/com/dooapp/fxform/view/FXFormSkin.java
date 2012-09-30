@@ -54,10 +54,14 @@ public abstract class FXFormSkin implements Skin<FXForm> {
             this.editor = editor;
             this.tooltip = tooltip;
             this.constraint = constraint;
-            label.getNode().getStyleClass().add(FXForm.LABEL_STYLE);
-            editor.getNode().getStyleClass().add(FXForm.EDITOR_STYLE);
-            tooltip.getNode().getStyleClass().add(FXForm.TOOLTIP_STYLE);
-            constraint.getNode().getStyleClass().add(FXForm.CONSTRAINT_STYLE);
+            if (label != null)
+                label.getNode().getStyleClass().add(FXForm.LABEL_STYLE);
+            if (editor != null)
+                editor.getNode().getStyleClass().add(FXForm.EDITOR_STYLE);
+            if (tooltip != null)
+                tooltip.getNode().getStyleClass().add(FXForm.TOOLTIP_STYLE);
+            if (constraint != null)
+                constraint.getNode().getStyleClass().add(FXForm.CONSTRAINT_STYLE);
         }
 
         public FXFormNode getLabel() {

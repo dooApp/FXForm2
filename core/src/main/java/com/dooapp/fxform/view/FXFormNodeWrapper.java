@@ -32,6 +32,8 @@ public class FXFormNodeWrapper implements FXFormNode {
 
     private final Property property;
 
+    private final PropertyProvider propertyProvider = new DefaultPropertyProvider();
+
     public FXFormNodeWrapper(Node node) {
         this(node, null, new Callback<Node, Void>() {
             public Void call(Node node) {
@@ -51,7 +53,16 @@ public class FXFormNodeWrapper implements FXFormNode {
     public FXFormNodeWrapper(Node node, Property property, Callback<Node, Void> callback) {
         this.node = node;
         this.callback = callback;
-        this.property = property;
+        if (property != null) {
+            this.property = property;
+        } else {
+            // no property provided, try to guess it
+            this.property = guessProperty(node);
+        }
+    }
+
+    private Property guessProperty(Node node) {
+        return propertyProvider.getProperty(node);
     }
 
     public void dispose() {

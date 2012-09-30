@@ -37,13 +37,19 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
             @Override
             public void onChanged(Change<? extends ConstraintViolation> change) {
                 if (constraintViolations.size() > 0) {
-                    labelController.getNode().getNode().getStyleClass().add(FXForm.LABEL_STYLE + FXForm.INVALID_STYLE);
-                    editorController.getNode().getNode().getStyleClass().add(FXForm.EDITOR_STYLE + FXForm.INVALID_STYLE);
-                    tooltipController.getNode().getNode().getStyleClass().add(FXForm.TOOLTIP_STYLE + FXForm.INVALID_STYLE);
+                    if (labelController.getNode() != null)
+                        labelController.getNode().getNode().getStyleClass().add(FXForm.LABEL_STYLE + FXForm.INVALID_STYLE);
+                    if (editorController.getNode() != null)
+                        editorController.getNode().getNode().getStyleClass().add(FXForm.EDITOR_STYLE + FXForm.INVALID_STYLE);
+                    if (tooltipController.getNode() != null)
+                        tooltipController.getNode().getNode().getStyleClass().add(FXForm.TOOLTIP_STYLE + FXForm.INVALID_STYLE);
                 } else {
-                    labelController.getNode().getNode().getStyleClass().remove(FXForm.LABEL_STYLE + FXForm.INVALID_STYLE);
-                    editorController.getNode().getNode().getStyleClass().remove(FXForm.EDITOR_STYLE + FXForm.INVALID_STYLE);
-                    tooltipController.getNode().getNode().getStyleClass().remove(FXForm.TOOLTIP_STYLE + FXForm.INVALID_STYLE);
+                    if (labelController.getNode() != null)
+                        labelController.getNode().getNode().getStyleClass().remove(FXForm.LABEL_STYLE + FXForm.INVALID_STYLE);
+                    if (editorController.getNode() != null)
+                        editorController.getNode().getNode().getStyleClass().remove(FXForm.EDITOR_STYLE + FXForm.INVALID_STYLE);
+                    if (tooltipController.getNode() != null)
+                        tooltipController.getNode().getNode().getStyleClass().remove(FXForm.TOOLTIP_STYLE + FXForm.INVALID_STYLE);
                 }
             }
         });

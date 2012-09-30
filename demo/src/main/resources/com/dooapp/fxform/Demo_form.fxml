@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.dooapp.fxform.view.control.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml">
+  <children>
+    <Label id="name-form-label" layoutX="26.0" layoutY="47.0" text="Name" />
+    <TextField id="name-form-editor" layoutX="112.0" layoutY="43.0" prefWidth="146.0" />
+    <TextArea id="message-form-editor" layoutX="271.0" layoutY="75.0" prefHeight="260.0" prefWidth="303.0" promptText="Your message" wrapText="true" />
+    <TextField id="website-form-editor" layoutX="112.0" layoutY="82.0" prefWidth="146.0" />
+    <Label id="website-form-label" layoutX="26.0" layoutY="86.0" text="Website" />
+    <Label id="email-form-label" layoutX="26.0" layoutY="124.0" text="Email" />
+    <TextField id="email-form-editor" layoutX="112.0" layoutY="120.0" prefWidth="146.0" />
+    <Label id="age-form-label" layoutX="26.0" layoutY="161.0" text="Age" />
+    <TextField id="age-form-editor" layoutX="112.0" layoutY="157.0" prefWidth="146.0" />
+    <ToggleButton id="subscribe-form-editor" layoutX="51.0" layoutY="314.0" mnemonicParsing="false" prefWidth="182.0" text="Subscribe to newsletter" />
+    <BindableChoiceBox id="subject-form-editor" layoutX="271.0" layoutY="39.0" prefWidth="303.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList">
+          <String fx:value="Item 1" />
+          <String fx:value="Item 2" />
+          <String fx:value="Item 3" />
+        </FXCollections>
+      </items>
+    </BindableChoiceBox>
+  </children>
+</AnchorPane>
