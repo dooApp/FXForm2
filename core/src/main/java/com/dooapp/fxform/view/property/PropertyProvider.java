@@ -1,4 +1,4 @@
-package com.dooapp.fxform.view;
+package com.dooapp.fxform.view.property;
 
 import javafx.beans.property.Property;
 import javafx.scene.Node;
