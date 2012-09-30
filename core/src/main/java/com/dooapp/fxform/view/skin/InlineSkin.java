@@ -70,11 +70,11 @@ public class InlineSkin extends FXFormSkin {
 
     @Override
     protected ElementNodes createElementNodes(Element element) {
-        GridPane.setHgrow(getEditor(element).getNode(), Priority.SOMETIMES);
         FXFormNode editor = createEditor(element);
         FXFormNode label = createLabel(element);
         FXFormNode constraint = createConstraint(element);
         FXFormNode tooltip = createTooltip(element);
+        GridPane.setHgrow(editor.getNode(), Priority.SOMETIMES);
         gridPane.addRow(row, label.getNode(), editor.getNode(), constraint.getNode());
         gridPane.add(tooltip.getNode(), 1, ++row);
         row++;

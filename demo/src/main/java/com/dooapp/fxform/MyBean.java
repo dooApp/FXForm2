@@ -15,6 +15,7 @@ public class MyBean {
         CONTACT, QUESTION, BUG, FEEDBACK
     }
 
+
     private final StringProperty name = new SimpleStringProperty();
 
     private final StringProperty email = new SimpleStringProperty();

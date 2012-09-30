@@ -52,6 +52,7 @@ public class ElementController<WrappedType> {
         editorController = createEditorController(fxForm, element);
         changeListener = new ChangeListener<Skin<?>>() {
             public void changed(ObservableValue<? extends Skin<?>> observableValue, Skin<?> skin, Skin<?> skin1) {
+                ((FXFormSkin) skin).removeElement(getElement());
                 updateSkin((FXFormSkin) skin1);
             }
         };
