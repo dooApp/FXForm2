@@ -14,6 +14,7 @@ package com.dooapp.fxform.model.impl;
 
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.FormException;
+import com.dooapp.fxform.reflection.ReflectionUtils;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
@@ -159,6 +160,11 @@ public class ReadOnlyPropertyFieldElement<SourceType, WrappedType> implements El
 
     public Class<?> getType() {
         return field.getType();
+    }
+
+    @Override
+    public Class<WrappedType> getGenericType() {
+        return ReflectionUtils.getObjectPropertyGeneric(field);
     }
 
     @Override

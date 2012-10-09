@@ -13,9 +13,8 @@
 package com.dooapp.fxform.view.factory.impl;
 
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
-import com.dooapp.fxform.reflection.Util;
+import com.dooapp.fxform.reflection.ReflectionUtils;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.property.ChoiceBoxDefaultProperty;
 import javafx.beans.property.Property;
@@ -50,7 +49,7 @@ public class ChoiceBoxFactory implements Callback<Void, FXFormNode> {
             public void init(Element element) {
                 Enum[] constants = new Enum[0];
                 try {
-                    constants = (Enum[]) Util.getObjectPropertyGeneric(((ReadOnlyPropertyFieldElement) element).getField()).getEnumConstants();
+                    constants = (Enum[]) element.getGenericType().getEnumConstants();
                 } catch (Exception e) {
                     logger.log(Level.WARNING, "Could not retrieve enum constants from element " + element, e);
                 }

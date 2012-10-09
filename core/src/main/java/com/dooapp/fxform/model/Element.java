@@ -25,4 +25,6 @@ public interface Element<WrappedType> extends ReadOnlyProperty<WrappedType>, Dis
 
     public Class<?> getType();
 
+    public Class<WrappedType> getGenericType();
+
 }

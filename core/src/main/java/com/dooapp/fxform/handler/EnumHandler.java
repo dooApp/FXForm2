@@ -13,9 +13,6 @@
 package com.dooapp.fxform.handler;
 
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
-import com.dooapp.fxform.reflection.Util;
-
-import java.lang.reflect.Field;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -26,7 +23,7 @@ public class EnumHandler implements FieldHandler {
 
     public boolean handle(ReadOnlyPropertyFieldElement element) {
         try {
-            return Util.getObjectPropertyGeneric(element.getField()).isEnum();
+            return element.getGenericType().isEnum();
         } catch (Exception e) {
         }
         return false;

@@ -14,9 +14,8 @@ package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
-import com.dooapp.fxform.reflection.Util;
+import com.dooapp.fxform.reflection.ReflectionUtils;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.Callback;
@@ -55,7 +54,7 @@ public class AnnotationFactoryProvider implements FactoryProvider {
         // check FormFactory annotation
         if (ObjectProperty.class.isAssignableFrom(property.getField().getType())) {
             try {
-                Class genericClass = Util.getObjectPropertyGeneric(property.getField());
+                Class genericClass = property.getGenericType();
                 if (genericClass.getAnnotation(FormFactory.class) != null) {
                     return ((FormFactory) genericClass.getAnnotation(FormFactory.class)).value().newInstance();
                 }

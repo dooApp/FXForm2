@@ -31,7 +31,7 @@ public class UtilTest {
     public void testGetObjectPropertyGeneric() throws Exception {
         List<Element> fields = TestUtils.getTestFields();
         Element objectPropertyField = fields.get(4);
-        Class clazz = Util.getObjectPropertyGeneric(((ReadOnlyPropertyFieldElement) objectPropertyField).getField());
+        Class clazz = ReflectionUtils.getObjectPropertyGeneric(((ReadOnlyPropertyFieldElement) objectPropertyField).getField());
         Assert.assertEquals(TestEnum.class, clazz);
     }
 }
