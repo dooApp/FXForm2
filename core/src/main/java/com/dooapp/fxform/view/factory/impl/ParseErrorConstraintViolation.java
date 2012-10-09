@@ -12,9 +12,6 @@
 
 package com.dooapp.fxform.view.factory.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.Path;
 import javax.validation.metadata.ConstraintDescriptor;
@@ -27,13 +24,8 @@ import java.util.ResourceBundle;
  * Created at 19/03/12 17:31.<br>
  *
  * @author Antoine Mischler <antoine@dooapp.com>
- *
  */
 public class ParseErrorConstraintViolation implements ConstraintViolation<Number> {
-    /**
-     * The logger
-     */
-    private static final Logger logger = LoggerFactory.getLogger(ParseErrorConstraintViolation.class);
 
     private final String unparsed;
 

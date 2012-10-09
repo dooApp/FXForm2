@@ -2,14 +2,14 @@ package com.dooapp.fxform.adapter;
 
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
+import com.dooapp.fxform.view.property.ChoiceBoxDefaultProperty;
 import javafx.beans.property.*;
-import javafx.util.converter.BooleanStringConverter;
-import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.FloatStringConverter;
-import javafx.util.converter.IntegerStringConverter;
+import javafx.util.converter.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -18,6 +18,8 @@ import java.util.Map;
  */
 public class DefaultAdapterProvider implements AdapterProvider {
 
+    private final static Logger logger = Logger.getLogger(DefaultAdapterProvider.class.getName());
+
     private final static Map<AdapterMatcher, Adapter> DEFAULT_MAP = new HashMap();
 
     private final static Map<AdapterMatcher, Adapter> GLOBAL_MAP = new HashMap();
@@ -25,6 +27,8 @@ public class DefaultAdapterProvider implements AdapterProvider {
     private final Map<AdapterMatcher, Adapter> USER_MAP = new HashMap();
 
     public DefaultAdapterProvider() {
+        DEFAULT_MAP.put(new TypeAdapterMatcher(StringProperty.class, StringProperty.class),
+                new ConverterWrapper(new DefaultStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(IntegerProperty.class, StringProperty.class),
                 new ConverterWrapper(new IntegerStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(FloatProperty.class, StringProperty.class),
@@ -33,6 +37,44 @@ public class DefaultAdapterProvider implements AdapterProvider {
                 new ConverterWrapper(new DoubleStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(BooleanProperty.class, StringProperty.class),
                 new ConverterWrapper(new BooleanStringConverter()));
+        DEFAULT_MAP.put(new TypeAdapterMatcher(BooleanProperty.class, BooleanProperty.class)
+                , new DefaultAdapter());
+        DEFAULT_MAP.put(new TypeAdapterMatcher(BooleanProperty.class, BooleanProperty.class)
+                , new DefaultAdapter());
+        DEFAULT_MAP.put(new TypeAdapterMatcher(ObjectProperty.class, ChoiceBoxDefaultProperty.class)
+                , new DefaultAdapter());
+        DEFAULT_MAP.put(new TypeAdapterMatcher(IntegerProperty.class, IntegerProperty.class)
+                , new DefaultAdapter());
+        DEFAULT_MAP.put(new TypeAdapterMatcher(FloatProperty.class, FloatProperty.class)
+                , new DefaultAdapter());
+        DEFAULT_MAP.put(new TypeAdapterMatcher(DoubleProperty.class, DoubleProperty.class)
+                , new DefaultAdapter());
+        DEFAULT_MAP.put(new TypeAdapterMatcher(IntegerProperty.class, DoubleProperty.class),
+                new Adapter<Integer, Double>() {
+
+                    @Override
+                    public Double adaptTo(Integer from) {
+                        return from.doubleValue();
+                    }
+
+                    @Override
+                    public Integer adaptFrom(Double to) {
+                       return to.intValue();
+                    }
+                });
+        DEFAULT_MAP.put(new TypeAdapterMatcher(FloatProperty.class, DoubleProperty.class),
+                new Adapter<Float, Double>() {
+
+                    @Override
+                    public Double adaptTo(Float from) {
+                        return from.doubleValue();
+                    }
+
+                    @Override
+                    public Float adaptFrom(Double to) {
+                        return to.floatValue();
+                    }
+                });
     }
 
     @Override
@@ -47,9 +89,10 @@ public class DefaultAdapterProvider implements AdapterProvider {
         if (adapter == null) {
             adapter = getAdapter(fromClass, toClass, element, fxFormNode, DEFAULT_MAP);
         }
-        // use default factory
         if (adapter == null) {
             adapter = new DefaultAdapter();
+            logger.log(Level.WARNING, "No adapter between types " + fromClass + " and " + toClass + " was found (to adapt " + element + " and " + fxFormNode + ")" +
+                    "\nMake sure to register the required adapter in DefaultAdapterProvider either in the global or in the user map. See FXForm#setAdapterProvider");
         }
         return adapter;
     }

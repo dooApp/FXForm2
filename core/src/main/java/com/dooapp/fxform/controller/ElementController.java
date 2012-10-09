@@ -18,8 +18,6 @@ import com.dooapp.fxform.view.FXFormSkin;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Skin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -29,8 +27,6 @@ import org.slf4j.LoggerFactory;
  * The controller of an Element.
  */
 public class ElementController<WrappedType> {
-
-    private final static Logger logger = LoggerFactory.getLogger(ElementController.class);
 
     protected final Element<WrappedType> element;
 

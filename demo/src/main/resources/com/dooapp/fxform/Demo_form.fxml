@@ -17,7 +17,6 @@
     <Label id="email-form-label" layoutX="26.0" layoutY="124.0" text="Email" />
     <TextField id="email-form-editor" layoutX="112.0" layoutY="120.0" prefWidth="146.0" />
     <Label id="age-form-label" layoutX="26.0" layoutY="161.0" text="Age" />
-    <TextField id="age-form-editor" layoutX="112.0" layoutY="157.0" prefWidth="146.0" />
     <ToggleButton id="subscribe-form-editor" layoutX="51.0" layoutY="314.0" mnemonicParsing="false" prefWidth="182.0" text="Subscribe to newsletter" />
     <ChoiceBox id="subject-form-editor" fx:id="subjectFormEditor" layoutX="271.0" layoutY="39.0" prefWidth="303.0">
       <items>
@@ -28,5 +27,6 @@
         </FXCollections>
       </items>
     </ChoiceBox>
+    <Slider id="age-form-editor" layoutX="112.0" layoutY="169.0" prefWidth="145.9998779296875" showTickLabels="true" />
   </children>
 </AnchorPane>

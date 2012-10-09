@@ -8,8 +8,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created at 27/09/12 15:33.<br>
@@ -17,10 +15,6 @@ import org.slf4j.LoggerFactory;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public abstract class NodeController implements Disposable {
-    /**
-     * The logger
-     */
-    private static final Logger logger = LoggerFactory.getLogger(NodeController.class);
 
     private final ObjectProperty<FXFormNode> node = new SimpleObjectProperty<FXFormNode>();
     private final ChangeListener<FXFormNode> changeListener;

@@ -26,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.util.Callback;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -36,15 +37,6 @@ import java.util.Map;
  * Factory implementation based on delegates mapped by FieldHandler.
  */
 public class DefaultFactoryProvider implements FactoryProvider {
-
-
-    private final static Callback<Void, FXFormNode> DEFAULT_FACTORY = new Callback<Void, FXFormNode>() {
-
-        public FXFormNode call(Void aVoid) {
-            Label label = new Label("No factory available");
-            return new FXFormNodeWrapper(label);
-        }
-    };
 
     private final static Map<ElementHandler, Callback<Void, FXFormNode>> DEFAULT_MAP = new HashMap();
 
@@ -97,10 +89,30 @@ public class DefaultFactoryProvider implements FactoryProvider {
         if (delegate == null) {
             delegate = getDelegate(element, DEFAULT_MAP);
         }
-        // use default factory
-        if (delegate == null) {
-            delegate = DEFAULT_FACTORY;
-        }
         return delegate;
     }
+
+    public String toString() {
+        return "[DefaultFactoryProvider\n"
+                + "GLOBAL_MAP:\n" + dumpMap(GLOBAL_MAP)
+                + "\nUSER_MAP:\n" + dumpMap(USER_MAP)
+                + "]";
+    }
+
+    private String dumpMap(Map map) {
+        StringBuilder sb = new StringBuilder();
+        Iterator<Map.Entry> iter = map.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = iter.next();
+            sb.append(entry.getKey());
+            sb.append('=').append('"');
+            sb.append(entry.getValue());
+            sb.append('"');
+            if (iter.hasNext()) {
+                sb.append(',').append('\n');
+            }
+        }
+        return sb.toString();
+    }
+
 }

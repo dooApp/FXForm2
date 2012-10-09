@@ -13,8 +13,6 @@
 package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.view.property.DefaultPropertyProvider;
-import com.dooapp.fxform.view.property.PropertyProvider;
 import javafx.beans.property.Property;
 import javafx.scene.Node;
 import javafx.util.Callback;
@@ -34,16 +32,6 @@ public class FXFormNodeWrapper implements FXFormNode {
 
     private final Property property;
 
-    private final PropertyProvider propertyProvider = new DefaultPropertyProvider();
-
-    public FXFormNodeWrapper(Node node) {
-        this(node, null, new Callback<Node, Void>() {
-            public Void call(Node node) {
-                return null;
-            }
-        });
-    }
-
     public FXFormNodeWrapper(Node node, Property property) {
         this(node, property, new Callback<Node, Void>() {
             public Void call(Node node) {
@@ -55,17 +43,9 @@ public class FXFormNodeWrapper implements FXFormNode {
     public FXFormNodeWrapper(Node node, Property property, Callback<Node, Void> callback) {
         this.node = node;
         this.callback = callback;
-        if (property != null) {
-            this.property = property;
-        } else {
-            // no property provided, try to guess it
-            this.property = guessProperty(node);
-        }
+        this.property = property;
     }
 
-    private Property guessProperty(Node node) {
-        return propertyProvider.getProperty(node);
-    }
 
     public void dispose() {
         callback.call(node);
@@ -80,5 +60,13 @@ public class FXFormNodeWrapper implements FXFormNode {
     }
 
     public void init(Element element) {
+    }
+
+    @Override
+    public String toString() {
+        return "FXFormNodeWrapper{" +
+                "node=" + node +
+                ", property=" + property +
+                '}';
     }
 }

@@ -13,6 +13,7 @@
 package com.dooapp.fxform.filter;
 
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.FormException;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -24,6 +25,6 @@ import java.util.List;
  */
 public interface FieldFilter {
 
-    public List<Element> filter(List<Element> toFilter);
+    public List<Element> filter(List<Element> toFilter) throws FilterException;
 
 }

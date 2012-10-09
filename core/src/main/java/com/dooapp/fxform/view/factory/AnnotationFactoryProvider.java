@@ -14,13 +14,15 @@ package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.Callback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Factory provider based on the @FormFactory annotation.
@@ -31,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AnnotationFactoryProvider implements FactoryProvider {
 
-    private Logger logger = LoggerFactory.getLogger(AnnotationFactoryProvider.class);
+    private final static Logger logger = Logger.getLogger(AnnotationFactoryProvider.class.getName());
 
     /**
      * Might return null if no FormFactory annotation if defined neither on the field nor on the field type.
@@ -47,7 +49,7 @@ public class AnnotationFactoryProvider implements FactoryProvider {
             try {
                 return property.getField().getAnnotation(FormFactory.class).value().newInstance();
             } catch (Exception e) {
-                logger.warn("The factory provided by the annotation @FormFactory on field " + element + " failed creating node", e);
+               logger.log(Level.WARNING, "Unable to get new instance for " + property.getField().getAnnotation(FormFactory.class), e);
             }
         }
         // check FormFactory annotation

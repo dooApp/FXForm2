@@ -14,13 +14,16 @@ package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.view.factory.AnnotationFactoryProvider;
 import com.dooapp.fxform.view.factory.FactoryProvider;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.Skin;
 import javafx.util.Callback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -31,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class FXFormSkin implements Skin<FXForm> {
 
-    private final Logger logger = LoggerFactory.getLogger(FXFormSkin.class);
+    private final static Logger logger = Logger.getLogger(FXFormSkin.class.getName());
 
     protected FXForm fxForm;
 
@@ -90,7 +93,6 @@ public abstract class FXFormSkin implements Skin<FXForm> {
 
     public Node getNode() {
         if (rootNode == null) {
-            logger.debug("Creating skin node");
             try {
                 rootNode = createRootNode();
             } catch (NodeCreationException e) {
@@ -134,7 +136,13 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     }
 
     protected FXFormNode createFXFormNode(Element element, FactoryProvider factoryProvider, String suffixId) {
-        FXFormNode fxFormNode = factoryProvider.getFactory(element).call(null);
+        Callback<Void, FXFormNode> factory = factoryProvider.getFactory(element);
+        if (factory == null) {
+            logger.log(Level.WARNING, "No factory found for " + element + ", using " + factoryProvider + "\nCheck your factory provider.");
+            Label label = new Label();
+            return new FXFormNodeWrapper(label, label.textProperty());
+        }
+        FXFormNode fxFormNode = factory.call(null);
         fxFormNode.getNode().setId(element.getName() + suffixId);
         return fxFormNode;
     }

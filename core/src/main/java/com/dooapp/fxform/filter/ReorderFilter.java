@@ -11,39 +11,33 @@
 
 package com.dooapp.fxform.filter;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.dooapp.fxform.model.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.dooapp.fxform.model.FormException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com> Date: 01/09/11 Time: 17:12
  */
 public class ReorderFilter extends AbstractNameFilter implements FieldFilter {
 
-	private final static Logger logger = LoggerFactory.getLogger(ReorderFilter.class);
+    public ReorderFilter(String... names) {
+        super(names);
+    }
 
-	public ReorderFilter(String... names) {
-		super(names);
-	}
+    public List<Element> filter(List<Element> toFilter) throws FilterException {
+        List<Element> remaining = new ArrayList<Element>(toFilter);
+        List<Element> filtered = new ArrayList<Element>();
+        for (String name : names) {
+            filtered.add(extractFieldByName(remaining, name));
+        }
+        filtered.addAll(remaining);
+        return filtered;
+    }
 
-	public List<Element> filter(List<Element> toFilter) {
-		List<Element> remaining = new ArrayList<Element>(toFilter);
-		List<Element> filtered = new ArrayList<Element>();
-		for (String name : names) {
-			try {
-				filtered.add(extractFieldByName(remaining, name));
-			} catch (FormException e) {
-				logger.warn(name + " not found in field list for reordering", e);
-			}
-		}
-		filtered.addAll(remaining);
-		return filtered;
-	}
+    public String toString() {
+        return "ReorderFiter[" + Arrays.toString(names) + "]";
+    }
 
 }

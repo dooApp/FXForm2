@@ -11,8 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
 
@@ -22,10 +20,6 @@ import javax.validation.ConstraintViolation;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class ConstraintLabel extends VBox {
-    /**
-     * The logger
-     */
-    private static final Logger logger = LoggerFactory.getLogger(ConstraintLabel.class);
 
     private final static Image WARNING = new Image(ConstraintLabel.class.getResource("warning.png").toExternalForm());
 

@@ -6,13 +6,14 @@ import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormNodeWrapper;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
+import javafx.beans.property.Property;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created at 26/09/12 13:49.<br>
@@ -20,10 +21,8 @@ import java.net.URL;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class FXMLSkin extends FXFormSkin {
-    /**
-     * The logger
-     */
-    private static final Logger logger = LoggerFactory.getLogger(FXMLSkin.class);
+
+    private final Logger logger = Logger.getLogger(FXMLSkin.class.getName());
 
     private final URL url;
 
@@ -62,8 +61,16 @@ public class FXMLSkin extends FXFormSkin {
 
     private FXFormNode lookupNode(Element element, String suffix) {
         Node node = getNode().lookup("#" + element.getName() + suffix);
-        if (node != null)
-            return new FXFormNodeWrapper(node);
+        if (node != null) {
+            Property property = fxForm.getPropertyProvider().getProperty(node);
+            if (property != null) {
+            return new FXFormNodeWrapper(node, property);
+            } else {
+                logger.log(Level.WARNING, "Unable to find the property to bind for " + node + "\n" +
+                        "Check that you configured the AdapterProvider correctly. See FXForm#setAdapterProvider");
+                return null;
+            }
+        }
         else
             return null;
     }

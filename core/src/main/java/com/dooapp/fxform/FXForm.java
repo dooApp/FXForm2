@@ -17,6 +17,7 @@ import com.dooapp.fxform.adapter.DefaultAdapterProvider;
 import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.filter.FieldFilter;
+import com.dooapp.fxform.filter.FilterException;
 import com.dooapp.fxform.filter.NonVisualFilter;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.FormException;
@@ -31,6 +32,8 @@ import com.dooapp.fxform.view.factory.FactoryProvider;
 import com.dooapp.fxform.view.factory.impl.AutoHidableLabelFactory;
 import com.dooapp.fxform.view.factory.impl.DefaultConstraintFactory;
 import com.dooapp.fxform.view.factory.impl.LabelFactory;
+import com.dooapp.fxform.view.property.DefaultPropertyProvider;
+import com.dooapp.fxform.view.property.PropertyProvider;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -41,8 +44,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.util.Callback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -50,6 +51,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -59,7 +62,7 @@ import java.util.ResourceBundle;
  */
 public class FXForm<T> extends Control implements FormAPI<T> {
 
-    private final static Logger logger = LoggerFactory.getLogger(FXForm.class);
+    private final static Logger logger = Logger.getLogger(FXForm.class.getName());
 
     public static final String LABEL_ID_SUFFIX = "-form-label";
 
@@ -98,6 +101,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     private final ObjectProperty<FactoryProvider> constraintFactoryProvider = new SimpleObjectProperty<FactoryProvider>();
 
     private final ObjectProperty<AdapterProvider> adapterProvider = new SimpleObjectProperty<AdapterProvider>();
+
+    private final ObjectProperty<PropertyProvider> propertyProvider = new SimpleObjectProperty<PropertyProvider>();
 
     public void setTitle(String title) {
         this.title.set(title);
@@ -145,6 +150,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public FXForm(T source, FactoryProvider labelFactoryProvider, FactoryProvider tooltipFactoryProvider, FactoryProvider editorFactoryProvider) {
         initBundle();
+        setPropertyProvider(new DefaultPropertyProvider());
         setAdapterProvider(new DefaultAdapterProvider());
         setEditorFactoryProvider(editorFactoryProvider);
         setLabelFactoryProvider(labelFactoryProvider);
@@ -159,7 +165,11 @@ public class FXForm<T> extends Control implements FormAPI<T> {
                 if (t1 == null) {
                     dispose();
                 } else if (controllers.isEmpty() || (t1.getClass() != t.getClass())) {
-                    createControllers();
+                    try {
+                        createControllers();
+                    } catch (FormException e) {
+                        logger.log(Level.SEVERE, e.getMessage(), e);
+                    }
                 }
             }
         });
@@ -167,9 +177,14 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         filters.addListener(new ListChangeListener() {
             public void onChanged(Change change) {
                 dispose();
-                createControllers();
+                try {
+                    createControllers();
+                } catch (FormException e) {
+                    logger.log(Level.SEVERE, e.getMessage(), e);
+                }
             }
         });
+
         this.setSkin(new DefaultSkin(this));
         setSource(source);
     }
@@ -187,33 +202,31 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         source.unbind();
     }
 
-    private void createControllers() {
+    private void createControllers() throws FormException {
         if (source.get() == null)
             return;
-        logger.debug("Creating controllers for " + source.get());
         controllers.clear();
         List<Field> fields = new ReflectionFieldProvider().getProperties(source.get());
         List<Element> elements = new LinkedList<Element>();
         for (Field field : fields) {
-            try {
-                Element element = null;
-
-                if (Property.class.isAssignableFrom(field.getType())) {
-                    element = new PropertyFieldElement(field);
-                    ((PropertyFieldElement) element).sourceProperty().bind(source);
-                } else {
-                    element = new ReadOnlyPropertyFieldElement(field);
-                    ((ReadOnlyPropertyFieldElement) element).sourceProperty().bind(source);
-                }
-                if (element != null) {
-                    elements.add(element);
-                }
-            } catch (FormException e) {
-                logger.warn(e.getMessage(), e);
+            Element element = null;
+            if (Property.class.isAssignableFrom(field.getType())) {
+                element = new PropertyFieldElement(field);
+                ((PropertyFieldElement) element).sourceProperty().bind(source);
+            } else if (ReadOnlyPropertyFieldElement.class.isAssignableFrom(field.getType())) {
+                element = new ReadOnlyPropertyFieldElement(field);
+                ((ReadOnlyPropertyFieldElement) element).sourceProperty().bind(source);
+            }
+            if (element != null) {
+                elements.add(element);
             }
         }
         for (FieldFilter filter : filters) {
-            elements = filter.filter(elements);
+            try {
+                elements = filter.filter(elements);
+            } catch (FilterException e) {
+                throw new FormException("Something went wrong happened while applying " + filter + ":\n" + e.getMessage(), e);
+            }
         }
         for (Element element : elements) {
             ElementController controller = null;
@@ -237,16 +250,14 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         if (resourceBundle.get() == null) {
             try {
                 resourceBundle.set(ResourceBundle.getBundle(bundle));
-                logger.debug("Default resource bundle loaded: " + bundle);
             } catch (MissingResourceException e) {
-                logger.info("Default resource bundle not found: " + bundle);
+                // no default resource bundle found
             }
         }
         sceneProperty().addListener(new ChangeListener<Scene>() {
             public void changed(ObservableValue<? extends Scene> observableValue, Scene scene, Scene scene1) {
                 URL css = FXForm.class.getResource(element.getFileName().substring(0, element.getFileName().indexOf(".")) + ".css");
                 if (css != null && observableValue.getValue() != null) {
-                    logger.debug("Registering " + css + " in " + observableValue.getValue());
                     getScene().getStylesheets().add(css.toExternalForm());
                 }
             }
@@ -377,6 +388,18 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public ObjectProperty<AdapterProvider> adapterProviderProperty() {
         return adapterProvider;
+    }
+
+    public PropertyProvider getPropertyProvider() {
+        return propertyProvider.get();
+    }
+
+    public void setPropertyProvider(PropertyProvider propertyProvider) {
+        this.propertyProvider.set(propertyProvider);
+    }
+
+    public ObjectProperty<PropertyProvider> propertyProviderProperty() {
+        return propertyProvider;
     }
 
 }

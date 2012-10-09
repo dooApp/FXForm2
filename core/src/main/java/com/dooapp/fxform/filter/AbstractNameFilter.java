@@ -31,13 +31,13 @@ public abstract class AbstractNameFilter implements FieldFilter {
         this.names = names;
     }
 
-    protected Element extractFieldByName(List<Element> remaining, String name) throws FormException {
+    protected Element extractFieldByName(List<Element> remaining, String name) throws FilterException {
         for (Element field : remaining) {
             if (name.equals(field.getName())) {
                 remaining.remove(field);
                 return field;
             }
         }
-        throw new FormException(name + "not found in field list");
+        throw new FilterException(name + " not found in field list, please check your filters");
     }
 }

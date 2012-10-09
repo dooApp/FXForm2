@@ -7,8 +7,6 @@ import com.dooapp.fxform.view.FXFormSkin;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
 import java.util.ArrayList;
@@ -19,10 +17,6 @@ import java.util.ArrayList;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class PropertyElementController<WrappedType> extends ElementController<WrappedType> {
-    /**
-     * The logger
-     */
-    private static final Logger logger = LoggerFactory.getLogger(PropertyElementController.class);
 
     protected ObservableList<ConstraintViolation> constraintViolations;
 

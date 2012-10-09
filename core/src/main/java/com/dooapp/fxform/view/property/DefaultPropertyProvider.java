@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class DefaultPropertyProvider implements PropertyProvider {
 
-    private final Map<Class<? extends Node>, PropertyProvider> map = new HashMap<Class<? extends Node>, PropertyProvider>();
+    protected final Map<Class<? extends Node>, PropertyProvider> map = new HashMap<Class<? extends Node>, PropertyProvider>();
 
     @Override
     public Property getProperty(Node node) {
@@ -63,6 +63,12 @@ public class DefaultPropertyProvider implements PropertyProvider {
             @Override
             public Property getProperty(ToggleButton node) {
                 return node.selectedProperty();
+            }
+        });
+        map.put(Slider.class, new PropertyProvider<Slider>() {
+            @Override
+            public Property getProperty(Slider node) {
+                return node.valueProperty();
             }
         });
     }

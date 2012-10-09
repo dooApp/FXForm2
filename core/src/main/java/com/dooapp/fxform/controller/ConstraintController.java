@@ -5,8 +5,6 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
 
@@ -16,10 +14,6 @@ import javax.validation.ConstraintViolation;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class ConstraintController extends NodeController {
-    /**
-     * The logger
-     */
-    private static final Logger logger = LoggerFactory.getLogger(ConstraintController.class);
 
     private final ObservableList<ConstraintViolation> constraintViolations;
 

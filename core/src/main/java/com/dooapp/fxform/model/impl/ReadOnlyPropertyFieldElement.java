@@ -8,8 +8,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -21,10 +19,6 @@ import java.util.List;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class ReadOnlyPropertyFieldElement<SourceType, WrappedType> implements Element<WrappedType> {
-    /**
-     * The logger
-     */
-    private static final Logger logger = LoggerFactory.getLogger(ReadOnlyPropertyFieldElement.class);
 
     protected final Field field;
 
@@ -153,5 +147,12 @@ public class ReadOnlyPropertyFieldElement<SourceType, WrappedType> implements El
 
     public Class<?> getType() {
         return field.getType();
+    }
+
+    @Override
+    public String toString() {
+        return "ReadOnlyPropertyFieldElement{" +
+                "field=" + field +
+                '}';
     }
 }

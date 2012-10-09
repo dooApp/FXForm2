@@ -5,8 +5,6 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.StringProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created at 27/09/12 17:07.<br>
@@ -14,10 +12,6 @@ import org.slf4j.LoggerFactory;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class TooltipController extends NodeController {
-    /**
-     * The logger
-     */
-    private static final Logger logger = LoggerFactory.getLogger(TooltipController.class);
 
     public static String TOOLTIP_SUFFIX = "-tooltip";
 

@@ -1,6 +1,7 @@
 package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.util.Callback;
 

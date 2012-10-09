@@ -13,6 +13,7 @@
 package com.dooapp.fxform.view.factory.impl;
 
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import com.dooapp.fxform.reflection.Util;
 import com.dooapp.fxform.view.FXFormNode;
@@ -22,10 +23,10 @@ import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import javafx.util.Callback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -34,7 +35,7 @@ import java.util.Arrays;
  */
 public class ChoiceBoxFactory implements Callback<Void, FXFormNode> {
 
-    private final Logger logger = LoggerFactory.getLogger(ChoiceBoxFactory.class);
+    private final static Logger logger = Logger.getLogger(ChoiceBoxFactory.class.getName());
 
     public FXFormNode call(Void aVoid) {
         final ChoiceBox<Enum> choiceBox = new ChoiceBox<Enum>();
@@ -51,7 +52,7 @@ public class ChoiceBoxFactory implements Callback<Void, FXFormNode> {
                 try {
                     constants = (Enum[]) Util.getObjectPropertyGeneric(((ReadOnlyPropertyFieldElement) element).getField()).getEnumConstants();
                 } catch (Exception e) {
-                    logger.warn("Could not retrieve enum constants from element " + element, e);
+                    logger.log(Level.WARNING, "Could not retrieve enum constants from element " + element, e);
                 }
                 choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
                 choiceBox.getSelectionModel().select((Enum) element.getValue());

@@ -7,11 +7,11 @@ import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.*;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created at 27/09/12 17:32.<br>
@@ -22,7 +22,7 @@ public class PropertyEditorController extends NodeController {
     /**
      * The logger
      */
-    private static final Logger logger = LoggerFactory.getLogger(PropertyEditorController.class);
+    private static final Logger logger = Logger.getLogger(PropertyEditorController.class.getName());
 
     private final ObservableList<ConstraintViolation> constraintViolations;
 
@@ -43,7 +43,7 @@ public class PropertyEditorController extends NodeController {
             validator = factory.getValidator();
         } catch (ValidationException e) {
             // validation is not activated, since no implementation has been provided
-            logger.trace("Validation disabled", e);
+            logger.log(Level.INFO, "Validation disabled", e);
         }
     }
 

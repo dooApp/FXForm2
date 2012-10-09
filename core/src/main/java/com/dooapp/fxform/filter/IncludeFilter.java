@@ -12,36 +12,31 @@
 
 package com.dooapp.fxform.filter;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.dooapp.fxform.model.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.dooapp.fxform.model.FormException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com> Date: 12/09/11 Time: 15:10
  */
 public class IncludeFilter extends AbstractNameFilter implements FieldFilter {
 
-	private final Logger logger = LoggerFactory.getLogger(IncludeFilter.class);
+    public IncludeFilter(String... names) {
+        super(names);
+    }
 
-	public IncludeFilter(String... names) {
-		super(names);
-	}
+    public List<Element> filter(List<Element> toFilter) throws FilterException {
+        List<Element> filtered = new ArrayList<Element>();
+        for (String name : names) {
+            filtered.add(extractFieldByName(toFilter, name));
+        }
+        return filtered;
+    }
 
-	public List<Element> filter(List<Element> toFilter) {
-		List<Element> filtered = new ArrayList<Element>();
-		for (String name : names) {
-			try {
-				filtered.add(extractFieldByName(toFilter, name));
-			} catch (FormException e) {
-				logger.warn(name + " not found in field list for inclusion", e);
-			}
-		}
-		return filtered;
-	}
+    public String toString() {
+        return "IncludeFilter[" + Arrays.toString(names) + "]";
+    }
 }

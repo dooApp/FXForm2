@@ -24,8 +24,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.GridPaneBuilder;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,9 +35,6 @@ import java.util.List;
  * Time: 11:03
  */
 public class InlineSkin extends FXFormSkin {
-
-    public final static Logger logger = LoggerFactory.getLogger(InlineSkin.class);
-
     public InlineSkin(FXForm fxForm) {
         super(fxForm);
     }

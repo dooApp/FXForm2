@@ -4,6 +4,8 @@ import com.dooapp.fxform.annotation.FormFactory;
 import javafx.beans.property.*;
 import org.hibernate.validator.constraints.Email;
 
+import java.util.Date;
+
 /**
  * Created at 26/09/12 14:23.<br>
  *

@@ -4,8 +4,6 @@ import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.TestBean;
 import com.dooapp.fxform.view.FXFormSkinFactory;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test for issue #7<br>
@@ -15,10 +13,6 @@ import org.slf4j.LoggerFactory;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class Issue7Test {
-    /**
-     * The logger
-     */
-    private static final Logger logger = LoggerFactory.getLogger(Issue7Test.class);
 
     @Test
     public void testIssue7() {
