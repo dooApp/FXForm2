@@ -13,16 +13,15 @@
 package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.handler.ElementHandler;
+import com.dooapp.fxform.handler.EnumHandler;
+import com.dooapp.fxform.handler.TypeFieldHandler;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
-import com.dooapp.fxform.view.FXFormNodeWrapper;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.factory.impl.*;
-import com.dooapp.fxform.handler.EnumHandler;
-import com.dooapp.fxform.handler.FieldHandler;
-import com.dooapp.fxform.handler.TypeFieldHandler;
+import com.dooapp.fxform.view.factory.impl.CheckboxFactory;
+import com.dooapp.fxform.view.factory.impl.ChoiceBoxFactory;
+import com.dooapp.fxform.view.factory.impl.TextFieldFactory;
 import javafx.beans.property.*;
-import javafx.scene.control.Label;
 import javafx.util.Callback;
 
 import java.util.HashMap;
@@ -63,11 +62,11 @@ public class DefaultFactoryProvider implements FactoryProvider {
         return null;
     }
 
-    public static void addGlobalFactory(FieldHandler handler, Callback<Void, FXFormNode> factory) {
+    public static void addGlobalFactory(ElementHandler handler, Callback<Void, FXFormNode> factory) {
         GLOBAL_MAP.put(handler, factory);
     }
 
-    public void addFactory(FieldHandler handler, Callback<Void, FXFormNode> factory) {
+    public void addFactory(ElementHandler handler, Callback<Void, FXFormNode> factory) {
         USER_MAP.put(handler, factory);
     }
 

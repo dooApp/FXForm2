@@ -19,11 +19,7 @@ import com.dooapp.fxform.controller.PropertyElementController;
 import com.dooapp.fxform.filter.FieldFilter;
 import com.dooapp.fxform.filter.FilterException;
 import com.dooapp.fxform.filter.NonVisualFilter;
-import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.FormException;
-import com.dooapp.fxform.model.PropertyElement;
-import com.dooapp.fxform.model.impl.PropertyFieldElement;
-import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
+import com.dooapp.fxform.model.*;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.utils.ConfigurationStore;
 import com.dooapp.fxform.view.FXFormNode;
@@ -35,7 +31,10 @@ import com.dooapp.fxform.view.factory.impl.LabelFactory;
 import com.dooapp.fxform.view.property.DefaultPropertyProvider;
 import com.dooapp.fxform.view.property.PropertyProvider;
 import com.dooapp.fxform.view.skin.DefaultSkin;
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -208,16 +207,11 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         controllers.clear();
         List<Field> fields = new ReflectionFieldProvider().getProperties(source.get());
         List<Element> elements = new LinkedList<Element>();
+        ElementFactory elementFactory = new DefaultElementFactory();
         for (Field field : fields) {
-            Element element = null;
-            if (Property.class.isAssignableFrom(field.getType())) {
-                element = new PropertyFieldElement(field);
-                ((PropertyFieldElement) element).sourceProperty().bind(source);
-            } else if (ReadOnlyPropertyFieldElement.class.isAssignableFrom(field.getType())) {
-                element = new ReadOnlyPropertyFieldElement(field);
-                ((ReadOnlyPropertyFieldElement) element).sourceProperty().bind(source);
-            }
+            Element element = elementFactory.create(field);
             if (element != null) {
+                element.sourceProperty().bind(source);
                 elements.add(element);
             }
         }
@@ -230,7 +224,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         }
         for (Element element : elements) {
             ElementController controller = null;
-            if (PropertyFieldElement.class.isAssignableFrom(element.getClass())) {
+            if (PropertyElement.class.isAssignableFrom(element.getClass())) {
                 controller = new PropertyElementController(this, (PropertyElement) element);
             } else {
                 controller = new ElementController(this, element);

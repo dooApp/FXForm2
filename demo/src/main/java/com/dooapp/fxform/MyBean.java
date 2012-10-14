@@ -16,8 +16,6 @@ import com.dooapp.fxform.annotation.FormFactory;
 import javafx.beans.property.*;
 import org.hibernate.validator.constraints.Email;
 
-import java.util.Date;
-
 /**
  * Created at 26/09/12 14:23.<br>
  *
@@ -45,6 +43,10 @@ public class MyBean {
 
     private final IntegerProperty age = new SimpleIntegerProperty();
 
+    private String javaString = "Java String";
+
+    private int javaInteger = 2;
+
     protected MyBean(String name, String email, String message, String website, boolean subscribe, Subject subject) {
         this.name.set(name);
         this.email.set(email);
@@ -59,4 +61,21 @@ public class MyBean {
         return email.get();
     }
 
+    public String getJavaString() {
+        return javaString;
+    }
+
+    public void setJavaString(String javaString) {
+        System.out.println("javaString: " + this.javaString + "->" + javaString);
+        this.javaString = javaString;
+    }
+
+    public int getJavaInteger() {
+        return javaInteger;
+    }
+
+    public void setJavaInteger(int javaInteger) {
+        System.out.println("javaInteger: " + this.javaInteger + "->" + javaInteger);
+        this.javaInteger = javaInteger;
+    }
 }

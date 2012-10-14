@@ -12,16 +12,16 @@
 
 package com.dooapp.fxform.handler;
 
-import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
+import com.dooapp.fxform.model.Element;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 09/09/11
  * Time: 14:50
  */
-public class EnumHandler implements FieldHandler {
+public class EnumHandler implements ElementHandler {
 
-    public boolean handle(ReadOnlyPropertyFieldElement element) {
+    public boolean handle(Element element) {
         try {
             return element.getGenericType().isEnum();
         } catch (Exception e) {

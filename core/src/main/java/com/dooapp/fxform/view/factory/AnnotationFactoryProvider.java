@@ -14,8 +14,6 @@ package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
-import com.dooapp.fxform.reflection.ReflectionUtils;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.property.ObjectProperty;
 import javafx.util.Callback;
@@ -41,20 +39,19 @@ public class AnnotationFactoryProvider implements FactoryProvider {
      * @return
      */
     public Callback<Void, FXFormNode> getFactory(Element element) {
-        ReadOnlyPropertyFieldElement property = ((ReadOnlyPropertyFieldElement) element);
         // check field annotation
-        if (property.getField().getAnnotation(FormFactory.class) != null) {
+        if (element.getAnnotation(FormFactory.class) != null) {
             // use factory provided by the annotation
             try {
-                return property.getField().getAnnotation(FormFactory.class).value().newInstance();
+                return ((FormFactory) element.getAnnotation(FormFactory.class)).value().newInstance();
             } catch (Exception e) {
-               logger.log(Level.WARNING, "Unable to get new instance for " + property.getField().getAnnotation(FormFactory.class), e);
+               logger.log(Level.WARNING, "Unable to get new instance for " + element.getAnnotation(FormFactory.class), e);
             }
         }
         // check FormFactory annotation
-        if (ObjectProperty.class.isAssignableFrom(property.getField().getType())) {
+        if (ObjectProperty.class.isAssignableFrom(element.getType())) {
             try {
-                Class genericClass = property.getGenericType();
+                Class genericClass = element.getGenericType();
                 if (genericClass.getAnnotation(FormFactory.class) != null) {
                     return ((FormFactory) genericClass.getAnnotation(FormFactory.class)).value().newInstance();
                 }

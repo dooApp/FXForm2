@@ -13,7 +13,10 @@
 package com.dooapp.fxform.model;
 
 import com.dooapp.fxform.utils.Disposable;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyProperty;
+
+import java.lang.annotation.Annotation;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -23,8 +26,33 @@ import javafx.beans.property.ReadOnlyProperty;
  */
 public interface Element<WrappedType> extends ReadOnlyProperty<WrappedType>, Disposable {
 
+    /**
+     * The raw type of this element.
+     *
+     * @return
+     */
     public Class<?> getType();
 
+    /**
+     * The generic type of this element
+     *
+     * @return
+     */
     public Class<WrappedType> getGenericType();
+
+    /**
+     * The source bean of this element.
+     *
+     * @return
+     */
+    public ObjectProperty sourceProperty();
+
+    /**
+     * Similar to Field#getAnnotation
+     *
+     * @param annotationClass
+     * @return
+     */
+    public  <T extends Annotation> T getAnnotation(Class<T> annotationClass);
 
 }

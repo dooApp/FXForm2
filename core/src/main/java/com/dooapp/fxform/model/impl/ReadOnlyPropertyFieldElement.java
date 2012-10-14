@@ -22,6 +22,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
@@ -106,6 +107,11 @@ public class ReadOnlyPropertyFieldElement<SourceType, WrappedType> implements El
 
     public ObjectProperty<SourceType> sourceProperty() {
         return source;
+    }
+
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+        return field.getAnnotation(annotationClass);
     }
 
     public ObjectBinding<ObservableValue<WrappedType>> valueProperty() {
