@@ -1,10 +1,10 @@
 .form-label {
     -fx-font-size: 14;
+    -fx-text-fill: dimgray;
 }
 
 .form-editor {
-    -fx-font-size: 12;
-    -fx-text-fill: blue;
+    -fx-font-size: 16;
 }
 
 .form-editor-invalid {
@@ -25,13 +25,16 @@
     -fx-text-fill: gray;
 }
 
-#website-form-label {
-    -fx-text-fill: blue;
-}
-
 .form-content-box {
     -fx-background-color : linear-gradient(from 0% 0% to 0% 20%, rgba(225,225,225,1) 0%, white 100%);
     -fx-background-radius : 5, 5, 5, 5;
     -fx-border-color: linear-gradient(from 0% 0% to 0% 20%, dimgray 0%, white 100%);
     -fx-border-radius: 5;
+}
+
+/**
+ * Line paper from subtlepatterns.com by Are Sundnes
+ */
+#fxml-root {
+    -fx-background-image: url("lined_paper.png");
 }
