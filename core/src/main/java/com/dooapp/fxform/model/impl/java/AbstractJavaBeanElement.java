@@ -1,14 +1,25 @@
+/*
+ * Copyright (c) 2012, dooApp <contact@dooapp.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.dooapp.fxform.model.impl.java;
 
 import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.PropertyElement;
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.ObjectProperty;
+import com.dooapp.fxform.model.impl.AbstractFieldElement;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.adapter.JavaBeanProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WritableValue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -20,58 +31,17 @@ import java.util.logging.Logger;
  * Date: 14/10/12
  * Time: 12:16
  */
-public abstract class AbstractJavaBeanElement<W> implements PropertyElement<W> {
+public abstract class AbstractJavaBeanElement<WrappedType> extends AbstractFieldElement<Object, WrappedType> implements PropertyElement<WrappedType> {
 
     private final Logger logger = Logger.getLogger(AbstractJavaBeanElement.class.getName());
 
-    private JavaBeanProperty<W> javaBeanProperty;
-
-    protected final Field field;
-
-    private final ObjectProperty sourceProperty = new SimpleObjectProperty();
-    private final ChangeListener changeListener;
+    private ObjectBinding<ObservableValue<WrappedType>> wrappedJavaBeanProperty;
 
     public AbstractJavaBeanElement(Field field) throws FormException {
-        this.field = field;
-        if (sourceProperty.get() != null) {
-            try {
-                javaBeanProperty = buildJavaBeanProperty();
-            } catch (NoSuchMethodException e) {
-                logger.log(Level.WARNING, e.getMessage(), e);
-            }
-        }
-        changeListener = new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observableValue, Object o, Object o1) {
-                try {
-                    if (javaBeanProperty != null) {
-                        javaBeanProperty.dispose();
-                    }
-                    javaBeanProperty = buildJavaBeanProperty();
-                } catch (NoSuchMethodException e) {
-                    logger.log(Level.WARNING, e.getMessage(), e);
-                }
-            }
-        };
-        sourceProperty.addListener(changeListener);
+        super(field);
     }
 
-    protected abstract JavaBeanProperty<W> buildJavaBeanProperty() throws NoSuchMethodException;
-
-    @Override
-    public Class<?> getType() {
-        return javaBeanProperty.getClass();
-    }
-
-    @Override
-    public Class getGenericType() {
-        return field.getType();
-    }
-
-    @Override
-    public ObjectProperty sourceProperty() {
-        return sourceProperty;
-    }
+    protected abstract JavaBeanProperty<WrappedType> buildJavaBeanProperty() throws NoSuchMethodException;
 
     @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
@@ -80,71 +50,85 @@ public abstract class AbstractJavaBeanElement<W> implements PropertyElement<W> {
 
     @Override
     public void dispose() {
-        sourceProperty.removeListener(changeListener);
-        javaBeanProperty.dispose();
+        super.dispose();
+        wrappedJavaBeanProperty.dispose();
     }
 
     @Override
-    public Object getBean() {
-        return sourceProperty().get();
+    protected ObservableValue<ObservableValue<WrappedType>> wrappedProperty() {
+        if (wrappedJavaBeanProperty == null) {
+            wrappedJavaBeanProperty = createWrappedJavaBeanProperty();
+        }
+        return wrappedJavaBeanProperty;
+    }
+
+    protected ObjectBinding<ObservableValue<WrappedType>> createWrappedJavaBeanProperty() {
+        return new ObjectBinding<ObservableValue<WrappedType>>() {
+
+            {
+                super.bind(sourceProperty());
+            }
+
+            @Override
+            protected ObservableValue<WrappedType> computeValue() {
+                if (getSource() == null) {
+                    return null;
+                }
+                try {
+                    return buildJavaBeanProperty();
+                } catch (NoSuchMethodException e) {
+                    logger.log(Level.WARNING, e.getMessage(), e);
+                }
+                return null;
+            }
+
+            @Override
+            public void dispose() {
+                super.dispose();
+                sourceProperty().unbind();
+            }
+
+        };
     }
 
     @Override
-    public String getName() {
-        return field.getName();
+    public void setValue(WrappedType wrappedType) {
+        ((WritableValue<WrappedType>) wrappedProperty().getValue()).setValue(wrappedType);
     }
 
     @Override
-    public void addListener(ChangeListener changeListener) {
-        javaBeanProperty.addListener(changeListener);
+    public Class<?> getType() {
+        return wrappedJavaBeanProperty.getValue().getClass();
     }
 
     @Override
-    public void removeListener(ChangeListener changeListener) {
-        javaBeanProperty.removeListener(changeListener);
+    public Class<WrappedType> getGenericType() {
+       return (Class<WrappedType>) field.getType();
     }
 
     @Override
-    public W getValue() {
-        return javaBeanProperty.getValue();
-    }
-
-    @Override
-    public void setValue(W w) {
-         javaBeanProperty.setValue(w);
-    }
-
-    @Override
-    public void addListener(InvalidationListener invalidationListener) {
-        javaBeanProperty.addListener(invalidationListener);
-    }
-
-    @Override
-    public void removeListener(InvalidationListener invalidationListener) {
-        javaBeanProperty.removeListener(invalidationListener);
-    }
-
-    @Override
-    public void bind(ObservableValue<? extends W> observableValue) {
-        javaBeanProperty.bind(observableValue);
+    public void bind(ObservableValue<? extends WrappedType> observableValue) {
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
     public void unbind() {
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
     public boolean isBound() {
-        return javaBeanProperty.isBound();
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
-    public void bindBidirectional(Property<W> wProperty) {
-        javaBeanProperty.bindBidirectional(wProperty);
+    public void bindBidirectional(Property<WrappedType> wrappedTypeProperty) {
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
-    public void unbindBidirectional(Property<W> wProperty) {
-        javaBeanProperty.unbindBidirectional(wProperty);
+    public void unbindBidirectional(Property<WrappedType> wrappedTypeProperty) {
+        throw new UnsupportedOperationException("Not implemented");
     }
+
 }

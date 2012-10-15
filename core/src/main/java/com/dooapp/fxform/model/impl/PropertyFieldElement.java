@@ -35,7 +35,7 @@ public class PropertyFieldElement<SourceType, WrappedType> extends ReadOnlyPrope
     }
 
     public void setValue(WrappedType o) {
-        ((Property<WrappedType>) valueProperty().get()).setValue(o);
+        ((Property<WrappedType>) wrappedProperty().getValue()).setValue(o);
     }
 
 
