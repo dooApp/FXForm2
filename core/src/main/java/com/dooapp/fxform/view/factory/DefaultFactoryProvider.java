@@ -19,7 +19,7 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.impl.CheckboxFactory;
-import com.dooapp.fxform.view.factory.impl.ChoiceBoxFactory;
+import com.dooapp.fxform.view.factory.impl.EnumChoiceBoxFactory;
 import com.dooapp.fxform.view.factory.impl.TextFieldFactory;
 import javafx.beans.property.*;
 import javafx.util.Callback;
@@ -47,7 +47,7 @@ public class DefaultFactoryProvider implements FactoryProvider {
         // register default delegates
         DEFAULT_MAP.put(new TypeFieldHandler(StringProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(BooleanProperty.class), new CheckboxFactory());
-        DEFAULT_MAP.put(new EnumHandler(), new ChoiceBoxFactory());
+        DEFAULT_MAP.put(new EnumHandler(), new EnumChoiceBoxFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new TextFieldFactory());

@@ -13,14 +13,8 @@
 package com.dooapp.fxform.view.factory.impl;
 
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
-import com.dooapp.fxform.reflection.ReflectionUtils;
 import com.dooapp.fxform.view.FXFormNode;
-import com.dooapp.fxform.view.property.ChoiceBoxDefaultProperty;
-import javafx.beans.property.Property;
 import javafx.collections.FXCollections;
-import javafx.scene.Node;
-import javafx.scene.control.ChoiceBox;
 import javafx.util.Callback;
 
 import java.util.Arrays;
@@ -32,20 +26,14 @@ import java.util.logging.Logger;
  * Date: 17/04/11
  * Time: 00:19
  */
-public class ChoiceBoxFactory implements Callback<Void, FXFormNode> {
+public class EnumChoiceBoxFactory implements Callback<Void, FXFormNode> {
 
-    private final static Logger logger = Logger.getLogger(ChoiceBoxFactory.class.getName());
+    private final static Logger logger = Logger.getLogger(EnumChoiceBoxFactory.class.getName());
 
     public FXFormNode call(Void aVoid) {
-        final ChoiceBox<Enum> choiceBox = new ChoiceBox<Enum>();
-        return new FXFormNode() {
 
-            private final Property property = new ChoiceBoxDefaultProperty(choiceBox);
-
-            public Property getProperty() {
-                return property;
-            }
-
+        return new FXFormChoiceBoxNode() {
+            @Override
             public void init(Element element) {
                 Enum[] constants = new Enum[0];
                 try {
@@ -54,16 +42,10 @@ public class ChoiceBoxFactory implements Callback<Void, FXFormNode> {
                     logger.log(Level.WARNING, "Could not retrieve enum constants from element " + element, e);
                 }
                 choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
-                choiceBox.getSelectionModel().select((Enum) element.getValue());
-            }
-
-            public Node getNode() {
-                return choiceBox;
-            }
-
-            public void dispose() {
-                choiceBox.setItems(FXCollections.<Enum>emptyObservableList());
+                choiceBox.getSelectionModel().select(element.getValue());
             }
         };
+
     }
+
 }
