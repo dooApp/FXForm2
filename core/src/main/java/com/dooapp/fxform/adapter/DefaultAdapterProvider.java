@@ -45,6 +45,8 @@ public class DefaultAdapterProvider implements AdapterProvider {
                 new ConverterWrapper(new IntegerStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(FloatProperty.class, StringProperty.class),
                 new ConverterWrapper(new FloatStringConverter()));
+        DEFAULT_MAP.put(new TypeAdapterMatcher(LongProperty.class, StringProperty.class),
+                new ConverterWrapper(new LongStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(DoubleProperty.class, StringProperty.class),
                 new ConverterWrapper(new DoubleStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(BooleanProperty.class, StringProperty.class),
@@ -71,7 +73,7 @@ public class DefaultAdapterProvider implements AdapterProvider {
 
                     @Override
                     public Integer adaptFrom(Double to) {
-                       return to.intValue();
+                        return to.intValue();
                     }
                 });
         DEFAULT_MAP.put(new TypeAdapterMatcher(FloatProperty.class, DoubleProperty.class),
