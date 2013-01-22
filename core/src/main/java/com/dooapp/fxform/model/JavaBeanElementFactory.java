@@ -12,10 +12,7 @@
 
 package com.dooapp.fxform.model;
 
-import com.dooapp.fxform.model.impl.java.JavaBeanBooleanPropertyElement;
-import com.dooapp.fxform.model.impl.java.JavaBeanIntegerPropertyElement;
-import com.dooapp.fxform.model.impl.java.JavaBeanObjectPropertyElement;
-import com.dooapp.fxform.model.impl.java.JavaBeanStringPropertyElement;
+import com.dooapp.fxform.model.impl.java.*;
 
 import java.lang.reflect.Field;
 
@@ -35,11 +32,11 @@ public class JavaBeanElementFactory implements ElementFactory {
         } else if (Integer.class.isAssignableFrom(field.getType()) || field.getType() == Integer.TYPE) {
             return new JavaBeanIntegerPropertyElement(field);
         } else if (Float.class.isAssignableFrom(field.getType()) || field.getType() == Float.TYPE) {
-            return new JavaBeanIntegerPropertyElement(field);
+            return new JavaBeanFloatPropertyElement(field);
         } else if (Long.class.isAssignableFrom(field.getType()) || field.getType() == Long.TYPE) {
-            return new JavaBeanIntegerPropertyElement(field);
+            return new JavaBeanLongPropertyElement(field);
         } else if (Double.class.isAssignableFrom(field.getType()) || field.getType() == Double.TYPE) {
-            return new JavaBeanIntegerPropertyElement(field);
+            return new JavaBeanDoublePropertyElement(field);
         }
         return new JavaBeanObjectPropertyElement(field);
     }
