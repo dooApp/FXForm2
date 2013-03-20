@@ -45,13 +45,13 @@ public class AnnotationFactoryProvider implements FactoryProvider {
             try {
                 return ((FormFactory) element.getAnnotation(FormFactory.class)).value().newInstance();
             } catch (Exception e) {
-               logger.log(Level.WARNING, "Unable to get new instance for " + element.getAnnotation(FormFactory.class), e);
+                logger.log(Level.WARNING, "Unable to get new instance for " + element.getAnnotation(FormFactory.class), e);
             }
         }
         // check FormFactory annotation
         if (ObjectProperty.class.isAssignableFrom(element.getType())) {
             try {
-                Class genericClass = element.getGenericType();
+                Class genericClass = element.getWrappedType();
                 if (genericClass.getAnnotation(FormFactory.class) != null) {
                     return ((FormFactory) genericClass.getAnnotation(FormFactory.class)).value().newInstance();
                 }

@@ -17,6 +17,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyProperty;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -34,11 +35,18 @@ public interface Element<WrappedType> extends ReadOnlyProperty<WrappedType>, Dis
     public Class<?> getType();
 
     /**
-     * The generic type of this element
+     * The type wrapped by this element
      *
      * @return
      */
-    public Class<WrappedType> getGenericType();
+    public Class<WrappedType> getWrappedType();
+
+    /**
+     * Get the generic Type of this element.
+     *
+     * @return
+     */
+    public Type getGenericType();
 
     /**
      * The source bean of this element.
@@ -53,6 +61,6 @@ public interface Element<WrappedType> extends ReadOnlyProperty<WrappedType>, Dis
      * @param annotationClass
      * @return
      */
-    public  <T extends Annotation> T getAnnotation(Class<T> annotationClass);
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass);
 
 }

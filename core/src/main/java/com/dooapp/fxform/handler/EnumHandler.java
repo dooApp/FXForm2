@@ -23,7 +23,7 @@ public class EnumHandler implements ElementHandler {
 
     public boolean handle(Element element) {
         try {
-            return element.getGenericType().isEnum();
+            return element.getWrappedType().isEnum();
         } catch (Exception e) {
         }
         return false;

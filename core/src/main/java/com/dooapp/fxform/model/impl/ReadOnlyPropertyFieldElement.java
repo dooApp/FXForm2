@@ -19,6 +19,7 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.value.ObservableValue;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
 /**
  * Created at 27/09/12 13:32.<br>
@@ -79,8 +80,13 @@ public class ReadOnlyPropertyFieldElement<SourceType, WrappedType> extends Abstr
     }
 
     @Override
-    public Class<WrappedType> getGenericType() {
+    public Class<WrappedType> getWrappedType() {
         return ReflectionUtils.getObjectPropertyGeneric(field);
+    }
+
+    @Override
+    public Type getGenericType() {
+        return field.getGenericType();
     }
 
     @Override

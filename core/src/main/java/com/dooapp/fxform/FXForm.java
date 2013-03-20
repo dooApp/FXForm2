@@ -212,7 +212,10 @@ public class FXForm<T> extends Control implements FormAPI<T> {
             Element element = elementFactory.create(field);
             if (element != null) {
                 element.sourceProperty().bind(source);
-                elements.add(element);
+                // if something went wrong and we are not able to get element type, ignore it
+                if (element.getType() != null) {
+                    elements.add(element);
+                }
             }
         }
         for (FieldFilter filter : filters) {

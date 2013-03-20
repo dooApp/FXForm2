@@ -15,8 +15,6 @@ package com.dooapp.fxform.reflection;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -27,13 +25,17 @@ public class ReflectionUtils {
 
     /**
      * Tries to retrieve the generic parameter of an ObjectProperty at runtime.
-     *
      */
-    public static Class getObjectPropertyGeneric(Field field)  {
+    public static Class getObjectPropertyGeneric(Field field) {
         Type type = field.getGenericType();
         if (type instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType)type;
-            return (Class) pType.getActualTypeArguments()[0];
+            ParameterizedType pType = (ParameterizedType) type;
+            Type type1 = pType.getActualTypeArguments()[0];
+            if (type1 instanceof ParameterizedType) {
+                return (Class) ((ParameterizedType) type1).getRawType();
+            } else {
+                return (Class) type1;
+            }
         } else {
             return field.getType();
         }

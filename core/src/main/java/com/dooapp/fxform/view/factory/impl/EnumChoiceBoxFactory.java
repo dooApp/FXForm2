@@ -37,7 +37,7 @@ public class EnumChoiceBoxFactory implements Callback<Void, FXFormNode> {
             public void init(Element element) {
                 Enum[] constants = new Enum[0];
                 try {
-                    constants = (Enum[]) element.getGenericType().getEnumConstants();
+                    constants = (Enum[]) element.getWrappedType().getEnumConstants();
                 } catch (Exception e) {
                     logger.log(Level.WARNING, "Could not retrieve enum constants from element " + element, e);
                 }

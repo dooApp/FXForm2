@@ -23,6 +23,7 @@ import javafx.beans.value.WritableValue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,7 +78,7 @@ public abstract class AbstractJavaBeanElement<WrappedType> extends AbstractField
                 try {
                     return buildJavaBeanProperty();
                 } catch (NoSuchMethodException e) {
-                    logger.log(Level.WARNING, e.getMessage(), e);
+                    logger.log(Level.FINE, e.getMessage(), e);
                 }
                 return null;
             }
@@ -98,12 +99,21 @@ public abstract class AbstractJavaBeanElement<WrappedType> extends AbstractField
 
     @Override
     public Class<?> getType() {
-        return wrappedJavaBeanProperty.getValue().getClass();
+        if (wrappedJavaBeanProperty.getValue() != null) {
+            return wrappedJavaBeanProperty.getValue().getClass();
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public Class<WrappedType> getGenericType() {
-       return (Class<WrappedType>) field.getType();
+    public Class<WrappedType> getWrappedType() {
+        return (Class<WrappedType>) field.getType();
+    }
+
+    @Override
+    public Type getGenericType() {
+        return field.getGenericType();
     }
 
     @Override
