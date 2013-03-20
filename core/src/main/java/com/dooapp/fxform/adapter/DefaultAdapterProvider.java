@@ -17,6 +17,7 @@ import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.property.*;
 import javafx.util.converter.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -54,6 +55,8 @@ public class DefaultAdapterProvider implements AdapterProvider {
                 new ConverterWrapper(new DoubleStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(BooleanProperty.class, StringProperty.class),
                 new ConverterWrapper(new BooleanStringConverter()));
+        DEFAULT_MAP.put(new ObjectPropertyAdapterMatcher(BigDecimal.class, StringProperty.class),
+                new ConverterWrapper(new BigDecimalStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(IntegerProperty.class, DoubleProperty.class),
                 new Adapter<Integer, Double>() {
 

@@ -16,6 +16,9 @@ import com.dooapp.fxform.annotation.FormFactory;
 import javafx.beans.property.*;
 import org.hibernate.validator.constraints.Email;
 
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+
 /**
  * Created at 26/09/12 14:23.<br>
  *
@@ -43,6 +46,8 @@ public class MyBean {
 
     private final IntegerProperty age = new SimpleIntegerProperty();
 
+    private final ObjectProperty<BigDecimal> bigDecimalProperty = new SimpleObjectProperty<BigDecimal>();
+
     private String javaString = "Java String";
 
     private int javaInteger = 2;
@@ -59,6 +64,11 @@ public class MyBean {
     @Email
     public String getEmail() {
         return email.get();
+    }
+
+    @NotNull
+    public BigDecimal getBigDecimalProperty() {
+        return bigDecimalProperty.get();
     }
 
     public String getJavaString() {

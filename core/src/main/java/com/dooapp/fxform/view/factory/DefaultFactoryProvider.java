@@ -24,6 +24,7 @@ import com.dooapp.fxform.view.factory.impl.TextFieldFactory;
 import javafx.beans.property.*;
 import javafx.util.Callback;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -51,6 +52,12 @@ public class DefaultFactoryProvider implements FactoryProvider {
         DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new ElementHandler() {
+            @Override
+            public boolean handle(Element element) {
+                return BigDecimal.class.isAssignableFrom(element.getWrappedType());
+            }
+        }, new TextFieldFactory());
     }
 
     private Callback<Void, FXFormNode> getDelegate(Element element, Map<ElementHandler, Callback<Void, FXFormNode>> map) {
