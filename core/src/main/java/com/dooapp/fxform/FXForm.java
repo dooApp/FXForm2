@@ -224,7 +224,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         for (Element element : elements) {
             ElementController controller = null;
             if (PropertyElement.class.isAssignableFrom(element.getClass())) {
-                controller = new PropertyElementController(this, (PropertyElement) element);
+                controller = createPropertyElementController((PropertyElement) element);
             } else {
                 controller = new ElementController(this, element);
             }
@@ -232,6 +232,10 @@ public class FXForm<T> extends Control implements FormAPI<T> {
                 controllers.add(controller);
             }
         }
+    }
+
+    protected ElementController createPropertyElementController(PropertyElement element) {
+        return new PropertyElementController(this, element);
     }
 
     /**

@@ -12,7 +12,9 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.factory.FactoryProvider;
 import com.dooapp.fxform.view.factory.impl.LabelFactory;
@@ -41,6 +43,11 @@ public class ReadOnlyFXForm<T> extends FXForm<T> {
                 return new LabelFactory();
             }
         });
+    }
+
+    @Override
+    protected ElementController createPropertyElementController(PropertyElement element) {
+        return new ElementController(this, element);
     }
 
 }

@@ -83,6 +83,8 @@ public class DefaultAdapterProvider implements AdapterProvider {
                         return to.floatValue();
                     }
                 });
+        DEFAULT_MAP.put(new TypeAdapterMatcher(ObjectProperty.class, StringProperty.class),
+                new ToStringConverter());
     }
 
     @Override

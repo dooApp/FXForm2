@@ -38,7 +38,11 @@ public class ReadOnlyPropertyEditorController extends NodeController {
 
             @Override
             protected Object computeValue() {
-                return getFxForm().getAdapterProvider().getAdapter(StringProperty.class, getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement());
+                if (getNode() != null) {
+                    return getFxForm().getAdapterProvider().getAdapter(StringProperty.class, getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement());
+                } else {
+                    return null;
+                }
             }
         });
     }
