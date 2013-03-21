@@ -20,6 +20,7 @@ import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.beans.property.Property;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 
 import java.io.IOException;
@@ -40,15 +41,23 @@ public class FXMLSkin extends FXFormSkin {
 
     private FXMLLoader fxmlLoader;
 
+    private Initializable controller;
+
     public FXMLSkin(FXForm fxForm, URL url) {
+        this(fxForm, url, null);
+    }
+
+    public FXMLSkin(FXForm fxForm, URL url, Initializable controller) {
         super(fxForm);
         this.url = url;
+        this.controller = controller;
     }
 
     @Override
     protected Node createRootNode() throws NodeCreationException {
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(url);
+        fxmlLoader.setController(controller);
         try {
             return (Node) fxmlLoader.load();
         } catch (IOException e) {
