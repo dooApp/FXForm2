@@ -44,8 +44,8 @@ public class TooltipController extends NodeController {
                 try {
                     label = getFxForm().getResourceBundle().getString(getElement().getName() + TOOLTIP_SUFFIX);
                 } catch (Exception e) {
-                    // label is undefined
-                    label = (getElement().getName());
+                    // tooltip is undefined
+                    label = null;
                 }
                 return getFxForm().getAdapterProvider().getAdapter(StringProperty.class, getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(label);
             }
