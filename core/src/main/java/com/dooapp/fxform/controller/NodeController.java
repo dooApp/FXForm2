@@ -58,6 +58,7 @@ public abstract class NodeController implements Disposable {
     }
 
     public void dispose() {
+        setNode(null);
         node.removeListener(changeListener);
     }
 
