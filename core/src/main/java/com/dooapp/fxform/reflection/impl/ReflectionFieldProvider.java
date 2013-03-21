@@ -38,7 +38,10 @@ public class ReflectionFieldProvider implements FieldProvider {
 
     private void fillFields(Class clazz, List<Field> result) {
         for (Field field : clazz.getDeclaredFields()) {
-            result.add(field);
+            // ignore synthetic fields, see #21
+            if (!field.isSynthetic()) {
+                result.add(field);
+            }
         }
 
         for (Field field : result) {
