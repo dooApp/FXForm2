@@ -65,6 +65,12 @@ public class DefaultPropertyProvider implements PropertyProvider {
                 return new ChoiceBoxDefaultProperty(node);
             }
         });
+        map.put(ComboBox.class, new PropertyProvider<ComboBox>() {
+            @Override
+            public Property getProperty(ComboBox node) {
+                return new ComboBoxDefaultProperty(node);
+            }
+        });
         map.put(CheckBox.class, new PropertyProvider<CheckBox>() {
             @Override
             public Property getProperty(CheckBox node) {
