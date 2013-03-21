@@ -24,6 +24,8 @@ import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.utils.ConfigurationStore;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.factory.DefaultFactoryProvider;
+import com.dooapp.fxform.view.factory.DefaultLabelFactoryProvider;
+import com.dooapp.fxform.view.factory.DefaultTooltipFactoryProvider;
 import com.dooapp.fxform.view.factory.FactoryProvider;
 import com.dooapp.fxform.view.factory.impl.AutoHidableLabelFactory;
 import com.dooapp.fxform.view.factory.impl.DefaultConstraintFactory;
@@ -131,15 +133,9 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public FXForm(T source, FactoryProvider editorFactoryProvider) {
         this(source,
-                new FactoryProvider() {
-                    public Callback<Void, FXFormNode> getFactory(Element element) {
-                        return new LabelFactory();
-                    }
-                }, new FactoryProvider() {
-                    public Callback<Void, FXFormNode> getFactory(Element element) {
-                        return new AutoHidableLabelFactory();
-                    }
-                }, editorFactoryProvider
+                new DefaultLabelFactoryProvider(),
+                new DefaultTooltipFactoryProvider(),
+                editorFactoryProvider
         );
     }
 
