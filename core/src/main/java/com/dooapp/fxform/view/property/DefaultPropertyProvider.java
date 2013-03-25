@@ -20,11 +20,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Implementation based on a default map and a global map.
+ * User providers can be registered statically in the global map.
+ * This implementation will lookup first in the global map for a matching property provider. If none is found, it
+ * will then lookup in the default map.
+ * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 30/09/12
  * Time: 09:50
  */
 public class DefaultPropertyProvider implements PropertyProvider {
+
+    private final static Map<Class<? extends Node>, PropertyProvider> GLOBAL_MAP = new HashMap<Class<? extends Node>, PropertyProvider>();
 
     protected final Map<Class<? extends Node>, PropertyProvider> map = new HashMap<Class<? extends Node>, PropertyProvider>();
 
@@ -32,6 +39,11 @@ public class DefaultPropertyProvider implements PropertyProvider {
     public Property getProperty(Node node) {
         if (node == null)
             return null;
+        for (Class clazz : GLOBAL_MAP.keySet()) {
+            if (clazz.isAssignableFrom(node.getClass())) {
+                return GLOBAL_MAP.get(clazz).getProperty(node);
+            }
+        }
         for (Class clazz : map.keySet()) {
             if (clazz.isAssignableFrom(node.getClass())) {
                 return map.get(clazz).getProperty(node);
@@ -90,4 +102,15 @@ public class DefaultPropertyProvider implements PropertyProvider {
             }
         });
     }
+
+    /**
+     * Register a global property provider.
+     *
+     * @param clazz the Class of Node to register a property provider for
+     * @param globalProvider the provider to register
+     */
+    public static void addGlobalProvider(Class<? extends Node> clazz, PropertyProvider globalProvider) {
+        GLOBAL_MAP.put(clazz, globalProvider);
+    }
+
 }
