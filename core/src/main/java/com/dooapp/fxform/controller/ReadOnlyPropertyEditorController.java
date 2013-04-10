@@ -16,7 +16,6 @@ import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.StringProperty;
 
 /**
  * Created at 27/09/12 17:15.<br>
@@ -39,7 +38,7 @@ public class ReadOnlyPropertyEditorController extends NodeController {
             @Override
             protected Object computeValue() {
                 if (getNode() != null) {
-                    return getFxForm().getAdapterProvider().getAdapter(StringProperty.class, getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement());
+                    return getFxForm().getAdapterProvider().getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue());
                 } else {
                     return null;
                 }

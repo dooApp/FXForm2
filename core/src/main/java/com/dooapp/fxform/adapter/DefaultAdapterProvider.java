@@ -20,7 +20,6 @@ import javafx.util.converter.*;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -100,9 +99,15 @@ public class DefaultAdapterProvider implements AdapterProvider {
             adapter = getAdapter(fromClass, toClass, element, fxFormNode, DEFAULT_MAP);
         }
         if (adapter == null) {
-            adapter = new DefaultAdapter();
-            logger.log(Level.WARNING, "No adapter between types " + fromClass + " and " + toClass + " was found (to adapt " + element + " and " + fxFormNode + ")" +
-                    "\nMake sure to register the required adapter in DefaultAdapterProvider either in the global or in the user map. See FXForm#setAdapterProvider");
+            // we are converting to a String, use a generic toString converter
+            if (StringProperty.class.isAssignableFrom(toClass)) {
+                adapter = new ToStringConverter();
+            } else {
+                adapter = new DefaultAdapter();
+                logger.log(java.util.logging.Level.WARNING, "No adapter between types " + fromClass + " and " + toClass + " was found (to adapt " + element + " and " + fxFormNode + ")" +
+                        "\nMake sure to register the required adapter in DefaultAdapterProvider either in the global or in the user map. See FXForm#setAdapterProvider");
+
+            }
         }
         return adapter;
     }
