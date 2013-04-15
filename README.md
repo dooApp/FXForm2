@@ -39,7 +39,7 @@ Links
 
 A video by Betrand Goetzmann with [Grezi](https://bitbucket.org/bgoetzmann/grezi/wiki/Home) and FXForm2: [http://screenr.com/GvDs]
 
-JavaFX [Third Party Tools and Utilities](http://www.oracle.com/technetwork/java/javafx/tools/index.html)
+JavaFX [Third Party Tools and Utilities](http://www.oracle.com/technetwork/java/javafx/community/3rd-party-1844355.html)
 
 [Screenshots](http://infiltrea.com/index.php/screenshots) of Infiltrea, a real-world application using FXForm2 - all forms you can see there are based on FXForm2
 
