@@ -253,7 +253,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         }
         sceneProperty().addListener(new ChangeListener<Scene>() {
             public void changed(ObservableValue<? extends Scene> observableValue, Scene scene, Scene scene1) {
-                URL css = FXForm.class.getResource(element.getFileName().substring(0, element.getFileName().indexOf(".")) + ".css");
+                String path = element.getClassName().replaceAll("\\.", "/") + ".css";
+                URL css = FXForm.class.getClassLoader().getResource(path);
                 if (css != null && observableValue.getValue() != null) {
                     getScene().getStylesheets().add(css.toExternalForm());
                 }
@@ -267,15 +268,12 @@ public class FXForm<T> extends Control implements FormAPI<T> {
      * @return the StackTraceElement representing the calling class
      */
     private StackTraceElement getCallingClass() {
-        try {
-            throw new Exception();
-        } catch (Exception e) {
-            int i = 1;
-            while (e.getStackTrace()[i].getClassName().equals(FXForm.class.getName())) {
-                i++;
-            }
-            return e.getStackTrace()[i];
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        int i = 1;
+        while (stackTrace[i].getClassName().equals(FXForm.class.getName())) {
+            i++;
         }
+        return stackTrace[i];
     }
 
     public StringProperty titleProperty() {
