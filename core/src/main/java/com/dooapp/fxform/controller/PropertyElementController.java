@@ -34,8 +34,17 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
 
     private final NodeController constraintController;
 
-    public PropertyElementController(FXForm fxForm, PropertyElement element) {
+    public PropertyElementController(final FXForm fxForm, PropertyElement element) {
         super(fxForm, element);
+        constraintViolations.addListener(new ListChangeListener<ConstraintViolation>() {
+            @Override
+            public void onChanged(Change<? extends ConstraintViolation> change) {
+                while (change.next()) {
+                    fxForm.getConstraintViolations().addAll(change.getAddedSubList());
+                    fxForm.getConstraintViolations().removeAll(change.getRemoved());
+                }
+            }
+        });
         constraintController = new ConstraintController(fxForm, element, constraintViolations);
         updateSkin((FXFormSkin) fxForm.getSkin());
         constraintViolations.addListener(new ListChangeListener<ConstraintViolation>() {

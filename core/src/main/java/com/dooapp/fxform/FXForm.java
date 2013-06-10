@@ -33,10 +33,7 @@ import com.dooapp.fxform.view.factory.impl.LabelFactory;
 import com.dooapp.fxform.view.property.DefaultPropertyProvider;
 import com.dooapp.fxform.view.property.PropertyProvider;
 import com.dooapp.fxform.view.skin.DefaultSkin;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -46,6 +43,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.util.Callback;
 
+import javax.validation.ConstraintViolation;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.LinkedList;
@@ -104,6 +102,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     private final ObjectProperty<AdapterProvider> adapterProvider = new SimpleObjectProperty<AdapterProvider>();
 
     private final ObjectProperty<PropertyProvider> propertyProvider = new SimpleObjectProperty<PropertyProvider>();
+
+    private final ObservableList<ConstraintViolation> constraintViolationsList = FXCollections.<ConstraintViolation>observableArrayList();
 
     public void setTitle(String title) {
         this.title.set(title);
@@ -395,6 +395,18 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public ObjectProperty<PropertyProvider> propertyProviderProperty() {
         return propertyProvider;
+    }
+
+    /**
+     * Get an ObservableList mirroring all constraint violations in the form.
+     * This method can be used to implement some kind of validation of the form or
+     * to display all constraint violations.
+     * This list is updated each time the user inputs data that violates a constraint or fixes a violation.
+     *
+     * @return the ObservableList containing current constraint violations
+     */
+    public ObservableList<ConstraintViolation> getConstraintViolations() {
+        return constraintViolationsList;
     }
 
 }

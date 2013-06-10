@@ -21,16 +21,19 @@ import com.dooapp.fxform.view.skin.FXMLSkin;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.SceneBuilder;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.log4j.BasicConfigurator;
+
+import javax.validation.ConstraintViolation;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -68,8 +71,41 @@ public class Demo extends Application {
 
     private Node createNode() {
         VBox vBox = new VBox();
-        vBox.getChildren().addAll(createSkinSelector(), createCSSNode(), fxForm);
+        vBox.getChildren().addAll(createSkinSelector(), createCSSNode(), fxForm, createConstraintNode());
         return vBox;
+    }
+
+    private Node createConstraintNode() {
+        return ButtonBuilder.create().text("Validate")
+                .defaultButton(true)
+                .onAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        ListView<ConstraintViolation> listView = new ListView<ConstraintViolation>();
+                        listView.setCellFactory(new Callback<ListView<ConstraintViolation>, ListCell<ConstraintViolation>>() {
+
+                            @Override
+                            public ListCell<ConstraintViolation> call(ListView<ConstraintViolation> constraintViolation) {
+                                return new ListCell<ConstraintViolation>() {
+                                    @Override
+                                    protected void updateItem(ConstraintViolation constraintViolation, boolean b) {
+                                        super.updateItem(constraintViolation, b);
+                                        if (constraintViolation != null) {
+                                            setText(constraintViolation.getPropertyPath().toString() + " - " + constraintViolation.getMessage());
+                                        } else {
+                                            setText("");
+                                        }
+                                    }
+                                };
+                            }
+                        });
+                        listView.getItems().setAll(fxForm.getConstraintViolations());
+                        Scene scene = new Scene(listView);
+                        Stage stage = new Stage();
+                        stage.setScene(scene);
+                        stage.show();
+                    }
+                }).build();
     }
 
     private Node createCSSNode() {
