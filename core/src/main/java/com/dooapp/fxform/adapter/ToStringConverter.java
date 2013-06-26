@@ -18,7 +18,7 @@ public class ToStringConverter implements Adapter<Object, String> {
 
     @Override
     public Object adaptFrom(String to) {
-        return null;
+        return to;
     }
 
 }

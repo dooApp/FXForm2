@@ -44,6 +44,7 @@ public class DefaultAdapterProvider implements AdapterProvider {
                 return fromClass.isAssignableFrom(toClass);
             }
         }, new DefaultAdapter());
+
         DEFAULT_MAP.put(new TypeAdapterMatcher(IntegerProperty.class, StringProperty.class),
                 new ConverterWrapper(new IntegerStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(FloatProperty.class, StringProperty.class),
@@ -82,6 +83,13 @@ public class DefaultAdapterProvider implements AdapterProvider {
                         return to.floatValue();
                     }
                 });
+
+        DEFAULT_MAP.put(new PropertyTypeMatcher(StringProperty.class), new DefaultAdapter());
+        DEFAULT_MAP.put(new PropertyTypeMatcher(IntegerProperty.class), new DefaultAdapter());
+        DEFAULT_MAP.put(new PropertyTypeMatcher(FloatProperty.class), new DefaultAdapter());
+        DEFAULT_MAP.put(new PropertyTypeMatcher(DoubleProperty.class), new DefaultAdapter());
+        DEFAULT_MAP.put(new PropertyTypeMatcher(BooleanProperty.class), new DefaultAdapter());
+
         DEFAULT_MAP.put(new TypeAdapterMatcher(ObjectProperty.class, StringProperty.class),
                 new ToStringConverter());
     }
