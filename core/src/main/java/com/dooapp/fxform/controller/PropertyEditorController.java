@@ -88,7 +88,12 @@ public class PropertyEditorController extends NodeController {
             }
         };
         getElement().addListener(modelChangeListener);
-        fxFormNode.getProperty().setValue(getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue()));
+        try {
+            fxFormNode.getProperty().setValue(getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue()));
+        } catch (UnsupportedOperationException e) {
+            // this might happen, if the Adapter is not able to convert the user input into a model value,
+            // for example when no factory has been found and that we are using the default editor
+        }
     }
 
     @Override
