@@ -14,10 +14,12 @@ package com.dooapp.fxform;
 
 import com.dooapp.fxform.annotation.FormFactory;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.HashMap;
 
 /**
  * Created at 26/09/12 14:23.<br>
@@ -51,6 +53,8 @@ public class MyBean {
     private String javaString = "Java String";
 
     private int javaInteger = 2;
+
+    private MapProperty<String, String> userMap = new SimpleMapProperty<String, String>(FXCollections.observableMap(new HashMap<String, String>()));
 
     protected MyBean(String name, String email, String message, String website, boolean subscribe, Subject subject) {
         this.name.set(name);
