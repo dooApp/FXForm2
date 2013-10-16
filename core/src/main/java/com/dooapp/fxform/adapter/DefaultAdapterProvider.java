@@ -14,11 +14,11 @@ package com.dooapp.fxform.adapter;
 
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
-import com.sun.tools.jdi.LinkedHashMap;
 import javafx.beans.property.*;
 import javafx.util.converter.*;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
