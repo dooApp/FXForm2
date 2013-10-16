@@ -15,11 +15,9 @@ package com.dooapp.fxform.model.impl;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.reflection.ReflectionUtils;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.value.ObservableValue;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 
 /**
  * Created at 27/09/12 13:32.<br>
@@ -28,51 +26,11 @@ import java.lang.reflect.Type;
  */
 public class ReadOnlyPropertyFieldElement<SourceType, WrappedType> extends AbstractFieldElement<SourceType, WrappedType> implements Element<WrappedType> {
 
-    private ObjectBinding<ObservableValue<WrappedType>> value;
-
-
     public ReadOnlyPropertyFieldElement(Field field) throws FormException {
         super(field);
         if (!ObservableValue.class.isAssignableFrom(field.getType())) {
             throw new FormException("Trying to create an observable field element with a non-observable field " + field.getType());
         }
-
-    }
-
-
-    public ObservableValue<ObservableValue<WrappedType>> wrappedProperty() {
-        if (value == null) {
-            value = createValue();
-        }
-        return value;
-    }
-
-    private ObjectBinding<ObservableValue<WrappedType>> createValue() {
-        return new ObjectBinding<ObservableValue<WrappedType>>() {
-
-            {
-                super.bind(sourceProperty());
-            }
-
-            @Override
-            protected ObservableValue<WrappedType> computeValue() {
-                if (getSource() == null) {
-                    return null;
-                }
-                try {
-                    return (ObservableValue<WrappedType>) getField().get(getSource());
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            public void dispose() {
-                super.dispose();
-                unbind(sourceProperty());
-            }
-        };
     }
 
     public Class<?> getType() {
@@ -85,14 +43,19 @@ public class ReadOnlyPropertyFieldElement<SourceType, WrappedType> extends Abstr
     }
 
     @Override
-    public Type getGenericType() {
-        return field.getGenericType();
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        value.dispose();
+    protected ObservableValue<WrappedType> computeValue() {
+        try {
+            ObservableValue<WrappedType> value = (ObservableValue<WrappedType>) field.get(getSource());
+            if (value == null) {
+                throw new FormException("Field " + field.getName() + "has not been assigned. You might need to specify @Accessor(Accessor.AccessType.METHOD) on your class if your field is lazy instantiated through its getter.");
+            }
+            return value;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (FormException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -101,4 +64,5 @@ public class ReadOnlyPropertyFieldElement<SourceType, WrappedType> extends Abstr
                 "field=" + field +
                 '}';
     }
+
 }

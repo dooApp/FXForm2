@@ -10,49 +10,44 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.model;
+package com.dooapp.fxform.model.impl;
 
-import com.dooapp.fxform.utils.Disposable;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import junit.framework.Assert;
+import org.junit.Test;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 11/04/11
- * Time: 22:22
- * Model object wrapping an object field.
+ * Date: 16/10/13
+ * Time: 16:27
  */
-public interface Element<WrappedType> extends ReadOnlyProperty<WrappedType>, Disposable {
+public class PropertyMethodElementTest {
 
-    /**
-     * The raw type of this element.
-     *
-     * @return
-     */
-    public Class<?> getType();
+    public static class TestBean {
 
-    /**
-     * The type wrapped by this element
-     *
-     * @return
-     */
-    public Class<WrappedType> getWrappedType();
+        private StringProperty nameProperty;
 
-    /**
-     * The source bean of this element.
-     *
-     * @return
-     */
-    public ObjectProperty sourceProperty();
+        public StringProperty nameProperty() {
+            if (nameProperty == null) {
+                nameProperty = new SimpleStringProperty("1");
+            }
+            return nameProperty;
+        }
 
-    /**
-     * Similar to Field#getAnnotation
-     *
-     * @param annotationClass
-     * @return
-     */
-    public <T extends Annotation> T getAnnotation(Class<T> annotationClass);
+    }
+
+    @Test
+    public void test() throws NoSuchMethodException {
+        TestBean testBean = new TestBean();
+        Method method = TestBean.class.getMethod("nameProperty");
+        PropertyMethodElement tested = new PropertyMethodElement(method);
+        tested.setSource(testBean);
+        Assert.assertEquals("1", tested.getValue());
+        tested.setValue("2");
+        Assert.assertEquals("2", testBean.nameProperty.getValue());
+    }
 
 }

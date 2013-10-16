@@ -13,17 +13,10 @@
 package com.dooapp.fxform.model.impl;
 
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.reflection.ReflectionUtils;
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.dooapp.fxform.model.FormException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Element based on a Field.
@@ -32,52 +25,17 @@ import java.util.List;
  *
  * @author Antoine Mischler <antoine@dooapp.com>
  */
-public abstract class AbstractFieldElement<SourceType, WrappedType> implements Element<WrappedType> {
+public abstract class AbstractFieldElement<SourceType, WrappedType> extends AbstractSourceElement<SourceType, WrappedType> implements Element<WrappedType> {
 
     protected final Field field;
 
-    private final ObjectProperty<SourceType> source = new SimpleObjectProperty<SourceType>();
-
-    private List<ChangeListener> changeListeners = new LinkedList<ChangeListener>();
-
-    private List<InvalidationListener> invalidationListeners = new LinkedList<InvalidationListener>();
-
-    public AbstractFieldElement(Field field) {
+    public AbstractFieldElement(Field field) throws FormException {
+        super();
         this.field = field;
-        wrappedProperty().addListener(new ChangeListener<ObservableValue<WrappedType>>() {
-            public void changed(ObservableValue<? extends ObservableValue<WrappedType>> observableValue, ObservableValue<WrappedType> wrappedTypeObservableValue, ObservableValue<WrappedType> wrappedTypeObservableValue1) {
-                for (InvalidationListener invalidationListener : invalidationListeners) {
-                    wrappedTypeObservableValue.removeListener(invalidationListener);
-                    if (wrappedTypeObservableValue1 != null) {
-                        wrappedTypeObservableValue1.addListener(invalidationListener);
-                    }
-                    invalidationListener.invalidated(observableValue);
-                }
-                for (ChangeListener changeListener : changeListeners) {
-                    wrappedTypeObservableValue.removeListener(changeListener);
-                    if (wrappedTypeObservableValue1 != null) {
-                        wrappedTypeObservableValue1.addListener(changeListener);
-                        changeListener.changed(observableValue, wrappedTypeObservableValue.getValue(), wrappedTypeObservableValue1.getValue());
-                    }
-                }
-            }
-        });
     }
 
     public Field getField() {
         return field;
-    }
-
-    public SourceType getSource() {
-        return source.get();
-    }
-
-    public void setSource(SourceType source) {
-        this.source.set(source);
-    }
-
-    public ObjectProperty<SourceType> sourceProperty() {
-        return source;
     }
 
     @Override
@@ -85,51 +43,8 @@ public abstract class AbstractFieldElement<SourceType, WrappedType> implements E
         return field.getAnnotation(annotationClass);
     }
 
-    public void addListener(ChangeListener changeListener) {
-        changeListeners.add(changeListener);
-        wrappedProperty().getValue().addListener(changeListener);
-
-    }
-
-    public void removeListener(ChangeListener changeListener) {
-        changeListeners.remove(changeListener);
-        if (wrappedProperty().getValue() != null) {
-            wrappedProperty().getValue().removeListener(changeListener);
-        }
-    }
-
-    public WrappedType getValue() {
-        if (wrappedProperty().getValue() != null) {
-            return wrappedProperty().getValue().getValue();
-        } else {
-            return null;
-        }
-    }
-
-    public void addListener(InvalidationListener invalidationListener) {
-        invalidationListeners.add(invalidationListener);
-        wrappedProperty().addListener(invalidationListener);
-    }
-
-    public void removeListener(InvalidationListener invalidationListener) {
-        invalidationListeners.remove(invalidationListener);
-        if (wrappedProperty().getValue() != null) {
-            wrappedProperty().removeListener(invalidationListener);
-        }
-    }
-
-    public void dispose() {
-        source.unbind();
-    }
-
-    public Object getBean() {
-        return getSource();
-    }
-
     public String getName() {
         return field.getName();
     }
-
-    protected abstract ObservableValue<ObservableValue<WrappedType>> wrappedProperty();
 
 }

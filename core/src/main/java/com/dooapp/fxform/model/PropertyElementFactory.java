@@ -12,12 +12,16 @@
 
 package com.dooapp.fxform.model;
 
+import com.dooapp.fxform.annotation.Accessor;
 import com.dooapp.fxform.model.impl.PropertyFieldElement;
+import com.dooapp.fxform.model.impl.PropertyMethodElement;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
+import com.dooapp.fxform.model.impl.ReadOnlyPropertyMethodElement;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyProperty;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -29,6 +33,19 @@ public class PropertyElementFactory implements ElementFactory {
     @Override
     public Element create(Field field) throws FormException {
         Element element = null;
+        if (field.getDeclaringClass().isAnnotationPresent(Accessor.class)
+                && (Accessor.AccessType.METHOD == field.getDeclaringClass().getAnnotation(Accessor.class).value())) {
+            try {
+                Method method = field.getDeclaringClass().getMethod(field.getName());
+                if (Property.class.isAssignableFrom(method.getReturnType())) {
+                    return new PropertyMethodElement(method);
+                } else {
+                    return new ReadOnlyPropertyMethodElement(method);
+                }
+            } catch (NoSuchMethodException e) {
+                throw new FormException("Unable to retrieve the method accessor named " + field.getName(), e);
+            }
+        }
         if (Property.class.isAssignableFrom(field.getType())) {
             element = new PropertyFieldElement(field);
         } else if (ReadOnlyProperty.class.isAssignableFrom(field.getType())) {

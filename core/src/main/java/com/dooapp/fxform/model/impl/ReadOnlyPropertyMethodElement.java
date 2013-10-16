@@ -10,49 +10,64 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.model;
+package com.dooapp.fxform.model.impl;
 
-import com.dooapp.fxform.utils.Disposable;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyProperty;
+import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.reflection.ReflectionUtils;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.value.ObservableValue;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
+ * An element based on a Method to access a property.
+ * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 11/04/11
- * Time: 22:22
- * Model object wrapping an object field.
+ * Date: 16/10/13
+ * Time: 14:33
  */
-public interface Element<WrappedType> extends ReadOnlyProperty<WrappedType>, Disposable {
+public class ReadOnlyPropertyMethodElement<SourceType, WrappedType> extends AbstractSourceElement<SourceType, WrappedType> implements Element<WrappedType> {
 
-    /**
-     * The raw type of this element.
-     *
-     * @return
-     */
-    public Class<?> getType();
+    private ObjectBinding<ObservableValue<WrappedType>> value;
 
-    /**
-     * The type wrapped by this element
-     *
-     * @return
-     */
-    public Class<WrappedType> getWrappedType();
+    protected final Method method;
 
-    /**
-     * The source bean of this element.
-     *
-     * @return
-     */
-    public ObjectProperty sourceProperty();
+    public ReadOnlyPropertyMethodElement(Method method) {
+        this.method = method;
+    }
 
-    /**
-     * Similar to Field#getAnnotation
-     *
-     * @param annotationClass
-     * @return
-     */
-    public <T extends Annotation> T getAnnotation(Class<T> annotationClass);
+    @Override
+    protected ObservableValue<WrappedType> computeValue() {
+        try {
+            return (ObservableValue<WrappedType>) method.invoke(getSource());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Class<?> getType() {
+        return method.getReturnType();
+    }
+
+    @Override
+    public Class<WrappedType> getWrappedType() {
+        return ReflectionUtils.getMethodReturnTypeGeneric(method);
+    }
+
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+        return method.getAnnotation(annotationClass);
+    }
+
+    @Override
+    public String getName() {
+        return method.getName();
+    }
 
 }
