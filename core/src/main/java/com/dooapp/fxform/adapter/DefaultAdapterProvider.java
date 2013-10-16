@@ -14,11 +14,11 @@ package com.dooapp.fxform.adapter;
 
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
+import com.sun.tools.jdi.LinkedHashMap;
 import javafx.beans.property.*;
 import javafx.util.converter.*;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -31,11 +31,11 @@ public class DefaultAdapterProvider implements AdapterProvider {
 
     private final static Logger logger = Logger.getLogger(DefaultAdapterProvider.class.getName());
 
-    private final static Map<AdapterMatcher, Adapter> DEFAULT_MAP = new HashMap();
+    private final static Map<AdapterMatcher, Adapter> DEFAULT_MAP = new LinkedHashMap();
 
-    private final static Map<AdapterMatcher, Adapter> GLOBAL_MAP = new HashMap();
+    private final static Map<AdapterMatcher, Adapter> GLOBAL_MAP = new LinkedHashMap();
 
-    private final Map<AdapterMatcher, Adapter> USER_MAP = new HashMap();
+    private final Map<AdapterMatcher, Adapter> USER_MAP = new LinkedHashMap();
 
     public DefaultAdapterProvider() {
         DEFAULT_MAP.put(new AdapterMatcher() {
