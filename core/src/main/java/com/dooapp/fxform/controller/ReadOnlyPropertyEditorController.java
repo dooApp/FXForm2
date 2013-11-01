@@ -15,7 +15,8 @@ package com.dooapp.fxform.controller;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
-import javafx.beans.binding.ObjectBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 /**
  * Created at 27/09/12 17:15.<br>
@@ -24,25 +25,25 @@ import javafx.beans.binding.ObjectBinding;
  */
 public class ReadOnlyPropertyEditorController extends NodeController {
 
+    private ChangeListener changeListener;
+
     public ReadOnlyPropertyEditorController(FXForm fxForm, Element element) {
         super(fxForm, element);
     }
 
     @Override
-    protected void bind(FXFormNode fxFormNode) {
-        fxFormNode.getProperty().bind(new ObjectBinding() {
-            {
-                bind(getElement());
-            }
-
+    protected void bind(final FXFormNode fxFormNode) {
+        changeListener = new ChangeListener() {
             @Override
-            protected Object computeValue() {
-                if (getNode() != null) {
-                    return getFxForm().getAdapterProvider().getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue());
-                } else {
-                    return null;
-                }
+            public void changed(ObservableValue observableValue, Object o, Object o2) {
+                fxFormNode.getProperty().setValue(getFxForm().getAdapterProvider().getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue()));
             }
-        });
+        };
+        getElement().addListener(changeListener);
+    }
+
+    @Override
+    protected void unbind(FXFormNode fxFormNode) {
+         getElement().removeListener(changeListener);
     }
 }
