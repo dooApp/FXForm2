@@ -14,7 +14,6 @@ package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.view.factory.AnnotationFactoryProvider;
 import com.dooapp.fxform.view.factory.FactoryProvider;
 import javafx.scene.Node;
@@ -154,7 +153,11 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     protected FXFormNode createEditor(Element element) {
         Callback<Void, FXFormNode> factory = annotationFactoryProvider.getFactory(element);
         if (factory != null) {
-            return factory.call(null);
+            FXFormNode fxFormNode = factory.call(null);
+            if (fxFormNode.getNode().getId() == null) {
+                fxFormNode.getNode().setId(element.getName() + FXForm.EDITOR_ID_SUFFIX);
+            }
+            return fxFormNode;
         } else {
             return createFXFormNode(element, fxForm.getEditorFactoryProvider(), FXForm.EDITOR_ID_SUFFIX);
         }
