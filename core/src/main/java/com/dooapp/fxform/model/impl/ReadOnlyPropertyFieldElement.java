@@ -39,7 +39,7 @@ public class ReadOnlyPropertyFieldElement<SourceType, WrappedType> extends Abstr
 
     @Override
     public Class<WrappedType> getWrappedType() {
-        return ReflectionUtils.getObjectPropertyGeneric(field);
+        return ReflectionUtils.getObjectPropertyGeneric(getSource(), field);
     }
 
     @Override

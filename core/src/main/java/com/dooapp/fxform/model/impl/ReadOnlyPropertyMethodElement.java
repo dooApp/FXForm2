@@ -57,7 +57,7 @@ public class ReadOnlyPropertyMethodElement<SourceType, WrappedType> extends Abst
 
     @Override
     public Class<WrappedType> getWrappedType() {
-        return ReflectionUtils.getMethodReturnTypeGeneric(method);
+        return ReflectionUtils.getMethodReturnTypeGeneric(getSource(), method);
     }
 
     @Override

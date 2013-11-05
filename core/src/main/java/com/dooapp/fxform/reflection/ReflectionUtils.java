@@ -12,10 +12,7 @@
 
 package com.dooapp.fxform.reflection;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -27,16 +24,10 @@ public class ReflectionUtils {
     /**
      * Tries to retrieve the generic parameter of an ObjectProperty at runtime.
      */
-    public static Class getObjectPropertyGeneric(Field field) {
+    public static Class getObjectPropertyGeneric(Object source, Field field) {
         Type type = field.getGenericType();
         if (type instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType) type;
-            Type type1 = pType.getActualTypeArguments()[0];
-            if (type1 instanceof ParameterizedType) {
-                return (Class) ((ParameterizedType) type1).getRawType();
-            } else {
-                return (Class) type1;
-            }
+            return getGenericClass(source, (ParameterizedType) type);
         } else {
             return field.getType();
         }
@@ -45,18 +36,37 @@ public class ReflectionUtils {
     /**
      * Tries to retrieve the generic parameter of an ObjectProperty return by a method at runtime.
      */
-    public static Class getMethodReturnTypeGeneric(Method method) {
+    public static Class getMethodReturnTypeGeneric(Object source, Method method) {
         Type type = method.getGenericReturnType();
         if (type instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType) type;
-            Type type1 = pType.getActualTypeArguments()[0];
-            if (type1 instanceof ParameterizedType) {
-                return (Class) ((ParameterizedType) type1).getRawType();
-            } else {
-                return (Class) type1;
-            }
+            return getGenericClass(source, (ParameterizedType) type);
         } else {
             return method.getReturnType();
+        }
+    }
+
+    /**
+     * Try to extract the generic type of the given ParameterizedType used in the given source object.
+     *
+     * @param source
+     * @param type
+     * @return
+     */
+    private static Class getGenericClass(Object source, ParameterizedType type) {
+        Type type1 = type.getActualTypeArguments()[0];
+        if (type1 instanceof ParameterizedType) {
+            return (Class) ((ParameterizedType) type1).getRawType();
+        } else if (type1 instanceof TypeVariable) {
+            // Type is generic, try to get its actual type from the super class
+            // e.g.: ObjectProperty<T> where T extends U
+            if (source.getClass().getGenericSuperclass() instanceof ParameterizedType) {
+                return (Class) ((ParameterizedType) source.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+            } else {
+                // The actual type is not declared, use the upper bound of the type e.g. U
+                return (Class) ((TypeVariable) type1).getBounds()[0];
+            }
+        } else {
+            return (Class) type1;
         }
     }
 
