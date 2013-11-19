@@ -270,7 +270,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     private StackTraceElement getCallingClass() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         int i = 1;
-        while (stackTrace[i].getClassName().equals(FXForm.class.getName())) {
+        while (stackTrace[i].getClassName().equals(getClass().getName())) {
             i++;
         }
         return stackTrace[i];
