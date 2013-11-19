@@ -22,6 +22,8 @@ import javafx.beans.property.ReadOnlyProperty;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -29,6 +31,8 @@ import java.lang.reflect.Method;
  * Time: 12:05
  */
 public class PropertyElementFactory implements ElementFactory {
+
+    private final Logger logger = Logger.getLogger(PropertyElementFactory.class.getName());
 
     @Override
     public Element create(Field field) throws FormException {
@@ -43,7 +47,7 @@ public class PropertyElementFactory implements ElementFactory {
                     return new ReadOnlyPropertyMethodElement(method);
                 }
             } catch (NoSuchMethodException e) {
-                throw new FormException("Unable to retrieve the method accessor named " + field.getName(), e);
+                logger.log(Level.FINE, "No method accessor for " + field.getName());
             }
         }
         if (Property.class.isAssignableFrom(field.getType())) {
