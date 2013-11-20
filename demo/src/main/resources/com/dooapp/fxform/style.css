@@ -15,6 +15,10 @@
     -fx-font-weight: bold;
 }
 
+.form-label-warning {
+    -fx-text-fill: orange;
+}
+
 .form-title {
     -fx-font-size: 20;
     -fx-text-fill: dimgray;

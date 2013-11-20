@@ -15,13 +15,14 @@ package com.dooapp.fxform.controller;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
+import com.dooapp.fxform.validation.Warning;
 import com.dooapp.fxform.view.FXFormSkin;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 
 import javax.validation.ConstraintViolation;
-import java.util.ArrayList;
 
 /**
  * Created at 27/09/12 13:51.<br>
@@ -30,13 +31,13 @@ import java.util.ArrayList;
  */
 public class PropertyElementController<WrappedType> extends ElementController<WrappedType> {
 
-    protected ObservableList<ConstraintViolation> constraintViolations;
+    protected ListProperty<ConstraintViolation> constraintViolations;
 
     private final NodeController constraintController;
 
     public PropertyElementController(final FXForm fxForm, PropertyElement element) {
         super(fxForm, element);
-        constraintViolations.addListener(new ListChangeListener<ConstraintViolation>() {
+        constraintViolationsProperty().addListener(new ListChangeListener<ConstraintViolation>() {
             @Override
             public void onChanged(Change<? extends ConstraintViolation> change) {
                 while (change.next()) {
@@ -47,37 +48,59 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
         });
         constraintController = new ConstraintController(fxForm, element, constraintViolations);
         updateSkin((FXFormSkin) fxForm.getSkin());
-        constraintViolations.addListener(new ListChangeListener<ConstraintViolation>() {
+        constraintViolationsProperty().addListener(new ListChangeListener<ConstraintViolation>() {
 
             @Override
             public void onChanged(Change<? extends ConstraintViolation> change) {
                 if (constraintViolations.size() > 0) {
-                    if (labelController.getNode() != null)
-                        labelController.getNode().getNode().getStyleClass().add(FXForm.LABEL_STYLE + FXForm.INVALID_STYLE);
-                    if (editorController.getNode() != null)
-                        editorController.getNode().getNode().getStyleClass().add(FXForm.EDITOR_STYLE + FXForm.INVALID_STYLE);
-                    if (tooltipController.getNode() != null)
-                        tooltipController.getNode().getNode().getStyleClass().add(FXForm.TOOLTIP_STYLE + FXForm.INVALID_STYLE);
+                    for (ConstraintViolation constraintViolation : constraintViolations) {
+                        if (constraintViolation.getConstraintDescriptor().getGroups().isEmpty()) {
+                            addStyle(FXForm.INVALID_STYLE);
+                        }
+                        break;
+                    }
+                    for (ConstraintViolation constraintViolation : constraintViolations) {
+                        if (constraintViolation.getConstraintDescriptor().getGroups().contains(Warning.class)) {
+                            addStyle(FXForm.WARNING_STYLE);
+                        }
+                        break;
+                    }
                 } else {
-                    if (labelController.getNode() != null)
-                        labelController.getNode().getNode().getStyleClass().remove(FXForm.LABEL_STYLE + FXForm.INVALID_STYLE);
-                    if (editorController.getNode() != null)
-                        editorController.getNode().getNode().getStyleClass().remove(FXForm.EDITOR_STYLE + FXForm.INVALID_STYLE);
-                    if (tooltipController.getNode() != null)
-                        tooltipController.getNode().getNode().getStyleClass().remove(FXForm.TOOLTIP_STYLE + FXForm.INVALID_STYLE);
+                    removeStyle(FXForm.INVALID_STYLE);
+                    removeStyle(FXForm.WARNING_STYLE);
                 }
             }
         });
     }
 
-    public ObservableList<ConstraintViolation> getConstraintViolations() {
+    protected void addStyle(String styleSuffix) {
+        if (labelController.getNode() != null)
+            labelController.getNode().getNode().getStyleClass().add(FXForm.LABEL_STYLE + styleSuffix);
+        if (editorController.getNode() != null)
+            editorController.getNode().getNode().getStyleClass().add(FXForm.EDITOR_STYLE + styleSuffix);
+        if (tooltipController.getNode() != null)
+            tooltipController.getNode().getNode().getStyleClass().add(FXForm.TOOLTIP_STYLE + styleSuffix);
+    }
+
+    protected void removeStyle(String styleSuffix) {
+        if (labelController.getNode() != null)
+            labelController.getNode().getNode().getStyleClass().remove(FXForm.LABEL_STYLE + styleSuffix);
+        if (editorController.getNode() != null)
+            editorController.getNode().getNode().getStyleClass().remove(FXForm.EDITOR_STYLE + styleSuffix);
+        if (tooltipController.getNode() != null)
+            tooltipController.getNode().getNode().getStyleClass().remove(FXForm.TOOLTIP_STYLE + styleSuffix);
+    }
+
+    public ListProperty<ConstraintViolation> constraintViolationsProperty() {
+        if (constraintViolations == null) {
+            constraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.<ConstraintViolation>observableArrayList());
+        }
         return constraintViolations;
     }
 
     @Override
     protected NodeController createEditorController(FXForm fxForm, Element element) {
-        constraintViolations = FXCollections.observableArrayList(new ArrayList<ConstraintViolation>());
-        return new PropertyEditorController(fxForm, element, constraintViolations);
+        return new PropertyEditorController(fxForm, element, constraintViolationsProperty());
     }
 
     @Override

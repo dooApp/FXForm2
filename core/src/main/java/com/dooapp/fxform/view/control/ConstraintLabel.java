@@ -12,12 +12,9 @@
 
 package com.dooapp.fxform.view.control;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -53,25 +50,15 @@ public class ConstraintLabel extends VBox {
         }
     };
 
-    private ObjectProperty<ObservableList<ConstraintViolation>> constraint = new SimpleObjectProperty<ObservableList<ConstraintViolation>>();
+    private ListProperty<ConstraintViolation> constraint = new SimpleListProperty<ConstraintViolation>();
 
-    public ObjectProperty<ObservableList<ConstraintViolation>> constraintProperty() {
+    public ListProperty<ConstraintViolation> constraintProperty() {
         return constraint;
     }
 
     public ConstraintLabel() {
         setAlignment(Pos.CENTER_LEFT);
-        constraint.addListener(new ChangeListener<ObservableList<ConstraintViolation>>() {
-            @Override
-            public void changed(ObservableValue<? extends ObservableList<ConstraintViolation>> observableValue, ObservableList<ConstraintViolation> constraintViolations, ObservableList<ConstraintViolation> constraintViolations1) {
-                if (constraintViolations != null) {
-                    constraintViolations.removeListener(listChangeListener);
-                }
-                if (constraintViolations1 != null) {
-                    constraintViolations1.addListener(listChangeListener);
-                }
-            }
-
-        });
+        constraint.addListener(listChangeListener);
     }
+
 }

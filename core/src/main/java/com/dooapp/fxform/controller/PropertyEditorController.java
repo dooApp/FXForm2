@@ -15,14 +15,13 @@ package com.dooapp.fxform.controller;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
+import com.dooapp.fxform.validation.Warning;
 import com.dooapp.fxform.view.FXFormNode;
+import javafx.beans.property.ListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 
-import javax.validation.*;
-import java.util.Set;
-import java.util.logging.Level;
+import javax.validation.ConstraintViolation;
 import java.util.logging.Logger;
 
 /**
@@ -36,32 +35,13 @@ public class PropertyEditorController extends NodeController {
      */
     private static final Logger logger = Logger.getLogger(PropertyEditorController.class.getName());
 
-    private final ObservableList<ConstraintViolation> constraintViolations;
+    private final ListProperty<ConstraintViolation> constraintViolations;
 
-    static ValidatorFactory factory;
-
-    Validator validator;
     private ChangeListener viewChangeListener;
     private ChangeListener modelChangeListener;
 
-    /**
-     * Initialize the constraint validator. Might be null after that if no implementation has been provided.
-     */
-    private void createValidator() {
-        try {
-            if (factory == null) {
-                factory = Validation.buildDefaultValidatorFactory();
-            }
-            validator = factory.getValidator();
-        } catch (ValidationException e) {
-            // validation is not activated, since no implementation has been provided
-            logger.log(Level.INFO, "Validation disabled", e);
-        }
-    }
-
-    public PropertyEditorController(FXForm fxForm, Element element, ObservableList<ConstraintViolation> constraintViolations) {
+    public PropertyEditorController(FXForm fxForm, Element element, ListProperty<ConstraintViolation> constraintViolations) {
         super(fxForm, element);
-        createValidator();
         this.constraintViolations = constraintViolations;
     }
 
@@ -70,14 +50,14 @@ public class PropertyEditorController extends NodeController {
         viewChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
                 Object newValue = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptFrom(o1);
-                if (validator != null) {
-                    Set<ConstraintViolation<Object>> constraintViolationSet = validator.validateValue((Class<Object>) (getElement().getBean().getClass()), getElement().getName(), newValue);
-                    constraintViolations.clear();
-                    constraintViolations.addAll(constraintViolationSet);
-                }
+                constraintViolations.clear();
+                // Validate strict constraints that prevent the model value from being updated
+                constraintViolations.addAll(getFxForm().getFxFormValidator().validate(getElement(), newValue));
                 if (constraintViolations.size() == 0) {
                     ((PropertyElement) getElement()).setValue(newValue);
                 }
+                // Validate warnings constraints
+                constraintViolations.addAll(getFxForm().getFxFormValidator().validate(getElement(), newValue, Warning.class));
             }
         };
         fxFormNode.getProperty().addListener(viewChangeListener);

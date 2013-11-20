@@ -15,8 +15,7 @@ package com.dooapp.fxform.controller;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.property.ListProperty;
 
 import javax.validation.ConstraintViolation;
 
@@ -27,20 +26,21 @@ import javax.validation.ConstraintViolation;
  */
 public class ConstraintController extends NodeController {
 
-    private final ObservableList<ConstraintViolation> constraintViolations;
+    private final ListProperty<ConstraintViolation> constraintViolations;
 
-    public ConstraintController(FXForm fxForm, Element element, ObservableList<ConstraintViolation> constraintViolations) {
+    public ConstraintController(FXForm fxForm, Element element, ListProperty constraintViolations) {
         super(fxForm, element);
         this.constraintViolations = constraintViolations;
     }
 
     @Override
     protected void bind(FXFormNode fxFormNode) {
-        fxFormNode.getProperty().setValue(constraintViolations);
+        fxFormNode.getProperty().bind(constraintViolations);
     }
 
     @Override
     protected void unbind(FXFormNode fxFormNode) {
-        fxFormNode.getProperty().setValue(FXCollections.emptyObservableList());
+        fxFormNode.getProperty().unbind();
     }
+
 }

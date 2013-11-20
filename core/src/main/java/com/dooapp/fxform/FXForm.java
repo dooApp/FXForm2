@@ -22,6 +22,8 @@ import com.dooapp.fxform.filter.NonVisualFilter;
 import com.dooapp.fxform.model.*;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.utils.ConfigurationStore;
+import com.dooapp.fxform.validation.DefaultFXFormValidator;
+import com.dooapp.fxform.validation.FXFormValidator;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.factory.DefaultFactoryProvider;
 import com.dooapp.fxform.view.factory.DefaultLabelFactoryProvider;
@@ -81,6 +83,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public final static String INVALID_STYLE = "-invalid";
 
+    public static final String WARNING_STYLE = "-warning";
+
     private final ObjectProperty<T> source = new SimpleObjectProperty<T>();
 
     private StringProperty title = new SimpleStringProperty();
@@ -104,6 +108,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     private final ObjectProperty<PropertyProvider> propertyProvider = new SimpleObjectProperty<PropertyProvider>();
 
     private final ObservableList<ConstraintViolation> constraintViolationsList = FXCollections.<ConstraintViolation>observableArrayList();
+
+    private final ObjectProperty<FXFormValidator> fxFormValidator = new SimpleObjectProperty<FXFormValidator>(new DefaultFXFormValidator());
 
     public void setTitle(String title) {
         this.title.set(title);
@@ -395,6 +401,18 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public ObjectProperty<PropertyProvider> propertyProviderProperty() {
         return propertyProvider;
+    }
+
+    public FXFormValidator getFxFormValidator() {
+        return fxFormValidator.get();
+    }
+
+    public void setFxFormValidator(FXFormValidator fxFormValidator) {
+        this.fxFormValidator.set(fxFormValidator);
+    }
+
+    public ObjectProperty<FXFormValidator> fxFormValidatorProperty() {
+        return fxFormValidator;
     }
 
     /**

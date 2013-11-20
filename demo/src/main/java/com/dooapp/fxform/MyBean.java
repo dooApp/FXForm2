@@ -13,9 +13,11 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.annotation.FormFactory;
+import com.dooapp.fxform.validation.Warning;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -65,6 +67,22 @@ public class MyBean {
         this.subject.set(subject);
     }
 
+    /**
+     * This constraints uses the warning group, which means that the model value will still be updated by the form
+     * even if the value entered by the user violates this constraint.
+     *
+     * @return
+     */
+    @Length(min = 10, max = 20, groups = Warning.class)
+    public String getMessage() {
+        return message.get();
+    }
+
+    /**
+     * This constraint uses the Default group, which is treated by FXForm as a strict validation. The model value
+     * won't be updated if the value entered by the user violates this constraint.
+     * @return
+     */
     @Email
     public String getEmail() {
         return email.get();
