@@ -82,7 +82,7 @@ public abstract class AbstractJavaBeanElement<WrappedType> extends AbstractField
 
     @Override
     public boolean isBound() {
-        throw new UnsupportedOperationException("Not implemented");
+        return false;
     }
 
     @Override
