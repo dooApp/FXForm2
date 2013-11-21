@@ -16,7 +16,6 @@ import com.dooapp.fxform.model.PropertyElement;
 import javafx.beans.property.Property;
 import javafx.beans.value.ObservableValue;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -32,37 +31,31 @@ public class PropertyMethodElement<SourceType, WrappedType> extends ReadOnlyProp
 
     @Override
     public void setValue(WrappedType wrappedType) {
-        try {
-            ((Property<WrappedType>) method.invoke(getSource())).setValue(wrappedType);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        getProperty().setValue(wrappedType);
     }
 
-    @Override
     public void bind(ObservableValue<? extends WrappedType> observableValue) {
-        throw new UnsupportedOperationException("Not implemented");
+        getProperty().bind(observableValue);
     }
 
-    @Override
     public void unbind() {
-        throw new UnsupportedOperationException("Not implemented");
+        getProperty().unbind();
     }
 
-    @Override
     public boolean isBound() {
-        throw new UnsupportedOperationException("Not implemented");
+        return getProperty().isBound();
     }
 
-    @Override
     public void bindBidirectional(Property<WrappedType> wrappedTypeProperty) {
-        throw new UnsupportedOperationException("Not implemented");
+        getProperty().bindBidirectional(wrappedTypeProperty);
     }
 
-    @Override
     public void unbindBidirectional(Property<WrappedType> wrappedTypeProperty) {
-        throw new UnsupportedOperationException("Not implemented");
+        getProperty().unbindBidirectional(wrappedTypeProperty);
     }
+
+    protected Property<WrappedType> getProperty() {
+        return (Property<WrappedType>) super.wrappedProperty().getValue();
+    }
+
 }

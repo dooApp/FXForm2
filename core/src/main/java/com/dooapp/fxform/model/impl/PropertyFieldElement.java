@@ -35,28 +35,32 @@ public class PropertyFieldElement<SourceType, WrappedType> extends ReadOnlyPrope
     }
 
     public void setValue(WrappedType o) {
-        ((Property<WrappedType>) wrappedProperty().getValue()).setValue(o);
+        getProperty().setValue(o);
     }
 
 
     public void bind(ObservableValue<? extends WrappedType> observableValue) {
-        throw new UnsupportedOperationException("Not implemented");
+        getProperty().bind(observableValue);
     }
 
     public void unbind() {
-        throw new UnsupportedOperationException("Not implemented");
+        getProperty().unbind();
     }
 
     public boolean isBound() {
-        throw new UnsupportedOperationException("Not implemented");
+        return getProperty().isBound();
     }
 
     public void bindBidirectional(Property<WrappedType> wrappedTypeProperty) {
-        throw new UnsupportedOperationException("Not implemented");
+        getProperty().bindBidirectional(wrappedTypeProperty);
     }
 
     public void unbindBidirectional(Property<WrappedType> wrappedTypeProperty) {
-        throw new UnsupportedOperationException("Not implemented");
+        getProperty().unbindBidirectional(wrappedTypeProperty);
+    }
+
+    protected Property<WrappedType> getProperty() {
+        return (Property<WrappedType>) super.wrappedProperty().getValue();
     }
 
     @Override

@@ -39,11 +39,13 @@ public class PropertyEditorController extends NodeController {
 
     private ChangeListener viewChangeListener;
     private ChangeListener modelChangeListener;
+    private ChangeListener boundChangeListener;
 
     public PropertyEditorController(FXForm fxForm, Element element) {
         super(fxForm, element);
         propertyElementValidator = new PropertyElementValidator((PropertyElement) element);
         propertyElementValidator.validatorProperty().bind(fxForm.fxFormValidatorProperty());
+
     }
 
     @Override
@@ -78,6 +80,7 @@ public class PropertyEditorController extends NodeController {
         try {
             Object newValue = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(o1);
             fxFormNode.getProperty().setValue(newValue);
+            fxFormNode.getNode().setDisable((((PropertyElement) getElement()).isBound()));
         } catch (AdapterException e) {
             // The model value can not be adapted to the view
             logger.log(Level.FINE, e.getMessage(), e);
