@@ -8,26 +8,29 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
+<!--
+  ~ Copyright (c) 2013, dooApp <contact@dooapp.com>
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+  ~
+  ~ Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+  ~ Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+  ~ Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
 <AnchorPane id="fxml-root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.dooapp.fxform.DemoFormController">
   <children>
     <Label id="name-form-label" layoutX="21.0" layoutY="80.0" text="Name" />
     <TextField id="name-form-editor" layoutX="21.0" layoutY="101.0" prefWidth="236.0" />
     <TextArea id="message-form-editor" layoutX="271.0" layoutY="75.0" prefHeight="291.0" prefWidth="303.0" promptText="Your message" wrapText="true" />
-    <TextField id="website-form-editor" layoutX="21.0" layoutY="159.0" prefWidth="236.0" />
-    <Label id="website-form-label" layoutX="21.0" layoutY="138.0" text="Website" />
     <Label id="email-form-label" layoutX="21.0" layoutY="197.0" text="Email" />
-    <Label id="age-form-label" layoutX="21.0" layoutY="259.0" text="Age" />
+    <Label id="year-form-label" layoutX="21.0" layoutY="259.0" text="Age" />
     <ToggleButton id="subscribe-form-editor" layoutX="21.0" layoutY="345.0" mnemonicParsing="false" prefWidth="236.0" text="Subscribe to newsletter" />
     <ChoiceBox id="subject-form-editor" fx:id="subjectFormEditor" layoutX="271.0" layoutY="39.0" prefWidth="303.0">
-      <items>
-        <FXCollections fx:factory="observableArrayList">
-          <String fx:value="Item 1" />
-          <String fx:value="Item 2" />
-          <String fx:value="Item 3" />
-        </FXCollections>
-      </items>
     </ChoiceBox>
-    <Slider id="age-form-editor" layoutX="21.0" layoutY="287.0" prefWidth="236.0" showTickLabels="true" />
+    <Slider id="year-form-editor" layoutX="21.0" layoutY="287.0" prefWidth="236.0" showTickLabels="true" />
     <Label layoutX="15.0" layoutY="28.0" rotate="347.0" text="New FXMLSkin!">
       <font>
         <Font name="System Bold" size="16.0" />

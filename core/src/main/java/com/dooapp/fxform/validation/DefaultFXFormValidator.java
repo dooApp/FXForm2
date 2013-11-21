@@ -13,11 +13,14 @@
 package com.dooapp.fxform.validation;
 
 import com.dooapp.fxform.model.Element;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
 
 import javax.validation.*;
+import javax.validation.metadata.BeanDescriptor;
+import javax.validation.metadata.ConstraintDescriptor;
+import java.lang.annotation.ElementType;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,12 +57,28 @@ public class DefaultFXFormValidator implements FXFormValidator {
     }
 
     @Override
-    public ListProperty<ConstraintViolation> validate(Element element, Object newValue, Class... groups) {
-        ListProperty<ConstraintViolation> listProperty = new SimpleListProperty(FXCollections.observableArrayList());
+    public List<ConstraintViolation> validate(Element element, Object newValue, Class... groups) {
+        final List<ConstraintViolation> list = new LinkedList<ConstraintViolation>();
         if (validator != null) {
-            listProperty.addAll(validator.validateValue((Class<Object>) (element.getBean().getClass()), element.getName(), newValue, groups));
+            list.addAll(validator.validateValue((Class<Object>) (element.getBean().getClass()), element.getName(), newValue, groups));
         }
-        return listProperty;
+        return list;
+    }
+
+    @Override
+    public List<ConstraintViolation> validateClassConstraint(Object bean) {
+        final List<ConstraintViolation> list = new LinkedList<ConstraintViolation>();
+        if (validator != null && bean != null) {
+            BeanDescriptor beanDescriptor = validator.getConstraintsForClass(bean.getClass());
+            Set<ConstraintDescriptor<?>> classLevelConstraints = beanDescriptor.findConstraints().declaredOn(ElementType.TYPE).getConstraintDescriptors();
+            Set<ConstraintViolation<Object>> constraintViolations = validator.validate(bean);
+            for (ConstraintViolation constraintViolation : constraintViolations) {
+                if (classLevelConstraints.contains(constraintViolation.getConstraintDescriptor())) {
+                    list.add(constraintViolation);
+                }
+            }
+        }
+        return list;
     }
 
 }

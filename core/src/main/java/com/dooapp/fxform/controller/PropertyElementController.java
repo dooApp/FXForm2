@@ -15,11 +15,10 @@ package com.dooapp.fxform.controller;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
-import com.dooapp.fxform.validation.Warning;
+import com.dooapp.fxform.validation.PropertyElementValidator;
 import com.dooapp.fxform.view.FXFormSkin;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 
 import javax.validation.ConstraintViolation;
@@ -31,13 +30,12 @@ import javax.validation.ConstraintViolation;
  */
 public class PropertyElementController<WrappedType> extends ElementController<WrappedType> {
 
-    protected ListProperty<ConstraintViolation> constraintViolations;
-
     private final NodeController constraintController;
 
     public PropertyElementController(final FXForm fxForm, PropertyElement element) {
         super(fxForm, element);
-        constraintViolationsProperty().addListener(new ListChangeListener<ConstraintViolation>() {
+        PropertyElementValidator validator = ((PropertyEditorController) editorController).getPropertyElementValidator();
+        validator.constraintViolationsProperty().addListener(new ListChangeListener<ConstraintViolation>() {
             @Override
             public void onChanged(Change<? extends ConstraintViolation> change) {
                 while (change.next()) {
@@ -46,27 +44,24 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
                 }
             }
         });
-        constraintController = new ConstraintController(fxForm, element, constraintViolations);
+        constraintController = new ConstraintController(fxForm, element, validator.constraintViolationsProperty());
         updateSkin((FXFormSkin) fxForm.getSkin());
-        constraintViolationsProperty().addListener(new ListChangeListener<ConstraintViolation>() {
-
+        validator.invalidProperty().addListener(new ChangeListener<Boolean>() {
             @Override
-            public void onChanged(Change<? extends ConstraintViolation> change) {
-                if (constraintViolations.size() > 0) {
-                    for (ConstraintViolation constraintViolation : constraintViolations) {
-                        if (constraintViolation.getConstraintDescriptor().getGroups().isEmpty()) {
-                            addStyle(FXForm.INVALID_STYLE);
-                        }
-                        break;
-                    }
-                    for (ConstraintViolation constraintViolation : constraintViolations) {
-                        if (constraintViolation.getConstraintDescriptor().getGroups().contains(Warning.class)) {
-                            addStyle(FXForm.WARNING_STYLE);
-                        }
-                        break;
-                    }
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2) {
+                if (aBoolean2) {
+                    addStyle(FXForm.INVALID_STYLE);
                 } else {
                     removeStyle(FXForm.INVALID_STYLE);
+                }
+            }
+        });
+        validator.warningProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2) {
+                if (aBoolean2) {
+                    addStyle(FXForm.WARNING_STYLE);
+                } else {
                     removeStyle(FXForm.WARNING_STYLE);
                 }
             }
@@ -91,16 +86,9 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
             tooltipController.getNode().getNode().getStyleClass().remove(FXForm.TOOLTIP_STYLE + styleSuffix);
     }
 
-    public ListProperty<ConstraintViolation> constraintViolationsProperty() {
-        if (constraintViolations == null) {
-            constraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.<ConstraintViolation>observableArrayList());
-        }
-        return constraintViolations;
-    }
-
     @Override
     protected NodeController createEditorController(FXForm fxForm, Element element) {
-        return new PropertyEditorController(fxForm, element, constraintViolationsProperty());
+        return new PropertyEditorController(fxForm, element);
     }
 
     @Override

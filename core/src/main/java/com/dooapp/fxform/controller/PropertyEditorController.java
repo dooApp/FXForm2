@@ -15,13 +15,11 @@ package com.dooapp.fxform.controller;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
-import com.dooapp.fxform.validation.Warning;
+import com.dooapp.fxform.validation.PropertyElementValidator;
 import com.dooapp.fxform.view.FXFormNode;
-import javafx.beans.property.ListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
-import javax.validation.ConstraintViolation;
 import java.util.logging.Logger;
 
 /**
@@ -35,14 +33,15 @@ public class PropertyEditorController extends NodeController {
      */
     private static final Logger logger = Logger.getLogger(PropertyEditorController.class.getName());
 
-    private final ListProperty<ConstraintViolation> constraintViolations;
+    private final PropertyElementValidator propertyElementValidator;
 
     private ChangeListener viewChangeListener;
     private ChangeListener modelChangeListener;
 
-    public PropertyEditorController(FXForm fxForm, Element element, ListProperty<ConstraintViolation> constraintViolations) {
+    public PropertyEditorController(FXForm fxForm, Element element) {
         super(fxForm, element);
-        this.constraintViolations = constraintViolations;
+        propertyElementValidator = new PropertyElementValidator((PropertyElement) element);
+        propertyElementValidator.validatorProperty().bind(fxForm.fxFormValidatorProperty());
     }
 
     @Override
@@ -50,14 +49,10 @@ public class PropertyEditorController extends NodeController {
         viewChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
                 Object newValue = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptFrom(o1);
-                constraintViolations.clear();
-                // Validate strict constraints that prevent the model value from being updated
-                constraintViolations.addAll(getFxForm().getFxFormValidator().validate(getElement(), newValue));
-                if (constraintViolations.size() == 0) {
+                propertyElementValidator.validate(newValue);
+                if (!propertyElementValidator.isInvalid()) {
                     ((PropertyElement) getElement()).setValue(newValue);
                 }
-                // Validate warnings constraints
-                constraintViolations.addAll(getFxForm().getFxFormValidator().validate(getElement(), newValue, Warning.class));
             }
         };
         fxFormNode.getProperty().addListener(viewChangeListener);
@@ -65,6 +60,8 @@ public class PropertyEditorController extends NodeController {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
                 Object newValue = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(o1);
                 fxFormNode.getProperty().setValue(newValue);
+                // The element value was updated, so request a class level check again
+                getFxForm().getClassLevelValidator().validate();
             }
         };
         getElement().addListener(modelChangeListener);
@@ -76,9 +73,14 @@ public class PropertyEditorController extends NodeController {
         }
     }
 
+    public PropertyElementValidator getPropertyElementValidator() {
+        return propertyElementValidator;
+    }
+
     @Override
     protected void unbind(FXFormNode fxFormNode) {
         fxFormNode.getProperty().removeListener(viewChangeListener);
         getElement().removeListener(modelChangeListener);
     }
+
 }

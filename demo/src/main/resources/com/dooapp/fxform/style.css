@@ -15,7 +15,7 @@
     -fx-font-weight: bold;
 }
 
-.form-label-warning {
+.form-editor-warning {
     -fx-text-fill: orange;
 }
 

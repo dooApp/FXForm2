@@ -12,34 +12,31 @@
 
 package com.dooapp.fxform.validation;
 
-import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.MyBean;
 
-import javax.validation.ConstraintViolation;
-import java.util.List;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 20/11/2013
- * Time: 16:16
+ * Date: 21/11/2013
+ * Time: 11:52
  */
-public interface FXFormValidator {
+public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch, Object> {
 
-    /**
-     * Validate the new value of an element.
-     *
-     * @param element  the element to check
-     * @param newValue the new value of the element
-     * @param groups   validation groups
-     * @return
-     */
-    public List<ConstraintViolation> validate(Element element, Object newValue, Class... groups);
+    @Override
+    public void initialize(final PasswordMatch constraintAnnotation) {
+    }
 
-    /**
-     * Validate class level constraints on a given bean.
-     *
-     * @param bean
-     * @return
-     */
-    public List<ConstraintViolation> validateClassConstraint(Object bean);
+    @Override
+    public boolean isValid(final Object value, final ConstraintValidatorContext context) {
+        try {
+            MyBean myBean = (MyBean) value;
 
+            return myBean.getPassword() == null && myBean.getRepeatPassword() == null || myBean.getPassword() != null && myBean.getPassword().equals(myBean.getRepeatPassword());
+        } catch (final Exception ignore) {
+            // ignore
+        }
+        return true;
+    }
 }

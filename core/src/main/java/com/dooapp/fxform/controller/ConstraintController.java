@@ -15,7 +15,7 @@ package com.dooapp.fxform.controller;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
-import javafx.beans.property.ListProperty;
+import javafx.beans.property.ReadOnlyListProperty;
 
 import javax.validation.ConstraintViolation;
 
@@ -26,9 +26,9 @@ import javax.validation.ConstraintViolation;
  */
 public class ConstraintController extends NodeController {
 
-    private final ListProperty<ConstraintViolation> constraintViolations;
+    private final ReadOnlyListProperty<ConstraintViolation> constraintViolations;
 
-    public ConstraintController(FXForm fxForm, Element element, ListProperty constraintViolations) {
+    public ConstraintController(FXForm fxForm, Element element, ReadOnlyListProperty<ConstraintViolation> constraintViolations) {
         super(fxForm, element);
         this.constraintViolations = constraintViolations;
     }

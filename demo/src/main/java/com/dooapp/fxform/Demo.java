@@ -15,8 +15,6 @@ package com.dooapp.fxform;
 import com.dooapp.fxform.filter.ReorderFilter;
 import com.dooapp.fxform.handler.TypeFieldHandler;
 import com.dooapp.fxform.map.MapPropertyFactory;
-import com.dooapp.fxform.view.FXFormNode;
-import com.dooapp.fxform.view.FXFormNodeWrapper;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.FXFormSkinFactory;
 import com.dooapp.fxform.view.factory.DefaultFactoryProvider;
@@ -47,17 +45,6 @@ import javax.validation.ConstraintViolation;
  */
 public class Demo extends Application {
 
-    /**
-     * Example of custom factory
-     */
-    public static class TextAreaFactory implements Callback<Void, FXFormNode> {
-
-        public FXFormNode call(Void aVoid) {
-            TextArea textArea = new TextArea();
-            return new FXFormNodeWrapper(textArea, textArea.textProperty());
-        }
-    }
-
     private FXForm<MyBean> fxForm = new FXForm<MyBean>();
 
     private StackPane root = new StackPane();
@@ -65,12 +52,12 @@ public class Demo extends Application {
     private final String css = Demo.class.getResource("style.css").toExternalForm();
 
     protected void setup() {
-        MyBean joe = new MyBean("Joe", "contact@", "How does this crazy form works?", "www.dooapp.com", true, MyBean.Subject.QUESTION);
+        MyBean joe = new MyBean("Joe", "contact@", "How does this crazy form works?", true, MyBean.Subject.QUESTION);
         new ObjectPropertyObserver(joe);
         // register a factory for the userMap field that is not handled by default
         DefaultFactoryProvider.addGlobalFactory(new TypeFieldHandler(MapProperty.class), new MapPropertyFactory());
         fxForm.setSource(joe);
-        fxForm.addFilters(new ReorderFilter("name", "email", "website", "subject", "message"));
+        fxForm.addFilters(new ReorderFilter("name", "email", "subject", "message"));
         fxForm.setTitle("Dude, where is my form?");
         root.getChildren().add(createNode());
     }

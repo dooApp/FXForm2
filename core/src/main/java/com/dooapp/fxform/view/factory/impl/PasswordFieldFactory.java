@@ -10,36 +10,24 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.validation;
+package com.dooapp.fxform.view.factory.impl;
 
-import com.dooapp.fxform.model.Element;
-
-import javax.validation.ConstraintViolation;
-import java.util.List;
+import com.dooapp.fxform.view.FXFormNode;
+import com.dooapp.fxform.view.FXFormNodeWrapper;
+import javafx.scene.control.PasswordField;
+import javafx.util.Callback;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 20/11/2013
- * Time: 16:16
+ * Date: 21/11/2013
+ * Time: 11:29
  */
-public interface FXFormValidator {
+public class PasswordFieldFactory implements Callback<Void, FXFormNode> {
 
-    /**
-     * Validate the new value of an element.
-     *
-     * @param element  the element to check
-     * @param newValue the new value of the element
-     * @param groups   validation groups
-     * @return
-     */
-    public List<ConstraintViolation> validate(Element element, Object newValue, Class... groups);
-
-    /**
-     * Validate class level constraints on a given bean.
-     *
-     * @param bean
-     * @return
-     */
-    public List<ConstraintViolation> validateClassConstraint(Object bean);
+    @Override
+    public FXFormNode call(Void aVoid) {
+        final PasswordField passwordField = new PasswordField();
+        return new FXFormNodeWrapper(passwordField, passwordField.textProperty());
+    }
 
 }

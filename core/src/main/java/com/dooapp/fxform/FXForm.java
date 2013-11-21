@@ -22,6 +22,7 @@ import com.dooapp.fxform.filter.NonVisualFilter;
 import com.dooapp.fxform.model.*;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.utils.ConfigurationStore;
+import com.dooapp.fxform.validation.ClassLevelValidator;
 import com.dooapp.fxform.validation.DefaultFXFormValidator;
 import com.dooapp.fxform.validation.FXFormValidator;
 import com.dooapp.fxform.view.FXFormNode;
@@ -111,6 +112,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     private final ObjectProperty<FXFormValidator> fxFormValidator = new SimpleObjectProperty<FXFormValidator>(new DefaultFXFormValidator());
 
+    private final ClassLevelValidator classLevelValidator = new ClassLevelValidator();
+
     public void setTitle(String title) {
         this.title.set(title);
     }
@@ -187,10 +190,21 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         });
 
         this.setSkin(new DefaultSkin(this));
+        classLevelValidator.beanProperty().bind(sourceProperty());
+        classLevelValidator.validatorProperty().bind(fxFormValidatorProperty());
+        classLevelValidator.constraintViolationsProperty().addListener(new ListChangeListener<ConstraintViolation>() {
+            @Override
+            public void onChanged(Change<? extends ConstraintViolation> change) {
+                while (change.next()) {
+                    constraintViolationsList.removeAll(change.getRemoved());
+                    constraintViolationsList.addAll(change.getAddedSubList());
+                }
+            }
+        });
         setSource(source);
     }
 
-    public void dispose() {
+    protected void dispose() {
         for (ElementController controller : controllers) {
             clearBindings(controller);
             controller.dispose();
@@ -427,4 +441,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         return constraintViolationsList;
     }
 
+    public ClassLevelValidator getClassLevelValidator() {
+        return classLevelValidator;
+    }
 }
