@@ -12,6 +12,8 @@
 
 package com.dooapp.fxform.validation;
 
+import com.dooapp.fxform.adapter.Adapter;
+import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.model.PropertyElement;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -38,6 +40,8 @@ public class PropertyElementValidator {
 
     private final BooleanProperty warning = new SimpleBooleanProperty(false);
 
+    private NotAdaptableInputValue notAdaptableInputValue;
+
     public PropertyElementValidator(final PropertyElement element) {
         this.element = element;
         validator.addListener(new ChangeListener<FXFormValidator>() {
@@ -46,6 +50,20 @@ public class PropertyElementValidator {
                 validate(element.getValue());
             }
         });
+    }
+
+    public Object adapt(final Object newValue, Adapter adapter) throws AdapterException {
+        if (notAdaptableInputValue != null) {
+            constraintViolations.remove(notAdaptableInputValue);
+            notAdaptableInputValue = null;
+        }
+        try {
+            return adapter.adaptFrom(newValue);
+        } catch (Exception e) {
+            notAdaptableInputValue = new NotAdaptableInputValue(element, newValue, validator.get().getMessageInterpolator());
+            constraintViolations.add(notAdaptableInputValue);
+            throw new AdapterException(e);
+        }
     }
 
     public void validate(Object newValue) {

@@ -12,42 +12,54 @@
 
 package com.dooapp.fxform.validation;
 
-import com.dooapp.fxform.model.Element;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.MessageInterpolator;
+import javax.validation.ConstraintValidator;
+import javax.validation.Payload;
+import javax.validation.metadata.ConstraintDescriptor;
+import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 20/11/2013
- * Time: 16:16
+ * Date: 21/11/2013
+ * Time: 14:16
  */
-public interface FXFormValidator {
+public class NotAdaptableConstraintDescriptor implements ConstraintDescriptor {
 
-    /**
-     * Validate the new value of an element.
-     *
-     * @param element  the element to check
-     * @param newValue the new value of the element
-     * @param groups   validation groups
-     * @return
-     */
-    public List<ConstraintViolation> validate(Element element, Object newValue, Class... groups);
+    @Override
+    public Annotation getAnnotation() {
+        return null;
+    }
 
-    /**
-     * Validate class level constraints on a given bean.
-     *
-     * @param bean
-     * @return
-     */
-    public List<ConstraintViolation> validateClassConstraint(Object bean);
+    @Override
+    public Set<Class<?>> getGroups() {
+        return Collections.emptySet();
+    }
 
-    /**
-     * Get the MessageInterpolator used by the validation layer.
-     *
-     * @return
-     */
-    public MessageInterpolator getMessageInterpolator();
+    @Override
+    public Set<Class<? extends Payload>> getPayload() {
+        return Collections.emptySet();
+    }
 
+    @Override
+    public List<Class<? extends ConstraintValidator>> getConstraintValidatorClasses() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public Set<ConstraintDescriptor<?>> getComposingConstraints() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public boolean isReportAsSingleViolation() {
+        return false;
+    }
 }

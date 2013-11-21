@@ -10,44 +10,16 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.validation;
-
-import com.dooapp.fxform.model.Element;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.MessageInterpolator;
-import java.util.List;
+package com.dooapp.fxform.adapter;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 20/11/2013
- * Time: 16:16
+ * Date: 21/11/2013
+ * Time: 14:44
  */
-public interface FXFormValidator {
+public class AdapterException extends Exception {
 
-    /**
-     * Validate the new value of an element.
-     *
-     * @param element  the element to check
-     * @param newValue the new value of the element
-     * @param groups   validation groups
-     * @return
-     */
-    public List<ConstraintViolation> validate(Element element, Object newValue, Class... groups);
-
-    /**
-     * Validate class level constraints on a given bean.
-     *
-     * @param bean
-     * @return
-     */
-    public List<ConstraintViolation> validateClassConstraint(Object bean);
-
-    /**
-     * Get the MessageInterpolator used by the validation layer.
-     *
-     * @return
-     */
-    public MessageInterpolator getMessageInterpolator();
-
+    public AdapterException(Throwable cause) {
+        super(cause);
+    }
 }

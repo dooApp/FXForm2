@@ -37,6 +37,8 @@ public class DefaultFXFormValidator implements FXFormValidator {
 
     Validator validator;
 
+    MessageInterpolator messageInterpolator;
+
     /**
      * Initialize the constraint validator. Might be null after that if no implementation has been provided.
      */
@@ -46,6 +48,7 @@ public class DefaultFXFormValidator implements FXFormValidator {
                 factory = Validation.buildDefaultValidatorFactory();
             }
             validator = factory.getValidator();
+            messageInterpolator = factory.getMessageInterpolator();
         } catch (ValidationException e) {
             // validation is not activated, since no implementation has been provided
             logger.log(Level.INFO, "Validation disabled", e);
@@ -79,6 +82,11 @@ public class DefaultFXFormValidator implements FXFormValidator {
             }
         }
         return list;
+    }
+
+    @Override
+    public MessageInterpolator getMessageInterpolator() {
+        return messageInterpolator;
     }
 
 }

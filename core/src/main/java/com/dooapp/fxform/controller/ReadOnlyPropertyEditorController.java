@@ -13,10 +13,14 @@
 package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created at 27/09/12 17:15.<br>
@@ -24,6 +28,8 @@ import javafx.beans.value.ObservableValue;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class ReadOnlyPropertyEditorController extends NodeController {
+
+    public final static Logger logger = Logger.getLogger(ReadOnlyPropertyEditorController.class.getName());
 
     private ChangeListener changeListener;
 
@@ -36,7 +42,11 @@ public class ReadOnlyPropertyEditorController extends NodeController {
         changeListener = new ChangeListener() {
             @Override
             public void changed(ObservableValue observableValue, Object o, Object o2) {
-                fxFormNode.getProperty().setValue(getFxForm().getAdapterProvider().getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue()));
+                try {
+                    fxFormNode.getProperty().setValue(getFxForm().getAdapterProvider().getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue()));
+                } catch (AdapterException e) {
+                    logger.log(Level.FINE, e.getMessage(), e);
+                }
             }
         };
         getElement().addListener(changeListener);
@@ -44,6 +54,6 @@ public class ReadOnlyPropertyEditorController extends NodeController {
 
     @Override
     protected void unbind(FXFormNode fxFormNode) {
-         getElement().removeListener(changeListener);
+        getElement().removeListener(changeListener);
     }
 }

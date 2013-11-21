@@ -16,38 +16,77 @@ import com.dooapp.fxform.model.Element;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.MessageInterpolator;
-import java.util.List;
+import javax.validation.Path;
+import javax.validation.metadata.ConstraintDescriptor;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 20/11/2013
- * Time: 16:16
+ * Date: 21/11/2013
+ * Time: 13:47
  */
-public interface FXFormValidator {
+public class NotAdaptableInputValue implements ConstraintViolation {
 
-    /**
-     * Validate the new value of an element.
-     *
-     * @param element  the element to check
-     * @param newValue the new value of the element
-     * @param groups   validation groups
-     * @return
-     */
-    public List<ConstraintViolation> validate(Element element, Object newValue, Class... groups);
+    private final Element element;
 
-    /**
-     * Validate class level constraints on a given bean.
-     *
-     * @param bean
-     * @return
-     */
-    public List<ConstraintViolation> validateClassConstraint(Object bean);
+    private final Object value;
 
-    /**
-     * Get the MessageInterpolator used by the validation layer.
-     *
-     * @return
-     */
-    public MessageInterpolator getMessageInterpolator();
+    private final String message;
+
+    public NotAdaptableInputValue(Element element, final Object value, MessageInterpolator messageInterpolator) {
+        this.element = element;
+        this.value = value;
+        MessageInterpolator.Context context = new MessageInterpolator.Context() {
+            @Override
+            public ConstraintDescriptor<?> getConstraintDescriptor() {
+                return new NotAdaptableConstraintDescriptor();
+            }
+
+            @Override
+            public Object getValidatedValue() {
+                return value;
+            }
+        };
+        this.message = messageInterpolator.interpolate(getMessageTemplate(), context);
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public String getMessageTemplate() {
+        return "{com.dooapp.fxform.constraint.Adaptable.message}";
+    }
+
+    @Override
+    public Object getRootBean() {
+        return element.getBean();
+    }
+
+    @Override
+    public Class getRootBeanClass() {
+        return element.getBean().getClass();
+    }
+
+    @Override
+    public Object getLeafBean() {
+        return element.getBean();
+    }
+
+    @Override
+    public Path getPropertyPath() {
+        return null;
+    }
+
+    @Override
+    public Object getInvalidValue() {
+        return value;
+    }
+
+    @Override
+    public ConstraintDescriptor<?> getConstraintDescriptor() {
+        return null;
+    }
 
 }

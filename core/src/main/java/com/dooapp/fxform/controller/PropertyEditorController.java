@@ -13,6 +13,7 @@
 package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.validation.PropertyElementValidator;
@@ -20,6 +21,7 @@ import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -48,28 +50,37 @@ public class PropertyEditorController extends NodeController {
     protected void bind(final FXFormNode fxFormNode) {
         viewChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                Object newValue = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptFrom(o1);
-                propertyElementValidator.validate(newValue);
-                if (!propertyElementValidator.isInvalid()) {
-                    ((PropertyElement) getElement()).setValue(newValue);
+                try {
+                    Object newValue = propertyElementValidator.adapt(o1, getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()));
+                    propertyElementValidator.validate(newValue);
+                    if (!propertyElementValidator.isInvalid()) {
+                        ((PropertyElement) getElement()).setValue(newValue);
+                    }
+                } catch (AdapterException e) {
+                    // The input value can not be adapted as model value
+                    // Nothing to do, a constraint violation should have been reported by the PropertyElementValidator
                 }
             }
         };
         fxFormNode.getProperty().addListener(viewChangeListener);
         modelChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                Object newValue = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(o1);
-                fxFormNode.getProperty().setValue(newValue);
+                updateView(o1, fxFormNode);
                 // The element value was updated, so request a class level check again
                 getFxForm().getClassLevelValidator().validate();
             }
         };
         getElement().addListener(modelChangeListener);
+        updateView(getElement().getValue(), getNode());
+    }
+
+    private void updateView(Object o1, FXFormNode fxFormNode) {
         try {
-            fxFormNode.getProperty().setValue(getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue()));
-        } catch (UnsupportedOperationException e) {
-            // this might happen, if the Adapter is not able to convert the user input into a model value,
-            // for example when no factory has been found and that we are using the default editor
+            Object newValue = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(o1);
+            fxFormNode.getProperty().setValue(newValue);
+        } catch (AdapterException e) {
+            // The model value can not be adapted to the view
+            logger.log(Level.FINE, e.getMessage(), e);
         }
     }
 

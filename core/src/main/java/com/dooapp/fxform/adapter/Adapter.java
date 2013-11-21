@@ -19,8 +19,8 @@ package com.dooapp.fxform.adapter;
  */
 public interface Adapter<T, V> {
 
-    public V adaptTo(T from);
+    public V adaptTo(T from) throws AdapterException;
 
-    public T adaptFrom(V to);
+    public T adaptFrom(V to) throws AdapterException;
 
 }

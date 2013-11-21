@@ -13,10 +13,14 @@
 package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.StringProperty;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created at 27/09/12 17:07.<br>
@@ -24,6 +28,8 @@ import javafx.beans.property.StringProperty;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class TooltipController extends NodeController {
+
+    public final static Logger logger = Logger.getLogger(TooltipController.class.getName());
 
     public static String TOOLTIP_SUFFIX = "-tooltip";
 
@@ -47,7 +53,12 @@ public class TooltipController extends NodeController {
                     // tooltip is undefined
                     label = null;
                 }
-                return getFxForm().getAdapterProvider().getAdapter(StringProperty.class, getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(label);
+                try {
+                    return getFxForm().getAdapterProvider().getAdapter(StringProperty.class, getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(label);
+                } catch (AdapterException e) {
+                    logger.log(Level.FINE, e.getMessage(), e);
+                }
+                return null;
             }
         });
     }
