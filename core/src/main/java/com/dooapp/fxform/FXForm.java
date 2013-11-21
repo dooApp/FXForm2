@@ -20,8 +20,8 @@ import com.dooapp.fxform.filter.FieldFilter;
 import com.dooapp.fxform.filter.FilterException;
 import com.dooapp.fxform.filter.NonVisualFilter;
 import com.dooapp.fxform.model.*;
+import com.dooapp.fxform.reflection.MultipleBeanSource;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
-import com.dooapp.fxform.utils.ConfigurationStore;
 import com.dooapp.fxform.validation.ClassLevelValidator;
 import com.dooapp.fxform.validation.DefaultFXFormValidator;
 import com.dooapp.fxform.validation.FXFormValidator;
@@ -36,6 +36,7 @@ import com.dooapp.fxform.view.factory.impl.LabelFactory;
 import com.dooapp.fxform.view.property.DefaultPropertyProvider;
 import com.dooapp.fxform.view.property.PropertyProvider;
 import com.dooapp.fxform.view.skin.DefaultSkin;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -92,7 +93,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     private final ObservableList<FieldFilter> filters = FXCollections.observableList(new LinkedList<FieldFilter>());
 
-    private final ConfigurationStore<ElementController> controllers = new ConfigurationStore<ElementController>();
+    private final ListProperty<ElementController> controllers = new SimpleListProperty<ElementController>(FXCollections.<ElementController>observableArrayList());
 
     private final ObjectProperty<ResourceBundle> resourceBundle = new SimpleObjectProperty<ResourceBundle>();
 
@@ -225,9 +226,22 @@ public class FXForm<T> extends Control implements FormAPI<T> {
         List<Element> elements = new LinkedList<Element>();
         ElementFactory elementFactory = new DefaultElementFactory();
         for (Field field : fields) {
-            Element element = elementFactory.create(field);
+            final Element element = elementFactory.create(field);
             if (element != null) {
-                element.sourceProperty().bind(source);
+                element.sourceProperty().bind(new ObjectBinding() {
+                    {
+                        bind(source);
+                    }
+
+                    @Override
+                    protected Object computeValue() {
+                        if (source.get() != null && source.get() instanceof MultipleBeanSource) {
+                            MultipleBeanSource multipleBeanSource = (MultipleBeanSource) source.get();
+                            return multipleBeanSource.getSource(element);
+                        }
+                        return source.get();
+                    }
+                });
                 // if something went wrong and we are not able to get element type, ignore it
                 if (element.getType() != null) {
                     elements.add(element);
@@ -301,10 +315,6 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     }
 
     public ObservableList<ElementController> getControllers() {
-        return controllers;
-    }
-
-    public ConfigurationStore<ElementController> getStore() {
         return controllers;
     }
 

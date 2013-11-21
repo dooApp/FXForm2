@@ -10,17 +10,42 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.utils;
+package com.dooapp.fxform.reflection;
+
+import com.dooapp.fxform.model.Element;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 24/08/11
- * Time: 14:30
+ * Date: 21/11/2013
+ * Time: 15:02
  */
-public interface Configurer<T> {
+public class MultipleBeanSource {
 
-    public void configure(T toConfigure);
+    private final Object[] sources;
 
-    public void unconfigure(T toUnconfigure);
+    public MultipleBeanSource(Object... sources) {
+        this.sources = sources;
+    }
+
+    public Object[] getSources() {
+        return sources;
+    }
+
+    public Object getSource(Element element) {
+        for (Object source : sources) {
+            try {
+                source.getClass().getDeclaredField(element.getName());
+                return source;
+            } catch (NoSuchFieldException e) {
+
+            }
+            try {
+                source.getClass().getField(element.getName());
+                return source;
+            } catch (NoSuchFieldException e) {
+            }
+        }
+        return null;
+    }
 
 }

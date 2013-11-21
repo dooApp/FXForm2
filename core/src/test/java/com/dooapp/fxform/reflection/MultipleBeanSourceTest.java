@@ -10,55 +10,50 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.reflection.impl;
+package com.dooapp.fxform.reflection;
 
-import com.dooapp.fxform.reflection.FieldProvider;
-import com.dooapp.fxform.reflection.MultipleBeanSource;
+import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.TestBean;
+import com.dooapp.fxform.controller.ElementController;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import junit.framework.Assert;
+import org.junit.Test;
 
-import java.lang.reflect.Field;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
- * This default implementations retrieves all fields of the given source object, including inherited fields.
- * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 09/04/11
- * Time: 22:31
+ * Date: 21/11/2013
+ * Time: 16:13
  */
-public class ReflectionFieldProvider implements FieldProvider {
+public class MultipleBeanSourceTest {
 
-    public List<Field> getProperties(Object source) {
-        List<Field> result = new LinkedList<Field>();
-        if (source != null) {
-            if (source instanceof MultipleBeanSource) {
-                MultipleBeanSource multipleBeanSource = (MultipleBeanSource) source;
-                for (Object s : multipleBeanSource.getSources()) {
-                    fillFields(s.getClass(), result);
-                }
-            } else {
-                fillFields(source.getClass(), result);
-            }
-        }
-        return result;
+    public static class TestBean2 {
+
+        private final StringProperty propInBean2 = new SimpleStringProperty();
+
     }
 
-    private void fillFields(Class clazz, List<Field> result) {
-        for (Field field : clazz.getDeclaredFields()) {
-            // ignore synthetic fields, see #21
-            if (!field.isSynthetic()) {
-                result.add(field);
-            }
-        }
-
-        for (Field field : result) {
-            if (!field.isAccessible()) {
-                field.setAccessible(true);
-            }
-        }
-        if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
-            fillFields(clazz.getSuperclass(), result);
-        }
+    @Test
+    public void testMultipleBeanSource() {
+        FXForm fxForm = new FXForm();
+        fxForm.setSource(new MultipleBeanSource(new TestBean(), new TestBean2()));
+        Assert.assertEquals(5, fxForm.getControllers().size());
+        Assert.assertTrue(hasElement(fxForm.getControllers(), "propInBean2"));
+        Assert.assertTrue(hasElement(fxForm.getControllers(), "stringProperty"));
+        Assert.assertTrue(hasElement(fxForm.getControllers(), "booleanProperty"));
+        Assert.assertTrue(hasElement(fxForm.getControllers(), "doubleProperty"));
+        Assert.assertTrue(hasElement(fxForm.getControllers(), "objectProperty"));
     }
+
+    protected boolean hasElement(List<ElementController> controllerList, String name) {
+        for (ElementController controller : controllerList) {
+            if (name.equals(controller.getElement().getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
-
