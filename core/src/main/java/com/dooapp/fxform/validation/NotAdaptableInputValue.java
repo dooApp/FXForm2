@@ -46,7 +46,12 @@ public class NotAdaptableInputValue implements ConstraintViolation {
                 return value;
             }
         };
-        this.message = messageInterpolator.interpolate(getMessageTemplate(), context);
+        if (messageInterpolator != null) {
+            this.message = messageInterpolator.interpolate(getMessageTemplate(), context);
+        } else {
+            // No validation implementation loaded, use a default message
+            this.message = "Invalid input";
+        }
     }
 
     @Override
