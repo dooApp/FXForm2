@@ -57,7 +57,7 @@ public class Demo extends Application {
         // register a factory for the userMap field that is not handled by default
         DefaultFactoryProvider.addGlobalFactory(new TypeFieldHandler(MapProperty.class), new MapPropertyFactory());
         fxForm.setSource(joe);
-        fxForm.addFilters(new ReorderFilter("name", "email", "subject", "message"));
+        fxForm.addFilters(new ReorderFilter("name", "welcome", "email", "subject", "message"));
         fxForm.setTitle("Dude, where is my form?");
         root.getChildren().add(createNode());
     }
@@ -65,7 +65,7 @@ public class Demo extends Application {
     private Node createNode() {
         VBox vBox = new VBox();
         vBox.getChildren().addAll(createSkinSelector(), createCSSNode(), fxForm, createConstraintNode());
-        return vBox;
+        return ScrollPaneBuilder.create().content(vBox).fitToWidth(true).build();
     }
 
     private Node createConstraintNode() {
@@ -137,7 +137,6 @@ public class Demo extends Application {
         choiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<FXFormSkinFactory>() {
             public void changed(ObservableValue<? extends FXFormSkinFactory> observableValue, FXFormSkinFactory fxFormSkinFactory, FXFormSkinFactory fxFormSkinFactory1) {
                 fxForm.setSkin(fxFormSkinFactory1.createSkin(fxForm));
-                root.getScene().getWindow().sizeToScene();
             }
         });
         choiceBox.getSelectionModel().selectFirst();
@@ -153,6 +152,8 @@ public class Demo extends Application {
     public void start(Stage stage) throws Exception {
         stage.setTitle("FXForm Demo");
         stage.setScene(SceneBuilder.create().root(root).build());
+        stage.setHeight(600);
+        stage.setWidth(490);
         setup();
         stage.show();
     }

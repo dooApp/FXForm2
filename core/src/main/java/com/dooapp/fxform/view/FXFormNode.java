@@ -39,4 +39,13 @@ public interface FXFormNode<N extends Node> extends DisposableNode<N> {
      */
     public void init(Element element);
 
+    /**
+     * This boolean indicate whether this node allow the user to input values.
+     * This is used by FXForm to know whether the node should be disabled in some case, e.g.
+     * when bound to a read-only model element.
+     *
+     * @return true is the node is editable, i.e. the user can use it to input values
+     */
+    public boolean isEditable();
+
 }

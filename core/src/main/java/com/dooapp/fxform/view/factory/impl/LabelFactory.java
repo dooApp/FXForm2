@@ -26,7 +26,7 @@ public class LabelFactory implements Callback<Void, FXFormNode> {
         final Label label = new Label();
         label.setMinWidth(Label.USE_PREF_SIZE);
         label.setMaxWidth(Label.USE_PREF_SIZE);
-        return new FXFormNodeWrapper(label, label.textProperty());
+        return new FXFormNodeWrapper(label, label.textProperty(), false);
     }
 
 }

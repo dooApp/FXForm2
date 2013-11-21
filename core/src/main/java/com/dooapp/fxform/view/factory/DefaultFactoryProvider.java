@@ -20,13 +20,14 @@ import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.factory.impl.CheckboxFactory;
 import com.dooapp.fxform.view.factory.impl.EnumChoiceBoxFactory;
+import com.dooapp.fxform.view.factory.impl.LabelFactory;
 import com.dooapp.fxform.view.factory.impl.TextFieldFactory;
 import javafx.beans.property.*;
 import javafx.util.Callback;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -38,11 +39,11 @@ import java.util.Map;
  */
 public class DefaultFactoryProvider implements FactoryProvider {
 
-    private final static Map<ElementHandler, Callback<Void, FXFormNode>> DEFAULT_MAP = new HashMap();
+    private final static Map<ElementHandler, Callback<Void, FXFormNode>> DEFAULT_MAP = new LinkedHashMap<ElementHandler, Callback<Void, FXFormNode>>();
 
-    private final static Map<ElementHandler, Callback<Void, FXFormNode>> GLOBAL_MAP = new HashMap();
+    private final static Map<ElementHandler, Callback<Void, FXFormNode>> GLOBAL_MAP = new LinkedHashMap<ElementHandler, Callback<Void, FXFormNode>>();
 
-    private final Map<ElementHandler, Callback<Void, FXFormNode>> USER_MAP = new HashMap();
+    private final Map<ElementHandler, Callback<Void, FXFormNode>> USER_MAP = new LinkedHashMap<ElementHandler, Callback<Void, FXFormNode>>();
 
     public DefaultFactoryProvider() {
         // register default delegates
@@ -58,6 +59,11 @@ public class DefaultFactoryProvider implements FactoryProvider {
                 return BigDecimal.class.isAssignableFrom(element.getWrappedType());
             }
         }, new TextFieldFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyStringProperty.class), new LabelFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyBooleanProperty.class), new CheckboxFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyIntegerProperty.class), new LabelFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyLongProperty.class), new LabelFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyDoubleProperty.class), new LabelFactory());
     }
 
     private Callback<Void, FXFormNode> getDelegate(Element element, Map<ElementHandler, Callback<Void, FXFormNode>> map) {

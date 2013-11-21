@@ -44,6 +44,12 @@ public class EnumChoiceBoxFactory implements Callback<Void, FXFormNode> {
                 choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
                 choiceBox.getSelectionModel().select(element.getValue());
             }
+
+            @Override
+            public boolean isEditable() {
+                return true;
+            }
+
         };
 
     }

@@ -32,6 +32,8 @@ public class FXFormNodeWrapper implements FXFormNode {
 
     private final Property property;
 
+    private boolean editable;
+
     public FXFormNodeWrapper(Node node, Property property) {
         this(node, property, new Callback<Node, Void>() {
             public Void call(Node node) {
@@ -41,9 +43,22 @@ public class FXFormNodeWrapper implements FXFormNode {
     }
 
     public FXFormNodeWrapper(Node node, Property property, Callback<Node, Void> callback) {
+        this(node, property, callback, true);
+    }
+
+    public FXFormNodeWrapper(Node node, Property property, boolean editable) {
+        this(node, property, new Callback<Node, Void>() {
+            public Void call(Node node) {
+                return null;
+            }
+        }, editable);
+    }
+
+    public FXFormNodeWrapper(Node node, Property property, Callback<Node, Void> callback, boolean editable) {
         this.node = node;
         this.callback = callback;
         this.property = property;
+        this.editable = editable;
     }
 
 
@@ -59,7 +74,13 @@ public class FXFormNodeWrapper implements FXFormNode {
         return property;
     }
 
+
     public void init(Element element) {
+    }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
     }
 
     @Override

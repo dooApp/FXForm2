@@ -39,17 +39,26 @@ public class ReadOnlyPropertyEditorController extends NodeController {
 
     @Override
     protected void bind(final FXFormNode fxFormNode) {
+        if (fxFormNode.isEditable()) {
+            fxFormNode.getNode().setDisable(true);
+        }
         changeListener = new ChangeListener() {
             @Override
             public void changed(ObservableValue observableValue, Object o, Object o2) {
-                try {
-                    fxFormNode.getProperty().setValue(getFxForm().getAdapterProvider().getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue()));
-                } catch (AdapterException e) {
-                    logger.log(Level.FINE, e.getMessage(), e);
-                }
+                updateView(fxFormNode);
             }
         };
         getElement().addListener(changeListener);
+        updateView(fxFormNode);
+
+    }
+
+    private void updateView(FXFormNode fxFormNode) {
+        try {
+            fxFormNode.getProperty().setValue(getFxForm().getAdapterProvider().getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue()));
+        } catch (AdapterException e) {
+            logger.log(Level.FINE, e.getMessage(), e);
+        }
     }
 
     @Override

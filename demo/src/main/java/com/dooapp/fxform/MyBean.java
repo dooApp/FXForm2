@@ -38,6 +38,8 @@ public class MyBean {
 
     private final StringProperty name = new SimpleStringProperty();
 
+    private final ReadOnlyStringProperty welcome = new SimpleStringProperty();
+
     private final StringProperty email = new SimpleStringProperty();
 
     @FormFactory(PasswordFieldFactory.class)
@@ -47,6 +49,8 @@ public class MyBean {
     private final StringProperty repeatPassword = new SimpleStringProperty();
 
     private final BooleanProperty subscribe = new SimpleBooleanProperty();
+
+    private final ReadOnlyBooleanProperty unsubscribe = new SimpleBooleanProperty();
 
     private final ObjectProperty<Subject> subject = new SimpleObjectProperty<Subject>();
 
@@ -63,6 +67,8 @@ public class MyBean {
         this.message.set(message);
         this.subscribe.set(subscribe);
         this.subject.set(subject);
+        ((StringProperty) welcome).bind(this.name.concat(", welcome!"));
+        ((BooleanProperty) unsubscribe).bind(this.subscribe.not());
     }
 
     /**
