@@ -18,10 +18,7 @@ import com.dooapp.fxform.handler.TypeFieldHandler;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.factory.impl.CheckboxFactory;
-import com.dooapp.fxform.view.factory.impl.EnumChoiceBoxFactory;
-import com.dooapp.fxform.view.factory.impl.LabelFactory;
-import com.dooapp.fxform.view.factory.impl.TextFieldFactory;
+import com.dooapp.fxform.view.factory.impl.*;
 import javafx.beans.property.*;
 import javafx.util.Callback;
 
@@ -53,6 +50,7 @@ public class DefaultFactoryProvider implements FactoryProvider {
         DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(ListProperty.class), new TableViewFactory());
         DEFAULT_MAP.put(new ElementHandler() {
             @Override
             public boolean handle(Element element) {

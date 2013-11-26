@@ -13,6 +13,8 @@
 package com.dooapp.fxform.reflection;
 
 import java.lang.reflect.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -67,6 +69,30 @@ public class ReflectionUtils {
             }
         } else {
             return (Class) type1;
+        }
+    }
+
+    public static List<Field> listFields(Class clazz) {
+        List<Field> result = new LinkedList<Field>();
+        ReflectionUtils.fillFields(clazz, result);
+        return result;
+    }
+
+    public static void fillFields(Class clazz, List<Field> result) {
+        for (Field field : clazz.getDeclaredFields()) {
+            // ignore synthetic fields, see #21
+            if (!field.isSynthetic()) {
+                result.add(field);
+            }
+        }
+
+        for (Field field : result) {
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
+        }
+        if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
+            fillFields(clazz.getSuperclass(), result);
         }
     }
 
