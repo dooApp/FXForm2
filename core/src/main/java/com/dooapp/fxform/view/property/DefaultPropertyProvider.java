@@ -101,12 +101,18 @@ public class DefaultPropertyProvider implements PropertyProvider {
                 return node.valueProperty();
             }
         });
+        map.put(TableView.class, new PropertyProvider<TableView>() {
+            @Override
+            public Property getProperty(TableView node) {
+                return new TableViewProperty(node);
+            }
+        });
     }
 
     /**
      * Register a global property provider.
      *
-     * @param clazz the Class of Node to register a property provider for
+     * @param clazz          the Class of Node to register a property provider for
      * @param globalProvider the provider to register
      */
     public static void addGlobalProvider(Class<? extends Node> clazz, PropertyProvider globalProvider) {
