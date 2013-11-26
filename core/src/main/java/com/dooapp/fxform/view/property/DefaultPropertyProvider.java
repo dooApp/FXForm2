@@ -101,12 +101,24 @@ public class DefaultPropertyProvider implements PropertyProvider {
                 return node.valueProperty();
             }
         });
+        map.put(ColorPicker.class, new PropertyProvider<ColorPicker>() {
+            @Override
+            public Property getProperty(ColorPicker node) {
+                return node.valueProperty();
+            }
+        });
+        map.put(DatePicker.class, new PropertyProvider<DatePicker>() {
+            @Override
+            public Property getProperty(DatePicker node) {
+                return node.valueProperty();
+            }
+        });
     }
 
     /**
      * Register a global property provider.
      *
-     * @param clazz the Class of Node to register a property provider for
+     * @param clazz          the Class of Node to register a property provider for
      * @param globalProvider the provider to register
      */
     public static void addGlobalProvider(Class<? extends Node> clazz, PropertyProvider globalProvider) {

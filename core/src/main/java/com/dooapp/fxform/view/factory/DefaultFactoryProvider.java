@@ -15,17 +15,17 @@ package com.dooapp.fxform.view.factory;
 import com.dooapp.fxform.handler.ElementHandler;
 import com.dooapp.fxform.handler.EnumHandler;
 import com.dooapp.fxform.handler.TypeFieldHandler;
+import com.dooapp.fxform.handler.WrappedTypeHandler;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.factory.impl.CheckboxFactory;
-import com.dooapp.fxform.view.factory.impl.EnumChoiceBoxFactory;
-import com.dooapp.fxform.view.factory.impl.LabelFactory;
-import com.dooapp.fxform.view.factory.impl.TextFieldFactory;
+import com.dooapp.fxform.view.factory.impl.*;
 import javafx.beans.property.*;
+import javafx.scene.paint.Color;
 import javafx.util.Callback;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,12 +53,9 @@ public class DefaultFactoryProvider implements FactoryProvider {
         DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new TextFieldFactory());
-        DEFAULT_MAP.put(new ElementHandler() {
-            @Override
-            public boolean handle(Element element) {
-                return BigDecimal.class.isAssignableFrom(element.getWrappedType());
-            }
-        }, new TextFieldFactory());
+        DEFAULT_MAP.put(new WrappedTypeHandler(BigDecimal.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new WrappedTypeHandler(Color.class), new ColorPickerFactory());
+        DEFAULT_MAP.put(new WrappedTypeHandler(LocalDate.class), new DatePickerFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyStringProperty.class), new LabelFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyBooleanProperty.class), new CheckboxFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyIntegerProperty.class), new LabelFactory());

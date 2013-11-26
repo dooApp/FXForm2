@@ -18,11 +18,13 @@ import com.dooapp.fxform.validation.Warning;
 import com.dooapp.fxform.view.factory.impl.PasswordFieldFactory;
 import com.dooapp.fxform.view.factory.impl.TextAreaFactory;
 import javafx.beans.property.*;
+import javafx.scene.paint.Color;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * Created at 26/09/12 14:23.<br>
@@ -60,6 +62,10 @@ public class MyBean {
 
     @FormFactory(TextAreaFactory.class)
     private final StringProperty message = new SimpleStringProperty();
+
+    private final ObjectProperty<LocalDate> date = new SimpleObjectProperty<LocalDate>();
+
+    private final ObjectProperty<Color> color = new SimpleObjectProperty<Color>();
 
     protected MyBean(String name, String email, String message, boolean subscribe, Subject subject) {
         this.name.set(name);
