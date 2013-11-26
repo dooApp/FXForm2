@@ -12,10 +12,7 @@
 
 package com.dooapp.fxform;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -27,6 +24,8 @@ public class TableBean {
     private final StringProperty name = new SimpleStringProperty();
 
     private final IntegerProperty age = new SimpleIntegerProperty();
+
+    private final ObjectProperty<MyBean.Subject> subject = new SimpleObjectProperty<MyBean.Subject>();
 
     public TableBean(String name, int age) {
         this.name.set(name);
@@ -55,5 +54,17 @@ public class TableBean {
 
     public void setAge(int age) {
         this.age.set(age);
+    }
+
+    public MyBean.Subject getSubject() {
+        return subject.get();
+    }
+
+    public ObjectProperty<MyBean.Subject> subjectProperty() {
+        return subject;
+    }
+
+    public void setSubject(MyBean.Subject subject) {
+        this.subject.set(subject);
     }
 }

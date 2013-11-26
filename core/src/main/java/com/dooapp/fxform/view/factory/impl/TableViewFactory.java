@@ -32,9 +32,11 @@ import java.util.List;
  */
 public class TableViewFactory implements Callback<Void, FXFormNode> {
 
+
     @Override
     public FXFormNode call(Void aVoid) {
-        final TableView tableView = new TableView();
+        final TableView tableView = new FXFormTableView();
+
         return new FXFormNodeWrapper(tableView, new TableViewProperty(tableView)) {
             @Override
             public void init(Element element) {
