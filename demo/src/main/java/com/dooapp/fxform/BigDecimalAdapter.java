@@ -10,39 +10,44 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.view.factory;
+package com.dooapp.fxform;
 
-import com.dooapp.fxform.annotation.FormFactory;
-import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.utils.AnnotationLoader;
-import com.dooapp.fxform.view.FXFormNode;
-import javafx.util.Callback;
+import com.dooapp.fxform.adapter.Adapter;
+import com.dooapp.fxform.adapter.AdapterException;
 
-import java.util.logging.Logger;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 /**
- * Factory provider based on the @FormFactory annotation.
- * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 07/09/11
- * Time: 16:20
+ * Date: 26/11/2013
+ * Time: 11:14
  */
-public class AnnotationFactoryProvider extends AnnotationLoader<FormFactory, Callback<Void, FXFormNode>> implements FactoryProvider {
+public class BigDecimalAdapter implements Adapter<BigDecimal, String> {
 
-    private final static Logger logger = Logger.getLogger(AnnotationFactoryProvider.class.getName());
+    NumberFormat decimalFormat;
 
-    /**
-     * Might return null if no FormFactory annotation if defined neither on the field nor on the field type.
-     *
-     * @param element
-     * @return
-     */
-    public Callback<Void, FXFormNode> getFactory(Element element) {
-        return load(FormFactory.class, element);
+    public BigDecimalAdapter() {
+        this.decimalFormat = NumberFormat.getNumberInstance();
+        decimalFormat.setMinimumFractionDigits(2);
     }
 
     @Override
-    protected Callback<Void, FXFormNode> instantiate(FormFactory annotation) throws IllegalAccessException, InstantiationException {
-        return annotation.value().newInstance();
+    public String adaptTo(BigDecimal from) throws AdapterException {
+        if (from == null) {
+            return "";
+        } else {
+            return decimalFormat.format(from.doubleValue());
+        }
+    }
+
+    @Override
+    public BigDecimal adaptFrom(String to) throws AdapterException {
+        try {
+            return new BigDecimal(decimalFormat.parse(to).doubleValue());
+        } catch (ParseException e) {
+            throw new AdapterException(e);
+        }
     }
 }

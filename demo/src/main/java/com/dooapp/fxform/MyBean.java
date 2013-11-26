@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform;
 
+import com.dooapp.fxform.adapter.FormAdapter;
 import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.validation.PasswordMatch;
 import com.dooapp.fxform.validation.Warning;
@@ -56,6 +57,7 @@ public class MyBean {
 
     private final IntegerProperty year = new SimpleIntegerProperty();
 
+    @FormAdapter(BigDecimalAdapter.class)
     private final ObjectProperty<BigDecimal> bigDecimalProperty = new SimpleObjectProperty<BigDecimal>();
 
     @FormFactory(TextAreaFactory.class)

@@ -10,39 +10,48 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.view.factory;
+package com.dooapp.fxform.utils;
 
-import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.utils.AnnotationLoader;
-import com.dooapp.fxform.view.FXFormNode;
-import javafx.util.Callback;
+import javafx.beans.property.ObjectProperty;
 
+import java.lang.annotation.Annotation;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Factory provider based on the @FormFactory annotation.
- * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 07/09/11
- * Time: 16:20
+ * Date: 26/11/2013
+ * Time: 11:09
  */
-public class AnnotationFactoryProvider extends AnnotationLoader<FormFactory, Callback<Void, FXFormNode>> implements FactoryProvider {
+public abstract class AnnotationLoader<A extends Annotation, T> {
 
-    private final static Logger logger = Logger.getLogger(AnnotationFactoryProvider.class.getName());
+    private final static Logger logger = Logger.getLogger(AnnotationLoader.class.getName());
 
-    /**
-     * Might return null if no FormFactory annotation if defined neither on the field nor on the field type.
-     *
-     * @param element
-     * @return
-     */
-    public Callback<Void, FXFormNode> getFactory(Element element) {
-        return load(FormFactory.class, element);
+    protected T load(Class<? extends Annotation> annotation, Element element) {
+        // check field annotation
+        if (element.getAnnotation(annotation) != null) {
+            // use factory provided by the annotation
+            try {
+                return instantiate((A) element.getAnnotation(annotation));
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Unable to get new instance for " + element.getAnnotation(annotation), e);
+            }
+        }
+        // check annotation on wrapped type
+        if (ObjectProperty.class.isAssignableFrom(element.getType())) {
+            try {
+                Class genericClass = element.getWrappedType();
+                if (genericClass.getAnnotation(annotation) != null) {
+                    return instantiate((A) genericClass.getAnnotation(annotation));
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        return null;
     }
 
-    @Override
-    protected Callback<Void, FXFormNode> instantiate(FormFactory annotation) throws IllegalAccessException, InstantiationException {
-        return annotation.value().newInstance();
-    }
+    protected abstract T instantiate(A annotation) throws IllegalAccessException, InstantiationException;
+
 }

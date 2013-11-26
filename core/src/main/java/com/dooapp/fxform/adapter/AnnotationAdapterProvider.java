@@ -10,39 +10,34 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.view.factory;
+package com.dooapp.fxform.adapter;
 
-import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.utils.AnnotationLoader;
 import com.dooapp.fxform.view.FXFormNode;
-import javafx.util.Callback;
-
-import java.util.logging.Logger;
 
 /**
- * Factory provider based on the @FormFactory annotation.
- * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 07/09/11
- * Time: 16:20
+ * Date: 26/11/2013
+ * Time: 11:06
  */
-public class AnnotationFactoryProvider extends AnnotationLoader<FormFactory, Callback<Void, FXFormNode>> implements FactoryProvider {
+public class AnnotationAdapterProvider extends AnnotationLoader<FormAdapter, Adapter> implements AdapterProvider {
 
-    private final static Logger logger = Logger.getLogger(AnnotationFactoryProvider.class.getName());
-
-    /**
-     * Might return null if no FormFactory annotation if defined neither on the field nor on the field type.
-     *
-     * @param element
-     * @return
-     */
-    public Callback<Void, FXFormNode> getFactory(Element element) {
-        return load(FormFactory.class, element);
+    @Override
+    public Adapter getAdapter(Class fromClass, Class toClass, Element element, FXFormNode fxFormNode) {
+        // The adapter annotation should be used only if we are really adapting from the element type to
+        // to another type and not in other cases, else an inappropriate adapter is returned for other
+        // nodes (label, tooltip,...)
+        if (fromClass == element.getType()) {
+            return load(FormAdapter.class, element);
+        } else {
+            return null;
+        }
     }
 
     @Override
-    protected Callback<Void, FXFormNode> instantiate(FormFactory annotation) throws IllegalAccessException, InstantiationException {
+    protected Adapter instantiate(FormAdapter annotation) throws IllegalAccessException, InstantiationException {
         return annotation.value().newInstance();
     }
+
 }

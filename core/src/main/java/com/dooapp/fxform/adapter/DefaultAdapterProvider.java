@@ -37,6 +37,8 @@ public class DefaultAdapterProvider implements AdapterProvider {
 
     private final Map<AdapterMatcher, Adapter> USER_MAP = new LinkedHashMap();
 
+    private AnnotationAdapterProvider annotationAdapterProvider = new AnnotationAdapterProvider();
+
     public DefaultAdapterProvider() {
         DEFAULT_MAP.put(new AdapterMatcher() {
             @Override
@@ -96,8 +98,12 @@ public class DefaultAdapterProvider implements AdapterProvider {
 
     @Override
     public Adapter getAdapter(Class fromClass, Class toClass, Element element, FXFormNode fxFormNode) {
+        // check user defined annotations
+        Adapter adapter = annotationAdapterProvider.getAdapter(fromClass, toClass, element, fxFormNode);
         // check user defined factories
-        Adapter adapter = getAdapter(fromClass, toClass, element, fxFormNode, USER_MAP);
+        if (adapter == null) {
+            adapter = getAdapter(fromClass, toClass, element, fxFormNode, USER_MAP);
+        }
         // check user defined global factories
         if (adapter == null) {
             adapter = getAdapter(fromClass, toClass, element, fxFormNode, GLOBAL_MAP);
