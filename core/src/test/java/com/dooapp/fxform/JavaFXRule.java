@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, dooApp <contact@dooapp.com>
+ * Copyright (c) 2013, dooApp <contact@dooapp.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -12,39 +12,38 @@
 
 package com.dooapp.fxform;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
+import javafx.application.Application;
+import javafx.stage.Stage;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 /**
- * TODO write documentation<br>
- * <br>
- * Created at 17/10/11 11:42.<br>
- *
- * @author Antoine Mischler <antoine@dooapp.com>
- * @since 2.2
+ * User: Antoine Mischler <antoine@dooapp.com>
+ * Date: 26/11/2013
+ * Time: 10:15
  */
-public class FXFormTest {
+public class JavaFXRule extends Application implements TestRule {
 
-    @Rule
-    public JavaFXRule javaFXRule = new JavaFXRule();
-
-    @Test
-    public void testIssue2() {
-        TestBean testBean = new TestBean();
-        FXForm fxForm = new FXForm(testBean);
-        Assert.assertEquals(4, fxForm.getControllers().size());
-        fxForm.setSource(null);
-        Assert.assertEquals(0, fxForm.getControllers().size());
+    @Override
+    public Statement apply(final Statement statement, Description description) {
+        return new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                Thread t = new Thread("JavaFX Init Thread") {
+                    public void run() {
+                        Application.launch(JavaFXRule.class, new String[0]);
+                    }
+                };
+                t.setDaemon(true);
+                t.start();
+                statement.evaluate();
+            }
+        };
     }
 
-    @Test
-    public void testSetSource() {
-        TestBean testBean = new TestBean();
-        FXForm fxForm = new FXForm();
-        Assert.assertEquals(0, fxForm.getControllers().size());
-        fxForm.setSource(testBean);
-        Assert.assertEquals(4, fxForm.getControllers().size());
+    @Override
+    public void start(Stage stage) throws Exception {
     }
 
 }

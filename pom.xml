@@ -25,7 +25,7 @@
     </parent>
     <groupId>com.dooapp.fxform2</groupId>
     <artifactId>FXForm2</artifactId>
-    <version>2.2.4-SNAPSHOT</version>
+    <version>8.0.0-SNAPSHOT</version>
     <name>FXForm 2</name>
     <description>Dynamic JavaFX 2.0 form generation</description>
     <url>http://dooapp.github.com/FXForm2/</url>
@@ -53,16 +53,6 @@
             <organizationUrl>www.dooapp.com</organizationUrl>
         </developer>
     </developers>
-    <dependencies>
-        <!-- Should be installed manually, see https://github.com/dooApp/FXForm2/wiki/Add-FXForm2-to-your-project-dependencies -->
-        <dependency>
-            <groupId>javafx</groupId>
-            <artifactId>javafx</artifactId>
-            <scope>system</scope>
-            <version>2.2</version>
-            <systemPath>${java.home}/../jre/lib/jfxrt.jar</systemPath>
-        </dependency>
-    </dependencies>
     <repositories>
         <repository>
             <id>jboss-maven2-release-repository</id>
