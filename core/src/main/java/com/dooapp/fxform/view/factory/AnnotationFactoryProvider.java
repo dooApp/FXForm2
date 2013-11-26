@@ -14,11 +14,10 @@ package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.utils.AnnotationLoader;
 import com.dooapp.fxform.view.FXFormNode;
-import javafx.beans.property.ObjectProperty;
 import javafx.util.Callback;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -28,7 +27,7 @@ import java.util.logging.Logger;
  * Date: 07/09/11
  * Time: 16:20
  */
-public class AnnotationFactoryProvider implements FactoryProvider {
+public class AnnotationFactoryProvider extends AnnotationLoader<FormFactory, Callback<Void, FXFormNode>> implements FactoryProvider {
 
     private final static Logger logger = Logger.getLogger(AnnotationFactoryProvider.class.getName());
 
@@ -39,26 +38,11 @@ public class AnnotationFactoryProvider implements FactoryProvider {
      * @return
      */
     public Callback<Void, FXFormNode> getFactory(Element element) {
-        // check field annotation
-        if (element.getAnnotation(FormFactory.class) != null) {
-            // use factory provided by the annotation
-            try {
-                return ((FormFactory) element.getAnnotation(FormFactory.class)).value().newInstance();
-            } catch (Exception e) {
-                logger.log(Level.WARNING, "Unable to get new instance for " + element.getAnnotation(FormFactory.class), e);
-            }
-        }
-        // check FormFactory annotation
-        if (ObjectProperty.class.isAssignableFrom(element.getType())) {
-            try {
-                Class genericClass = element.getWrappedType();
-                if (genericClass.getAnnotation(FormFactory.class) != null) {
-                    return ((FormFactory) genericClass.getAnnotation(FormFactory.class)).value().newInstance();
-                }
-            } catch (Exception e) {
-                // ignore
-            }
-        }
-        return null;
+        return load(FormFactory.class, element);
+    }
+
+    @Override
+    protected Callback<Void, FXFormNode> instantiate(FormFactory annotation) throws IllegalAccessException, InstantiationException {
+        return annotation.value().newInstance();
     }
 }

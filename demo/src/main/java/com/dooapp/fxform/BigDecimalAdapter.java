@@ -10,39 +10,44 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform.reflection.impl;
+package com.dooapp.fxform;
 
-import com.dooapp.fxform.reflection.FieldProvider;
-import com.dooapp.fxform.reflection.MultipleBeanSource;
-import com.dooapp.fxform.reflection.ReflectionUtils;
+import com.dooapp.fxform.adapter.Adapter;
+import com.dooapp.fxform.adapter.AdapterException;
 
-import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 /**
- * This default implementations retrieves all fields of the given source object, including inherited fields.
- * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 09/04/11
- * Time: 22:31
+ * Date: 26/11/2013
+ * Time: 11:14
  */
-public class ReflectionFieldProvider implements FieldProvider {
+public class BigDecimalAdapter implements Adapter<BigDecimal, String> {
 
-    public List<Field> getProperties(Object source) {
-        List<Field> result = new LinkedList<Field>();
-        if (source != null) {
-            if (source instanceof MultipleBeanSource) {
-                MultipleBeanSource multipleBeanSource = (MultipleBeanSource) source;
-                for (Object s : multipleBeanSource.getSources()) {
-                    ReflectionUtils.fillFields(s.getClass(), result);
-                }
-            } else {
-                ReflectionUtils.fillFields(source.getClass(), result);
-            }
-        }
-        return result;
+    NumberFormat decimalFormat;
+
+    public BigDecimalAdapter() {
+        this.decimalFormat = NumberFormat.getNumberInstance();
+        decimalFormat.setMinimumFractionDigits(2);
     }
 
-}
+    @Override
+    public String adaptTo(BigDecimal from) throws AdapterException {
+        if (from == null) {
+            return "";
+        } else {
+            return decimalFormat.format(from.doubleValue());
+        }
+    }
 
+    @Override
+    public BigDecimal adaptFrom(String to) throws AdapterException {
+        try {
+            return new BigDecimal(decimalFormat.parse(to).doubleValue());
+        } catch (ParseException e) {
+            throw new AdapterException(e);
+        }
+    }
+}

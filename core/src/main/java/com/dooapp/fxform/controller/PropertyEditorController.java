@@ -13,7 +13,9 @@
 package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.AdapterException;
+import com.dooapp.fxform.adapter.AnnotationAdapterProvider;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.validation.PropertyElementValidator;
@@ -39,7 +41,8 @@ public class PropertyEditorController extends NodeController {
 
     private ChangeListener viewChangeListener;
     private ChangeListener modelChangeListener;
-    private ChangeListener boundChangeListener;
+
+    private final AnnotationAdapterProvider annotationAdapterProvider = new AnnotationAdapterProvider();
 
     public PropertyEditorController(FXForm fxForm, Element element) {
         super(fxForm, element);
@@ -53,7 +56,11 @@ public class PropertyEditorController extends NodeController {
         viewChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
                 try {
-                    Object newValue = propertyElementValidator.adapt(o1, getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()));
+                    Adapter adapter = annotationAdapterProvider.getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
+                    if (adapter == null) {
+                        adapter = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
+                    }
+                    Object newValue = propertyElementValidator.adapt(o1, adapter);
                     propertyElementValidator.validate(newValue);
                     if (!propertyElementValidator.isInvalid()) {
                         ((PropertyElement) getElement()).setValue(newValue);
@@ -78,7 +85,11 @@ public class PropertyEditorController extends NodeController {
 
     private void updateView(Object o1, FXFormNode fxFormNode) {
         try {
-            Object newValue = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(o1);
+            Adapter adapter = annotationAdapterProvider.getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
+            if (adapter == null) {
+                adapter = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
+            }
+            Object newValue = adapter.adaptTo(o1);
             fxFormNode.getProperty().setValue(newValue);
             fxFormNode.getNode().setDisable((((PropertyElement) getElement()).isBound()));
         } catch (AdapterException e) {

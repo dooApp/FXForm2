@@ -101,6 +101,12 @@ public class DefaultPropertyProvider implements PropertyProvider {
                 return node.valueProperty();
             }
         });
+        map.put(TableView.class, new PropertyProvider<TableView>() {
+            @Override
+            public Property getProperty(TableView node) {
+                return new TableViewProperty(node);
+            }
+        });
         map.put(ColorPicker.class, new PropertyProvider<ColorPicker>() {
             @Override
             public Property getProperty(ColorPicker node) {

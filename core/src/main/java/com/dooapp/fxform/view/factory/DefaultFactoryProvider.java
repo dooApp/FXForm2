@@ -53,6 +53,7 @@ public class DefaultFactoryProvider implements FactoryProvider {
         DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(ListProperty.class), new TableViewFactory());
         DEFAULT_MAP.put(new WrappedTypeHandler(BigDecimal.class), new TextFieldFactory());
         DEFAULT_MAP.put(new WrappedTypeHandler(Color.class), new ColorPickerFactory());
         DEFAULT_MAP.put(new WrappedTypeHandler(LocalDate.class), new DatePickerFactory());
