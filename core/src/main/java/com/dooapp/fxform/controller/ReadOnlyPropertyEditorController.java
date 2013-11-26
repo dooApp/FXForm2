@@ -13,7 +13,9 @@
 package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.AdapterException;
+import com.dooapp.fxform.adapter.AnnotationAdapterProvider;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.value.ChangeListener;
@@ -32,6 +34,8 @@ public class ReadOnlyPropertyEditorController extends NodeController {
     public final static Logger logger = Logger.getLogger(ReadOnlyPropertyEditorController.class.getName());
 
     private ChangeListener changeListener;
+
+    private final AnnotationAdapterProvider annotationAdapterProvider = new AnnotationAdapterProvider();
 
     public ReadOnlyPropertyEditorController(FXForm fxForm, Element element) {
         super(fxForm, element);
@@ -55,7 +59,11 @@ public class ReadOnlyPropertyEditorController extends NodeController {
 
     private void updateView(FXFormNode fxFormNode) {
         try {
-            fxFormNode.getProperty().setValue(getFxForm().getAdapterProvider().getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(getElement().getValue()));
+            Adapter adapter = annotationAdapterProvider.getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode());
+            if (adapter == null) {
+                adapter = getFxForm().getAdapterProvider().getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode());
+            }
+            fxFormNode.getProperty().setValue(adapter.adaptTo(getElement().getValue()));
         } catch (AdapterException e) {
             logger.log(Level.FINE, e.getMessage(), e);
         }
