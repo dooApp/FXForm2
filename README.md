@@ -15,6 +15,24 @@ How does it work?
 2. Generate your form using FXForm2
 3. Style it using CSS, skins and resource bundles!
 
+Quick start
+-----------
+Add FXForm to your project dependencies:
+  
+    <dependency>
+        <groupId>com.dooapp.fxform2</groupId>
+        <artifactId>core</artifactId>
+        <version>2.2.4</version> <!-- Note: For JavaFX 8, use 8.0.2 -->
+    </dependency>
+
+Get your FXForm...
+
+    FXForm<MyBean> fxForm = new FXForm<MyBean>(myBean);
+
+...and add it to your scene!
+
+See [Get started](https://github.com/dooApp/FXForm2/wiki/Get-started).
+
 Features
 --------
 
