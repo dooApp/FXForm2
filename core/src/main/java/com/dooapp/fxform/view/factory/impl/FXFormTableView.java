@@ -14,11 +14,9 @@ package com.dooapp.fxform.view.factory.impl;
 
 import com.dooapp.fxform.FXForm;
 import javafx.event.EventHandler;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Popup;
-import javafx.util.Callback;
 
 /**
  * A TableView which opens a popup with an FXForm to edit the selected items.
@@ -29,7 +27,7 @@ import javafx.util.Callback;
  */
 public class FXFormTableView extends TableView {
 
-    final Popup popup = new Popup();
+    Popup popup;
 
     final FXForm fxForm = new FXForm();
 
@@ -39,6 +37,24 @@ public class FXFormTableView extends TableView {
     double popupY;
 
     public FXFormTableView() {
+        fxForm.sourceProperty().bind(getSelectionModel().selectedItemProperty());
+        addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (getSelectionModel().getSelectedItem() == null)
+                    return;
+                if (popup == null) {
+                    createPopup();
+                }
+                if (!popup.isShowing()) {
+                    popup.show(FXFormTableView.this, mouseEvent.getScreenX() + 15, mouseEvent.getScreenY() - popup.getHeight() / 2);
+                }
+            }
+        });
+    }
+
+    protected void createPopup() {
+        popup = new Popup();
         popup.getContent().add(fxForm);
         popup.setAutoHide(true);
         popup.setHideOnEscape(true);
@@ -57,28 +73,6 @@ public class FXFormTableView extends TableView {
             public void handle(MouseEvent mouseEvent) {
                 popup.setX(popupX + mouseEvent.getScreenX() - dragX);
                 popup.setY(popupY + mouseEvent.getScreenY() - dragY);
-            }
-        });
-        fxForm.sourceProperty().bind(getSelectionModel().selectedItemProperty());
-        setRowFactory(new Callback<TableView, TableRow>() {
-            @Override
-            public TableRow call(final TableView tableView) {
-                return new TableRow() {
-                    @Override
-                    protected void updateItem(final Object o, boolean empty) {
-                        super.updateItem(o, empty);
-                        if (o != null && !empty) {
-                            addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    if (!popup.isShowing()) {
-                                        popup.show(tableView, mouseEvent.getScreenX() + 15, mouseEvent.getScreenY() - popup.getHeight() / 2);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                };
             }
         });
     }
