@@ -14,12 +14,13 @@ package com.dooapp.fxform.model.impl;
 
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.reflection.ReflectionUtils;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.value.ObservableValue;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 /**
  * An element based on a Method to access a property.
@@ -30,12 +31,17 @@ import java.lang.reflect.Method;
  */
 public class ReadOnlyPropertyMethodElement<SourceType, WrappedType> extends AbstractSourceElement<SourceType, WrappedType> implements Element<WrappedType> {
 
-    private ObjectBinding<ObservableValue<WrappedType>> value;
+    public final static String PROPERTY_GETTER = "Property";
 
-    protected final Method method;
+    private final static Logger logger = Logger.getLogger(ReadOnlyPropertyMethodElement.class.getName());
 
-    public ReadOnlyPropertyMethodElement(Method method) {
-        this.method = method;
+    protected final Field field;
+
+    private Method method;
+
+    public ReadOnlyPropertyMethodElement(Field field) throws NoSuchMethodException {
+        this.field = field;
+        initMethod();
     }
 
     @Override
@@ -67,7 +73,11 @@ public class ReadOnlyPropertyMethodElement<SourceType, WrappedType> extends Abst
 
     @Override
     public String getName() {
-        return method.getName();
+        return field.getName();
+    }
+
+    private void initMethod() throws NoSuchMethodException {
+        method = field.getDeclaringClass().getMethod(field.getName() + PROPERTY_GETTER);
     }
 
 }

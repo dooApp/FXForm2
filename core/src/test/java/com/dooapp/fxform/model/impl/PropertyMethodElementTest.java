@@ -17,7 +17,7 @@ import javafx.beans.property.StringProperty;
 import junit.framework.Assert;
 import org.junit.Test;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -28,26 +28,26 @@ public class PropertyMethodElementTest {
 
     public static class TestBean {
 
-        private StringProperty nameProperty;
+        private StringProperty name;
 
         public StringProperty nameProperty() {
-            if (nameProperty == null) {
-                nameProperty = new SimpleStringProperty("1");
+            if (name == null) {
+                name = new SimpleStringProperty("1");
             }
-            return nameProperty;
+            return name;
         }
 
     }
 
     @Test
-    public void test() throws NoSuchMethodException {
+    public void test() throws NoSuchFieldException, NoSuchMethodException {
         TestBean testBean = new TestBean();
-        Method method = TestBean.class.getMethod("nameProperty");
-        PropertyMethodElement tested = new PropertyMethodElement(method);
+        Field field = TestBean.class.getDeclaredField("name");
+        PropertyMethodElement tested = new PropertyMethodElement(field);
         tested.setSource(testBean);
         Assert.assertEquals("1", tested.getValue());
         tested.setValue("2");
-        Assert.assertEquals("2", testBean.nameProperty.getValue());
+        Assert.assertEquals("2", testBean.name.getValue());
     }
 
 }
