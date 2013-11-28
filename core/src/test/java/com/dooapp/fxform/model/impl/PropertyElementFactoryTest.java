@@ -31,13 +31,13 @@ public class PropertyElementFactoryTest {
     @Accessor(Accessor.AccessType.METHOD)
     public static class MethodTestBean {
 
-        private StringProperty nameProperty;
+        private StringProperty name;
 
         public StringProperty nameProperty() {
-            if (nameProperty == null) {
-                nameProperty = new SimpleStringProperty();
+            if (name == null) {
+                name = new SimpleStringProperty();
             }
-            return nameProperty;
+            return name;
         }
 
     }
@@ -45,15 +45,15 @@ public class PropertyElementFactoryTest {
     @Accessor(Accessor.AccessType.FIELD)
     public static class FieldTestBean {
 
-        private StringProperty nameProperty = new SimpleStringProperty();
+        private StringProperty name = new SimpleStringProperty();
 
     }
 
     @Test
     public void testElementFactory() throws NoSuchFieldException, FormException {
         PropertyElementFactory tested = new PropertyElementFactory();
-        Element methodElement = tested.create(MethodTestBean.class.getDeclaredField("nameProperty"));
-        Element fieldElement = tested.create(FieldTestBean.class.getDeclaredField("nameProperty"));
+        Element methodElement = tested.create(MethodTestBean.class.getDeclaredField("name"));
+        Element fieldElement = tested.create(FieldTestBean.class.getDeclaredField("name"));
         Assert.assertEquals(PropertyMethodElement.class, methodElement.getClass());
         Assert.assertEquals(PropertyFieldElement.class, fieldElement.getClass());
     }

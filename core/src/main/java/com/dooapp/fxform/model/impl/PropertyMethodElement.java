@@ -16,7 +16,7 @@ import com.dooapp.fxform.model.PropertyElement;
 import javafx.beans.property.Property;
 import javafx.beans.value.ObservableValue;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -25,8 +25,8 @@ import java.lang.reflect.Method;
  */
 public class PropertyMethodElement<SourceType, WrappedType> extends ReadOnlyPropertyMethodElement<SourceType, WrappedType> implements PropertyElement<WrappedType> {
 
-    public PropertyMethodElement(Method method) {
-        super(method);
+    public PropertyMethodElement(Field field) throws NoSuchMethodException {
+        super(field);
     }
 
     @Override

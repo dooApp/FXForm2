@@ -133,7 +133,7 @@ public class DefaultAdapterProvider implements AdapterProvider {
         GLOBAL_MAP.put(adapterMatcher, adapter);
     }
 
-    public void addFactory(AdapterMatcher adapterMatcher, Adapter adapter) {
+    public void addAdapter(AdapterMatcher adapterMatcher, Adapter adapter) {
         USER_MAP.put(adapterMatcher, adapter);
     }
 
