@@ -22,7 +22,7 @@ Add FXForm to your project dependencies:
     <dependency>
         <groupId>com.dooapp.fxform2</groupId>
         <artifactId>core</artifactId>
-        <version>2.2.4</version> <!-- Note: For JavaFX 8, use 8.0.1 -->
+        <version>2.2.5</version> <!-- Note: For JavaFX 8, use 8.0.2 -->
     </dependency>
 
 Get your FXForm...
@@ -58,6 +58,8 @@ Links
 A video by Betrand Goetzmann with [Grezi](https://bitbucket.org/bgoetzmann/grezi/wiki/Home) and FXForm2: [http://screenr.com/GvDs]
 
 JavaFX [Third Party Tools and Utilities](http://www.oracle.com/technetwork/java/javafx/community/3rd-party-1844355.html)
+
+Considerations about [GUI Generation with JavaFX](http://ustesis.wordpress.com/2013/07/12/gui-generation-with-javafx/) and [Using FXForm2 with EMF Models](http://ustesis.wordpress.com/2013/11/08/using-fxform2-with-emf-models/) by Uwe.
 
 [Screenshots](http://infiltrea.com/index.php/visuels) of Infiltrea, a real-world application using FXForm2 - all forms you can see there are based on FXForm2
 
