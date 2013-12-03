@@ -22,6 +22,8 @@ import com.dooapp.fxform.filter.NonVisualFilter;
 import com.dooapp.fxform.model.*;
 import com.dooapp.fxform.reflection.MultipleBeanSource;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
+import com.dooapp.fxform.resource.DefaultResourceProvider;
+import com.dooapp.fxform.resource.ResourceProvider;
 import com.dooapp.fxform.validation.ClassLevelValidator;
 import com.dooapp.fxform.validation.DefaultFXFormValidator;
 import com.dooapp.fxform.validation.FXFormValidator;
@@ -67,22 +69,6 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     private final static Logger logger = Logger.getLogger(FXForm.class.getName());
 
-    public static final String LABEL_ID_SUFFIX = "-form-label";
-
-    public static final String LABEL_STYLE = "form-label";
-
-    public static final String EDITOR_ID_SUFFIX = "-form-editor";
-
-    public static final String EDITOR_STYLE = "form-editor";
-
-    public static final String TOOLTIP_ID_SUFFIX = "-form-tooltip";
-
-    public static final String TOOLTIP_STYLE = "form-tooltip";
-
-    public static final String CONSTRAINT_ID_SUFFIX = "-form-constraint";
-
-    public static final String CONSTRAINT_STYLE = "form-constraint";
-
     public final static String INVALID_STYLE = "-invalid";
 
     public static final String WARNING_STYLE = "-warning";
@@ -114,6 +100,8 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     private final ObjectProperty<FXFormValidator> fxFormValidator = new SimpleObjectProperty<FXFormValidator>(new DefaultFXFormValidator());
 
     private final ClassLevelValidator classLevelValidator = new ClassLevelValidator();
+
+    private final ResourceProvider resourceProvider = new DefaultResourceProvider();
 
     public void setTitle(String title) {
         this.title.set(title);
@@ -155,6 +143,7 @@ public class FXForm<T> extends Control implements FormAPI<T> {
 
     public FXForm(T source, FactoryProvider labelFactoryProvider, FactoryProvider tooltipFactoryProvider, FactoryProvider editorFactoryProvider) {
         initBundle();
+        resourceProvider.resourceBundleProperty().bind(resourceBundleProperty());
         setPropertyProvider(new DefaultPropertyProvider());
         setAdapterProvider(new DefaultAdapterProvider());
         setEditorFactoryProvider(editorFactoryProvider);
@@ -454,4 +443,9 @@ public class FXForm<T> extends Control implements FormAPI<T> {
     public ClassLevelValidator getClassLevelValidator() {
         return classLevelValidator;
     }
+
+    public ResourceProvider getResourceProvider() {
+        return resourceProvider;
+    }
+
 }

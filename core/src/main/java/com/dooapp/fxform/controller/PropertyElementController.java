@@ -17,6 +17,7 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.validation.PropertyElementValidator;
 import com.dooapp.fxform.view.FXFormSkin;
+import com.dooapp.fxform.view.NodeType;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -70,20 +71,20 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
 
     protected void addStyle(String styleSuffix) {
         if (labelController.getNode() != null)
-            labelController.getNode().getNode().getStyleClass().add(FXForm.LABEL_STYLE + styleSuffix);
+            labelController.getNode().getNode().getStyleClass().add(NodeType.LABEL.getStyle() + styleSuffix);
         if (editorController.getNode() != null)
-            editorController.getNode().getNode().getStyleClass().add(FXForm.EDITOR_STYLE + styleSuffix);
+            editorController.getNode().getNode().getStyleClass().add(NodeType.EDITOR.getStyle() + styleSuffix);
         if (tooltipController.getNode() != null)
-            tooltipController.getNode().getNode().getStyleClass().add(FXForm.TOOLTIP_STYLE + styleSuffix);
+            tooltipController.getNode().getNode().getStyleClass().add(NodeType.TOOLTIP.getStyle() + styleSuffix);
     }
 
     protected void removeStyle(String styleSuffix) {
         if (labelController.getNode() != null)
-            labelController.getNode().getNode().getStyleClass().remove(FXForm.LABEL_STYLE + styleSuffix);
+            labelController.getNode().getNode().getStyleClass().remove(NodeType.LABEL.getStyle() + styleSuffix);
         if (editorController.getNode() != null)
-            editorController.getNode().getNode().getStyleClass().remove(FXForm.EDITOR_STYLE + styleSuffix);
+            editorController.getNode().getNode().getStyleClass().remove(NodeType.EDITOR.getStyle() + styleSuffix);
         if (tooltipController.getNode() != null)
-            tooltipController.getNode().getNode().getStyleClass().remove(FXForm.TOOLTIP_STYLE + styleSuffix);
+            tooltipController.getNode().getNode().getStyleClass().remove(NodeType.TOOLTIP.getStyle() + styleSuffix);
     }
 
     @Override
