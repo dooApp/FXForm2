@@ -15,6 +15,24 @@ How does it work?
 2. Generate your form using FXForm2
 3. Style it using CSS, skins and resource bundles!
 
+Quick start
+-----------
+Add FXForm to your project dependencies:
+  
+    <dependency>
+        <groupId>com.dooapp.fxform2</groupId>
+        <artifactId>core</artifactId>
+        <version>2.2.5</version> <!-- Note: For JavaFX 8, use 8.0.2 -->
+    </dependency>
+
+Get your FXForm...
+
+    FXForm<MyBean> fxForm = new FXForm<MyBean>(myBean);
+
+...and add it to your scene!
+
+See [Get started](https://github.com/dooApp/FXForm2/wiki/Get-started).
+
 Features
 --------
 
@@ -41,7 +59,9 @@ A video by Betrand Goetzmann with [Grezi](https://bitbucket.org/bgoetzmann/grezi
 
 JavaFX [Third Party Tools and Utilities](http://www.oracle.com/technetwork/java/javafx/community/3rd-party-1844355.html)
 
-[Screenshots](http://infiltrea.com/index.php/screenshots) of Infiltrea, a real-world application using FXForm2 - all forms you can see there are based on FXForm2
+Considerations about [GUI Generation with JavaFX](http://ustesis.wordpress.com/2013/07/12/gui-generation-with-javafx/) and [Using FXForm2 with EMF Models](http://ustesis.wordpress.com/2013/11/08/using-fxform2-with-emf-models/) by Uwe.
+
+[Screenshots](http://infiltrea.com/index.php/visuels) of Infiltrea, a real-world application using FXForm2 - all forms you can see there are based on FXForm2
 
 Licensing
 ---------

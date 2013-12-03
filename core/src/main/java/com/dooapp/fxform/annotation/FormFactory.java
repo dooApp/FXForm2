@@ -15,9 +15,7 @@ package com.dooapp.fxform.annotation;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.util.Callback;
 
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.*;
 
 /**
  * Annotation used to specify a NodeFactory to use for a specific field or type.
@@ -28,6 +26,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD})
 public @interface FormFactory {
 
     Class<? extends Callback<Void, FXFormNode>> value();

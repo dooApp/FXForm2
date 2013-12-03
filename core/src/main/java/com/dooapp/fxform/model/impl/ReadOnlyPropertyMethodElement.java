@@ -68,7 +68,11 @@ public class ReadOnlyPropertyMethodElement<SourceType, WrappedType> extends Abst
 
     @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-        return method.getAnnotation(annotationClass);
+        T annotation = method.getAnnotation(annotationClass);
+        if (annotation == null) {
+            annotation = field.getAnnotation(annotationClass);
+        }
+        return annotation;
     }
 
     @Override
