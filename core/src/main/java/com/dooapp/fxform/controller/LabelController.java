@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.controller;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.AdapterException;
@@ -35,7 +36,7 @@ public class LabelController extends NodeController {
 
     private final NodeType nodeType;
 
-    public LabelController(FXForm fxForm, Element element, NodeType nodeType) {
+    public LabelController(AbstractFXForm fxForm, Element element, NodeType nodeType) {
         super(fxForm, element);
         this.nodeType = nodeType;
     }

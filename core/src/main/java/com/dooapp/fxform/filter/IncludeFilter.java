@@ -13,7 +13,6 @@
 package com.dooapp.fxform.filter;
 
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.FormException;
 
 import java.util.ArrayList;
 import java.util.Arrays;

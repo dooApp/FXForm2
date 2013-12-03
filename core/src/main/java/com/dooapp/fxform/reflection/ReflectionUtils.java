@@ -15,6 +15,8 @@ package com.dooapp.fxform.reflection;
 import java.lang.reflect.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -22,6 +24,8 @@ import java.util.List;
  * Time: 14:37
  */
 public class ReflectionUtils {
+
+    private final static Logger logger = Logger.getLogger(ReflectionUtils.class.getName());
 
     /**
      * Tries to retrieve the generic parameter of an ObjectProperty at runtime.
@@ -72,6 +76,23 @@ public class ReflectionUtils {
         }
     }
 
+    public static List<Field> getFields(Class clazz, List<Field> result, String... fields) {
+        for (String field : fields) {
+            try {
+                result.add(clazz.getDeclaredField(field));
+            } catch (NoSuchFieldException e) {
+                try {
+                    result.add(clazz.getField(field));
+                } catch (NoSuchFieldException e1) {
+                    logger.log(Level.WARNING, e1.getMessage(), e);
+                }
+            }
+        }
+        fixAccessible(result);
+        return result;
+    }
+
+
     public static List<Field> listFields(Class clazz) {
         List<Field> result = new LinkedList<Field>();
         ReflectionUtils.fillFields(clazz, result);
@@ -86,13 +107,17 @@ public class ReflectionUtils {
             }
         }
 
+        fixAccessible(result);
+        if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
+            fillFields(clazz.getSuperclass(), result);
+        }
+    }
+
+    private static void fixAccessible(List<Field> result) {
         for (Field field : result) {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-        }
-        if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
-            fillFields(clazz.getSuperclass(), result);
         }
     }
 

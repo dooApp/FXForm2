@@ -15,6 +15,7 @@ package com.dooapp.fxform.reflection;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.TestBean;
 import com.dooapp.fxform.controller.ElementController;
+import com.dooapp.fxform.model.Element;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import junit.framework.Assert;
@@ -39,17 +40,17 @@ public class MultipleBeanSourceTest {
     public void testMultipleBeanSource() {
         FXForm fxForm = new FXForm();
         fxForm.setSource(new MultipleBeanSource(new TestBean(), new TestBean2()));
-        Assert.assertEquals(5, fxForm.getControllers().size());
-        Assert.assertTrue(hasElement(fxForm.getControllers(), "propInBean2"));
-        Assert.assertTrue(hasElement(fxForm.getControllers(), "stringProperty"));
-        Assert.assertTrue(hasElement(fxForm.getControllers(), "booleanProperty"));
-        Assert.assertTrue(hasElement(fxForm.getControllers(), "doubleProperty"));
-        Assert.assertTrue(hasElement(fxForm.getControllers(), "objectProperty"));
+        Assert.assertEquals(5, fxForm.getElements().size());
+        Assert.assertTrue(hasElement(fxForm.getElements(), "propInBean2"));
+        Assert.assertTrue(hasElement(fxForm.getElements(), "stringProperty"));
+        Assert.assertTrue(hasElement(fxForm.getElements(), "booleanProperty"));
+        Assert.assertTrue(hasElement(fxForm.getElements(), "doubleProperty"));
+        Assert.assertTrue(hasElement(fxForm.getElements(), "objectProperty"));
     }
 
-    protected boolean hasElement(List<ElementController> controllerList, String name) {
-        for (ElementController controller : controllerList) {
-            if (name.equals(controller.getElement().getName())) {
+    protected boolean hasElement(List<Element> elementList, String name) {
+        for (Element element : elementList) {
+            if (name.equals(element.getName())) {
                 return true;
             }
         }

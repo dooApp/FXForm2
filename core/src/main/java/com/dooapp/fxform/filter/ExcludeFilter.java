@@ -15,7 +15,6 @@ package com.dooapp.fxform.filter;
 import com.dooapp.fxform.model.Element;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**

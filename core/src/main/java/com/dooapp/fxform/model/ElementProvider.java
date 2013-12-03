@@ -10,32 +10,21 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.dooapp.fxform;
+package com.dooapp.fxform.model;
+
+import com.dooapp.fxform.filter.FieldFilter;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
 
 /**
+ * An ElementProvider is used to extract elements from a source bean. An Element is an entry in the field.
+ * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 09/04/11
- * Time: 21:31
+ * Date: 03/12/2013
+ * Time: 14:50
  */
-public interface FormAPI<T> {
+public interface ElementProvider {
 
-    /**
-     * Set the title of the Form
-     *
-     * @param title
-     */
-    public void setTitle(String title);
-
-    /**
-     * Get the source object used for this form
-     */
-    public T getSource();
-
-    /**
-     * Set the source of this form.
-     *
-     * @param source
-     */
-    public void setSource(T source);
+    public <T> ListProperty<Element> getElements(ObjectProperty<T> source, ListProperty<FieldFilter> filters);
 
 }

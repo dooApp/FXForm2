@@ -29,18 +29,18 @@ public class FXFormTest {
     public void testIssue2() {
         TestBean testBean = new TestBean();
         FXForm fxForm = new FXForm(testBean);
-        Assert.assertEquals(4, fxForm.getControllers().size());
+        Assert.assertEquals(4, fxForm.getElements().size());
         fxForm.setSource(null);
-        Assert.assertEquals(0, fxForm.getControllers().size());
+        Assert.assertEquals(0, fxForm.getElements().size());
     }
 
     @Test
     public void testSetSource() {
         TestBean testBean = new TestBean();
         FXForm fxForm = new FXForm();
-        Assert.assertEquals(0, fxForm.getControllers().size());
+        Assert.assertEquals(0, fxForm.getElements().size());
         fxForm.setSource(testBean);
-        Assert.assertEquals(4, fxForm.getControllers().size());
+        Assert.assertEquals(4, fxForm.getElements().size());
     }
 
 }

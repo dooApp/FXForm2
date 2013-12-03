@@ -32,7 +32,7 @@ public class Issue7Test {
         fxForm.setSource(new TestBean());
         fxForm.setSkin(FXFormSkinFactory.INLINE_FACTORY.createSkin(fxForm));
         fxForm.setSource(null);
-        org.junit.Assert.assertEquals(0, fxForm.getControllers().size());
+        org.junit.Assert.assertEquals(0, fxForm.getElements().size());
     }
 
 }

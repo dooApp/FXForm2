@@ -29,16 +29,24 @@ import java.util.List;
  */
 public class ReflectionFieldProvider implements FieldProvider {
 
-    public List<Field> getProperties(Object source) {
+    public List<Field> getProperties(Object source, String... fields) {
         List<Field> result = new LinkedList<Field>();
         if (source != null) {
             if (source instanceof MultipleBeanSource) {
                 MultipleBeanSource multipleBeanSource = (MultipleBeanSource) source;
                 for (Object s : multipleBeanSource.getSources()) {
-                    ReflectionUtils.fillFields(s.getClass(), result);
+                    if (fields != null && fields.length > 0) {
+                        ReflectionUtils.getFields(s.getClass(), result, fields);
+                    } else {
+                        ReflectionUtils.fillFields(s.getClass(), result);
+                    }
                 }
             } else {
-                ReflectionUtils.fillFields(source.getClass(), result);
+                if (fields != null && fields.length > 0) {
+                    ReflectionUtils.getFields(source.getClass(), result, fields);
+                } else {
+                    ReflectionUtils.fillFields(source.getClass(), result);
+                }
             }
         }
         return result;

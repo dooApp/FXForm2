@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.controller;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.AdapterException;
@@ -37,7 +38,7 @@ public class ReadOnlyPropertyEditorController extends NodeController {
 
     private final AnnotationAdapterProvider annotationAdapterProvider = new AnnotationAdapterProvider();
 
-    public ReadOnlyPropertyEditorController(FXForm fxForm, Element element) {
+    public ReadOnlyPropertyEditorController(AbstractFXForm fxForm, Element element) {
         super(fxForm, element);
     }
 
