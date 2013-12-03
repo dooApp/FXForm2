@@ -16,9 +16,12 @@ import com.dooapp.fxform.reflection.FieldProvider;
 import com.dooapp.fxform.reflection.MultipleBeanSource;
 import com.dooapp.fxform.reflection.ReflectionUtils;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This default implementations retrieves all fields of the given source object, including inherited fields.
@@ -29,27 +32,69 @@ import java.util.List;
  */
 public class ReflectionFieldProvider implements FieldProvider {
 
+    private Map<Class, WeakReference<List<Field>>> fullCache = new HashMap<Class, WeakReference<List<Field>>>();
+    private Map<Class, WeakReference<List<Field>>> includeCache = new HashMap<Class, WeakReference<List<Field>>>();
+
     public List<Field> getProperties(Object source, String... fields) {
         List<Field> result = new LinkedList<Field>();
         if (source != null) {
             if (source instanceof MultipleBeanSource) {
                 MultipleBeanSource multipleBeanSource = (MultipleBeanSource) source;
                 for (Object s : multipleBeanSource.getSources()) {
-                    if (fields != null && fields.length > 0) {
-                        ReflectionUtils.getFields(s.getClass(), result, fields);
-                    } else {
-                        ReflectionUtils.fillFields(s.getClass(), result);
-                    }
+                    getFields(result, s.getClass(), fields);
                 }
             } else {
-                if (fields != null && fields.length > 0) {
-                    ReflectionUtils.getFields(source.getClass(), result, fields);
-                } else {
-                    ReflectionUtils.fillFields(source.getClass(), result);
-                }
+                getFields(result, source.getClass(), fields);
             }
         }
         return result;
+    }
+
+    /**
+     * Cache implementation. We use two caches for request with or without include filters.
+     * In the case we have an include filter, we check whether we have the required fields in the cache,
+     * and if it's not the case we try to retrieve only the missing fields.
+     */
+    private void getFields(List<Field> result, Class clazz, String[] fields) {
+        if (fields != null && fields.length > 0) {
+            if (includeCache.containsKey(clazz)) {
+                List<Field> cachedList = includeCache.get(clazz).get();
+                if (cachedList != null) {
+                    List<String> fieldsCopy = new LinkedList();
+                    for (String s : fields) {
+                        fieldsCopy.add(s);
+                    }
+                    for (Field field : cachedList) {
+                        if (fieldsCopy.remove(field.getName())) {
+                            result.add(field);
+                        }
+                    }
+                    if (!fieldsCopy.isEmpty()) {
+                        ReflectionUtils.getFields(clazz, result, fieldsCopy.toArray(new String[]{}));
+                        includeCache.put(clazz, new WeakReference<List<Field>>(result));
+                    }
+                } else {
+                    ReflectionUtils.getFields(clazz, result, fields);
+                    includeCache.put(clazz, new WeakReference<List<Field>>(result));
+                }
+            } else {
+                ReflectionUtils.getFields(clazz, result, fields);
+                includeCache.put(clazz, new WeakReference<List<Field>>(result));
+            }
+        } else {
+            if (fullCache.containsKey(clazz)) {
+                List<Field> cachedList = fullCache.get(clazz).get();
+                if (cachedList != null) {
+                    result.addAll(cachedList);
+                } else {
+                    ReflectionUtils.fillFields(clazz, result);
+                    fullCache.put(clazz, new WeakReference<List<Field>>(result));
+                }
+            } else {
+                ReflectionUtils.fillFields(clazz, result);
+                fullCache.put(clazz, new WeakReference<List<Field>>(result));
+            }
+        }
     }
 
 }
