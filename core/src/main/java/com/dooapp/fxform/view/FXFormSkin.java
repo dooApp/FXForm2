@@ -57,13 +57,13 @@ public abstract class FXFormSkin implements Skin<FXForm> {
             this.tooltip = tooltip;
             this.constraint = constraint;
             if (label != null)
-                label.getNode().getStyleClass().add(FXForm.LABEL_STYLE);
+                label.getNode().getStyleClass().add(NodeType.LABEL.getStyle());
             if (editor != null)
-                editor.getNode().getStyleClass().add(FXForm.EDITOR_STYLE);
+                editor.getNode().getStyleClass().add(NodeType.EDITOR.getStyle());
             if (tooltip != null)
-                tooltip.getNode().getStyleClass().add(FXForm.TOOLTIP_STYLE);
+                tooltip.getNode().getStyleClass().add(NodeType.TOOLTIP.getStyle());
             if (constraint != null)
-                constraint.getNode().getStyleClass().add(FXForm.CONSTRAINT_STYLE);
+                constraint.getNode().getStyleClass().add(NodeType.CONSTRAINT.getStyle());
         }
 
         public FXFormNode getLabel() {
@@ -147,7 +147,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     }
 
     protected FXFormNode createLabel(Element element) {
-        return createFXFormNode(element, fxForm.getLabelFactoryProvider(), FXForm.LABEL_ID_SUFFIX);
+        return createFXFormNode(element, fxForm.getLabelFactoryProvider(), NodeType.LABEL.getIdSuffix());
     }
 
     protected FXFormNode createEditor(Element element) {
@@ -155,20 +155,20 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         if (factory != null) {
             FXFormNode fxFormNode = factory.call(null);
             if (fxFormNode.getNode().getId() == null) {
-                fxFormNode.getNode().setId(element.getName() + FXForm.EDITOR_ID_SUFFIX);
+                fxFormNode.getNode().setId(element.getName() + NodeType.EDITOR.getIdSuffix());
             }
             return fxFormNode;
         } else {
-            return createFXFormNode(element, fxForm.getEditorFactoryProvider(), FXForm.EDITOR_ID_SUFFIX);
+            return createFXFormNode(element, fxForm.getEditorFactoryProvider(), NodeType.EDITOR.getIdSuffix());
         }
     }
 
     protected FXFormNode createTooltip(Element element) {
-        return createFXFormNode(element, fxForm.getTooltipFactoryProvider(), FXForm.TOOLTIP_ID_SUFFIX);
+        return createFXFormNode(element, fxForm.getTooltipFactoryProvider(), NodeType.TOOLTIP.getIdSuffix());
     }
 
     protected FXFormNode createConstraint(Element element) {
-        return createFXFormNode(element, fxForm.getConstraintFactoryProvider(), FXForm.CONSTRAINT_ID_SUFFIX);
+        return createFXFormNode(element, fxForm.getConstraintFactoryProvider(), NodeType.CONSTRAINT.getIdSuffix());
     }
 
     public void dispose() {

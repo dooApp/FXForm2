@@ -14,10 +14,7 @@ package com.dooapp.fxform.view.skin;
 
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.view.FXFormNode;
-import com.dooapp.fxform.view.FXFormNodeWrapper;
-import com.dooapp.fxform.view.FXFormSkin;
-import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.*;
 import javafx.beans.property.Property;
 import javafx.scene.Node;
 
@@ -65,10 +62,10 @@ public class NodeSkin extends FXFormSkin {
 
     @Override
     protected ElementNodes createElementNodes(Element element) {
-        FXFormNode label = lookupNode(element, FXForm.LABEL_ID_SUFFIX);
-        FXFormNode editor = lookupNode(element, FXForm.EDITOR_ID_SUFFIX);
-        FXFormNode tooltip = lookupNode(element, FXForm.TOOLTIP_ID_SUFFIX);
-        FXFormNode constraint = lookupNode(element, FXForm.CONSTRAINT_ID_SUFFIX);
+        FXFormNode label = lookupNode(element, NodeType.LABEL.getIdSuffix());
+        FXFormNode editor = lookupNode(element, NodeType.EDITOR.getIdSuffix());
+        FXFormNode tooltip = lookupNode(element, NodeType.TOOLTIP.getIdSuffix());
+        FXFormNode constraint = lookupNode(element, NodeType.CONSTRAINT.getIdSuffix());
         return new ElementNodes(label, editor, tooltip, constraint);
 
     }

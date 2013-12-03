@@ -13,9 +13,11 @@
 package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
+import com.dooapp.fxform.view.NodeType;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.StringProperty;
 
@@ -31,35 +33,32 @@ public class LabelController extends NodeController {
 
     public final static Logger logger = Logger.getLogger(LabelController.class.getName());
 
-    public static String LABEL_SUFFIX = "-label";
+    private final NodeType nodeType;
 
-    public LabelController(FXForm fxForm, Element element) {
+    public LabelController(FXForm fxForm, Element element, NodeType nodeType) {
         super(fxForm, element);
+        this.nodeType = nodeType;
     }
 
     @Override
     protected void bind(FXFormNode fxFormNode) {
+        final Adapter adapter = getFxForm().getAdapterProvider().getAdapter(StringProperty.class, getNode().getProperty().getClass(), getElement(), getNode());
+        final StringProperty value = getFxForm().getResourceProvider().getString(getElement(), nodeType);
         fxFormNode.getProperty().bind(new ObjectBinding() {
-            {
-                bind(getFxForm().resourceBundleProperty());
-            }
-
             @Override
             protected Object computeValue() {
-                String label;
-                try {
-                    label = getFxForm().getResourceBundle().getString(getElement().getName() + LABEL_SUFFIX);
-                } catch (Exception e) {
-                    // label is undefined
-                    label = (getElement().getName());
+                {
+                    bind(value);
                 }
+
                 try {
-                    return getFxForm().getAdapterProvider().getAdapter(StringProperty.class, getNode().getProperty().getClass(), getElement(), getNode()).adaptTo(label);
+                    return adapter.adaptTo(value.get());
                 } catch (AdapterException e) {
-                    logger.log(Level.FINE, e.getMessage(), e);
+                    logger.log(Level.WARNING, e.getMessage(), e);
                 }
                 return null;
             }
         });
     }
+
 }

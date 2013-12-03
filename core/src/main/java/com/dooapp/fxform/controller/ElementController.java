@@ -15,6 +15,7 @@ package com.dooapp.fxform.controller;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormSkin;
+import com.dooapp.fxform.view.NodeType;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Skin;
@@ -43,8 +44,8 @@ public class ElementController<WrappedType> {
     public ElementController(FXForm fxForm, Element element) {
         this.element = element;
         this.fxForm = fxForm;
-        labelController = new LabelController(fxForm, element);
-        tooltipController = new TooltipController(fxForm, element);
+        labelController = new LabelController(fxForm, element, NodeType.LABEL);
+        tooltipController = new LabelController(fxForm, element, NodeType.TOOLTIP);
         editorController = createEditorController(fxForm, element);
         changeListener = new ChangeListener<Skin<?>>() {
             public void changed(ObservableValue<? extends Skin<?>> observableValue, Skin<?> skin, Skin<?> skin1) {
