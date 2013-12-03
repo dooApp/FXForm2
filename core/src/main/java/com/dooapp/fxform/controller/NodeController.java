@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.controller;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.utils.Disposable;
@@ -31,9 +32,9 @@ public abstract class NodeController implements Disposable {
     private final ObjectProperty<FXFormNode> node = new SimpleObjectProperty<FXFormNode>();
     private final ChangeListener<FXFormNode> changeListener;
     private final Element element;
-    private final FXForm fxForm;
+    private final AbstractFXForm fxForm;
 
-    public NodeController(FXForm fxForm, Element element) {
+    public NodeController(AbstractFXForm fxForm, Element element) {
         this.element = element;
         this.fxForm = fxForm;
         changeListener = new ChangeListener<FXFormNode>() {
@@ -78,7 +79,7 @@ public abstract class NodeController implements Disposable {
         return element;
     }
 
-    protected FXForm getFxForm() {
+    protected AbstractFXForm getFxForm() {
         return fxForm;
     }
 }

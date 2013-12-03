@@ -13,9 +13,7 @@
 package com.dooapp.fxform.filter;
 
 import com.dooapp.fxform.model.Element;
-import com.dooapp.fxform.model.FormException;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -40,4 +38,9 @@ public abstract class AbstractNameFilter implements FieldFilter {
         }
         throw new FilterException(name + " not found in field list, please check your filters");
     }
+
+    public String[] getNames() {
+        return names;
+    }
+
 }

@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.view;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.factory.AnnotationFactoryProvider;
@@ -31,11 +32,11 @@ import java.util.logging.Logger;
  * Time: 21:36
  * Skin of the FXForm control.
  */
-public abstract class FXFormSkin implements Skin<FXForm> {
+public abstract class FXFormSkin implements Skin<AbstractFXForm> {
 
     private final static Logger logger = Logger.getLogger(FXFormSkin.class.getName());
 
-    protected FXForm fxForm;
+    protected AbstractFXForm fxForm;
 
     private Node rootNode;
 
@@ -84,7 +85,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
     }
 
 
-    public FXFormSkin(FXForm fxForm) {
+    public FXFormSkin(AbstractFXForm fxForm) {
         this.fxForm = fxForm;
     }
 
@@ -175,7 +176,7 @@ public abstract class FXFormSkin implements Skin<FXForm> {
         fxForm = null;
     }
 
-    public FXForm getSkinnable() {
+    public AbstractFXForm getSkinnable() {
         return fxForm;
     }
 

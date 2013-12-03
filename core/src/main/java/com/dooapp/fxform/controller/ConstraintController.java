@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.controller;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
@@ -28,7 +29,7 @@ public class ConstraintController extends NodeController {
 
     private final ReadOnlyListProperty<ConstraintViolation> constraintViolations;
 
-    public ConstraintController(FXForm fxForm, Element element, ReadOnlyListProperty<ConstraintViolation> constraintViolations) {
+    public ConstraintController(AbstractFXForm fxForm, Element element, ReadOnlyListProperty<ConstraintViolation> constraintViolations) {
         super(fxForm, element);
         this.constraintViolations = constraintViolations;
     }

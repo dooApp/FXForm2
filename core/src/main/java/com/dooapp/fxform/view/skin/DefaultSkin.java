@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.view.skin;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
@@ -32,7 +33,7 @@ import javafx.scene.layout.VBox;
  */
 public class DefaultSkin extends FXFormSkin {
 
-    public DefaultSkin(FXForm fxForm) {
+    public DefaultSkin(AbstractFXForm fxForm) {
         super(fxForm);
     }
 

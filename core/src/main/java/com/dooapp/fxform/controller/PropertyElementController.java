@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.controller;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
@@ -33,7 +34,7 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
 
     private final NodeController constraintController;
 
-    public PropertyElementController(final FXForm fxForm, PropertyElement element) {
+    public PropertyElementController(final AbstractFXForm fxForm, PropertyElement element) {
         super(fxForm, element);
         PropertyElementValidator validator = ((PropertyEditorController) editorController).getPropertyElementValidator();
         validator.constraintViolationsProperty().addListener(new ListChangeListener<ConstraintViolation>() {
@@ -88,7 +89,7 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
     }
 
     @Override
-    protected NodeController createEditorController(FXForm fxForm, Element element) {
+    protected NodeController createEditorController(AbstractFXForm fxForm, Element element) {
         return new PropertyEditorController(fxForm, element);
     }
 

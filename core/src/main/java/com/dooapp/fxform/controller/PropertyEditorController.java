@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.controller;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.AdapterException;
@@ -44,7 +45,7 @@ public class PropertyEditorController extends NodeController {
 
     private final AnnotationAdapterProvider annotationAdapterProvider = new AnnotationAdapterProvider();
 
-    public PropertyEditorController(FXForm fxForm, Element element) {
+    public PropertyEditorController(AbstractFXForm fxForm, Element element) {
         super(fxForm, element);
         propertyElementValidator = new PropertyElementValidator((PropertyElement) element);
         propertyElementValidator.validatorProperty().bind(fxForm.fxFormValidatorProperty());

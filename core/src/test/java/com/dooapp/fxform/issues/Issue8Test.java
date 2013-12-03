@@ -34,7 +34,7 @@ public class Issue8Test {
         fxForm.setSource(new TestBean());
         fxForm.getFilters().add(new ExcludeFilter("stringProperty", "objectProperty"));
         fxForm.setSource(null);
-        org.junit.Assert.assertEquals(0, fxForm.getControllers().size());
+        org.junit.Assert.assertEquals(0, fxForm.getElements().size());
     }
 
 }
