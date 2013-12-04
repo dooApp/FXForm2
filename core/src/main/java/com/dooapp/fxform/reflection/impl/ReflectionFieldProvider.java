@@ -70,15 +70,15 @@ public class ReflectionFieldProvider implements FieldProvider {
                         }
                     }
                     if (!fieldsCopy.isEmpty()) {
-                        ReflectionUtils.getFields(clazz, result, fieldsCopy.toArray(new String[]{}));
+                        ReflectionUtils.fillFieldsByName(clazz, result, fieldsCopy.toArray(new String[]{}));
                         includeCache.put(clazz, new WeakReference<List<Field>>(result));
                     }
                 } else {
-                    ReflectionUtils.getFields(clazz, result, fields);
+                    ReflectionUtils.fillFieldsByName(clazz, result, fields);
                     includeCache.put(clazz, new WeakReference<List<Field>>(result));
                 }
             } else {
-                ReflectionUtils.getFields(clazz, result, fields);
+                ReflectionUtils.fillFieldsByName(clazz, result, fields);
                 includeCache.put(clazz, new WeakReference<List<Field>>(result));
             }
         } else {
