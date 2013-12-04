@@ -15,10 +15,11 @@ package com.dooapp.fxform.reflection;
 import java.lang.reflect.*;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * This class contains reflection utilities to automatically extract fields and generic types.
+ * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 09/09/11
  * Time: 14:37
@@ -76,29 +77,65 @@ public class ReflectionUtils {
         }
     }
 
-    public static List<Field> getFields(Class clazz, List<Field> result, String... fields) {
-        for (String field : fields) {
-            try {
-                result.add(clazz.getDeclaredField(field));
-            } catch (NoSuchFieldException e) {
-                try {
-                    result.add(clazz.getField(field));
-                } catch (NoSuchFieldException e1) {
-                    logger.log(Level.WARNING, e1.getMessage(), e);
-                }
+    /**
+     * Extract a collection of fields using their name from a given class and fill
+     * a list with it.
+     *
+     * @param clazz  the Class to extract the fields from
+     * @param result the list of Fields to fill with the extracted fields
+     * @param fields the field names
+     */
+    public static void fillFieldsByName(Class clazz, List<Field> result, String... fields) {
+        for (String fieldName : fields) {
+            Field field = getFieldByName(clazz, fieldName);
+            if (field != null) {
+                result.add(field);
             }
         }
-        fixAccessible(result);
-        return result;
     }
 
+    /**
+     * Extract a Field from a given class using its name.
+     * This method will look into the given class declared fields. If the field is not
+     * found, it will then look recursively in all super classes of the given class.
+     *
+     * @param clazz     the class to extract the Field from
+     * @param fieldName the name of the field to extract
+     * @return the extracted Field, null if not found
+     */
+    public static Field getFieldByName(Class clazz, String fieldName) {
+        try {
+            Field field = clazz.getDeclaredField(fieldName);
+            fixAccessible(field);
+            return field;
+        } catch (NoSuchFieldException e) {
+            if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
+                return getFieldByName(clazz.getSuperclass(), fieldName);
+            }
+        }
+        return null;
+    }
 
+    /**
+     * Get a list of all fields from a given class. This includes all declared fields excepted
+     * synthetic fields from the given class and its super classes.
+     *
+     * @param clazz the class to get the fields from
+     * @return the list of all declared fields
+     */
     public static List<Field> listFields(Class clazz) {
         List<Field> result = new LinkedList<Field>();
         ReflectionUtils.fillFields(clazz, result);
         return result;
     }
 
+    /**
+     * Fill a list with all fields from a given class.This includes all declared fields excepted
+     * synthetic fields from the given class and its super classes.
+     *
+     * @param clazz  the class to get the fields from
+     * @param result the list to fill
+     */
     public static void fillFields(Class clazz, List<Field> result) {
         for (Field field : clazz.getDeclaredFields()) {
             // ignore synthetic fields, see #21
@@ -113,11 +150,25 @@ public class ReflectionUtils {
         }
     }
 
+    /**
+     * Fix the accessibility of a collection of fields to true
+     *
+     * @param result the collection of Fields to fix
+     */
     private static void fixAccessible(List<Field> result) {
         for (Field field : result) {
-            if (!field.isAccessible()) {
-                field.setAccessible(true);
-            }
+            fixAccessible(field);
+        }
+    }
+
+    /**
+     * Fix the accessibility of a field to true
+     *
+     * @param field the fields to fix
+     */
+    private static void fixAccessible(Field field) {
+        if (!field.isAccessible()) {
+            field.setAccessible(true);
         }
     }
 
