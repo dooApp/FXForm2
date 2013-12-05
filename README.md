@@ -54,12 +54,15 @@ Key benefits
 
 Links
 -----
+Articles about FXForm2 on [dooApp technical blog](http://blog.dooapp.com/search/label/fxform).
 
 A video by Betrand Goetzmann with [Grezi](https://bitbucket.org/bgoetzmann/grezi/wiki/Home) and FXForm2: [http://screenr.com/GvDs]
 
 JavaFX [Third Party Tools and Utilities](http://www.oracle.com/technetwork/java/javafx/community/3rd-party-1844355.html)
 
 Considerations about [GUI Generation with JavaFX](http://ustesis.wordpress.com/2013/07/12/gui-generation-with-javafx/) and [Using FXForm2 with EMF Models](http://ustesis.wordpress.com/2013/11/08/using-fxform2-with-emf-models/) by Uwe.
+
+Oliver Probst. [Investigating a Constraint-Based Approach to Data Quality in Information Systems](http://e-collection.library.ethz.ch/eserv/eth:7430/eth-7430-01.pdf), 12.2.5.1 FXForm2, pages 85-88.
 
 [Screenshots](http://infiltrea.com/index.php/visuels) of Infiltrea, a real-world application using FXForm2 - all forms you can see there are based on FXForm2
 
