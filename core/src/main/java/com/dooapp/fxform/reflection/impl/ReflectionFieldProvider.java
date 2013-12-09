@@ -9,7 +9,6 @@
  * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.dooapp.fxform.reflection.impl;
 
 import com.dooapp.fxform.reflection.FieldProvider;
@@ -18,10 +17,7 @@ import com.dooapp.fxform.reflection.ReflectionUtils;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This default implementations retrieves all fields of the given source object, including inherited fields.
@@ -32,70 +28,116 @@ import java.util.Map;
  */
 public class ReflectionFieldProvider implements FieldProvider {
 
-    private Map<Class, WeakReference<List<Field>>> fullCache = new HashMap<Class, WeakReference<List<Field>>>();
-    private Map<Class, WeakReference<List<Field>>> includeCache = new HashMap<Class, WeakReference<List<Field>>>();
+	private Map<Class, WeakReference<List<Field>>> fullCache = new HashMap<Class, WeakReference<List<Field>>>();
 
-    public List<Field> getProperties(Object source, String... fields) {
-        List<Field> result = new LinkedList<Field>();
-        if (source != null) {
-            if (source instanceof MultipleBeanSource) {
-                MultipleBeanSource multipleBeanSource = (MultipleBeanSource) source;
-                for (Object s : multipleBeanSource.getSources()) {
-                    getFields(result, s.getClass(), fields);
-                }
-            } else {
-                getFields(result, source.getClass(), fields);
-            }
-        }
-        return result;
-    }
+	private Map<Class, WeakReference<List<Field>>> includeCache = new HashMap<Class, WeakReference<List<Field>>>();
 
-    /**
-     * Cache implementation. We use two caches for request with or without include filters.
-     * In the case we have an include filter, we check whether we have the required fields in the cache,
-     * and if it's not the case we try to retrieve only the missing fields.
-     */
-    private void getFields(List<Field> result, Class clazz, String[] fields) {
-        if (fields != null && fields.length > 0) {
-            if (includeCache.containsKey(clazz)) {
-                List<Field> cachedList = includeCache.get(clazz).get();
-                if (cachedList != null) {
-                    List<String> fieldsCopy = new LinkedList();
-                    for (String s : fields) {
-                        fieldsCopy.add(s);
-                    }
-                    for (Field field : cachedList) {
-                        if (fieldsCopy.remove(field.getName())) {
-                            result.add(field);
-                        }
-                    }
-                    if (!fieldsCopy.isEmpty()) {
-                        ReflectionUtils.fillFieldsByName(clazz, result, fieldsCopy.toArray(new String[]{}));
-                        includeCache.put(clazz, new WeakReference<List<Field>>(result));
-                    }
-                } else {
-                    ReflectionUtils.fillFieldsByName(clazz, result, fields);
-                    includeCache.put(clazz, new WeakReference<List<Field>>(result));
-                }
-            } else {
-                ReflectionUtils.fillFieldsByName(clazz, result, fields);
-                includeCache.put(clazz, new WeakReference<List<Field>>(result));
-            }
-        } else {
-            if (fullCache.containsKey(clazz)) {
-                List<Field> cachedList = fullCache.get(clazz).get();
-                if (cachedList != null) {
-                    result.addAll(cachedList);
-                } else {
-                    ReflectionUtils.fillFields(clazz, result);
-                    fullCache.put(clazz, new WeakReference<List<Field>>(result));
-                }
-            } else {
-                ReflectionUtils.fillFields(clazz, result);
-                fullCache.put(clazz, new WeakReference<List<Field>>(result));
-            }
-        }
-    }
+	public List<Field> getProperties(Object source, String... fields) {
+		List<Field> result = new LinkedList<Field>();
+		if (source != null) {
+			if (source instanceof MultipleBeanSource) {
+				MultipleBeanSource multipleBeanSource = (MultipleBeanSource) source;
+				List<String> notSpecificFields = new ArrayList<String>();
+				List<SpecificField> specificFields = new ArrayList<SpecificField>();
+				for (String field : fields) {
+					String[] fieldValues = field.split("-");
+					if (fieldValues.length == 2) {
+						specificFields.add(new SpecificField(fieldValues[0], fieldValues[1]));
+					}
+					else {
+						notSpecificFields.add(field);
+					}
+				}
+				for (SpecificField specificField : specificFields) {
+					for (Object s : multipleBeanSource.getSources()) {
+						if (s.getClass().getName().equals(specificField.getClassName())) {
+							getFields(result, s.getClass(), new String[]{specificField.getName()});
+						}
+					}
+				}
+				for (Object s : multipleBeanSource.getSources()) {
+					if (!notSpecificFields.isEmpty()) {
+						getFields(result, s.getClass(), notSpecificFields.toArray(new String[notSpecificFields.size()]));
+					}
+				}
+			}
+			else {
+				getFields(result, source.getClass(), fields);
+			}
+		}
+		return result;
+	}
 
+	/**
+	 * Cache implementation. We use two caches for request with or without include filters.
+	 * In the case we have an include filter, we check whether we have the required fields in the cache,
+	 * and if it's not the case we try to retrieve only the missing fields.
+	 */
+	private void getFields(List<Field> result, Class clazz, String[] fields) {
+		if (fields != null && fields.length > 0) {
+			if (includeCache.containsKey(clazz)) {
+				List<Field> cachedList = includeCache.get(clazz).get();
+				if (cachedList != null) {
+					List<String> fieldsCopy = new LinkedList();
+					for (String s : fields) {
+						fieldsCopy.add(s);
+					}
+					for (Field field : cachedList) {
+						if (fieldsCopy.remove(field.getName())) {
+							result.add(field);
+						}
+					}
+					if (!fieldsCopy.isEmpty()) {
+						ReflectionUtils.fillFieldsByName(clazz, result, fieldsCopy.toArray(new String[]{}));
+						includeCache.put(clazz, new WeakReference<List<Field>>(result));
+					}
+				}
+				else {
+					ReflectionUtils.fillFieldsByName(clazz, result, fields);
+					includeCache.put(clazz, new WeakReference<List<Field>>(result));
+				}
+			}
+			else {
+				ReflectionUtils.fillFieldsByName(clazz, result, fields);
+				includeCache.put(clazz, new WeakReference<List<Field>>(result));
+			}
+		}
+		else {
+			if (fullCache.containsKey(clazz)) {
+				List<Field> cachedList = fullCache.get(clazz).get();
+				if (cachedList != null) {
+					result.addAll(cachedList);
+				}
+				else {
+					ReflectionUtils.fillFields(clazz, result);
+					fullCache.put(clazz, new WeakReference<List<Field>>(result));
+				}
+			}
+			else {
+				ReflectionUtils.fillFields(clazz, result);
+				fullCache.put(clazz, new WeakReference<List<Field>>(result));
+			}
+		}
+	}
+
+	private class SpecificField {
+
+		private String className;
+
+		private String name;
+
+		private SpecificField(String className, String name) {
+			this.className = className;
+			this.name = name;
+		}
+
+		public String getClassName() {
+			return className;
+		}
+
+		public String getName() {
+			return name;
+		}
+	}
 }
 

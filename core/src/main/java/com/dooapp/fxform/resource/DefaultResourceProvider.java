@@ -17,56 +17,64 @@ import java.util.ResourceBundle;
  */
 public class DefaultResourceProvider implements ResourceProvider {
 
-    private final ObjectProperty<ResourceBundle> resourceBundle = new SimpleObjectProperty<ResourceBundle>();
+	private final ObjectProperty<ResourceBundle> resourceBundle = new SimpleObjectProperty<ResourceBundle>();
 
-    @Override
-    public StringProperty getString(final Element element, final NodeType nodeType) {
-        SimpleStringProperty string = new SimpleStringProperty();
-        string.bind(new StringBinding() {
-            {
-                bind(resourceBundle);
-            }
+	@Override
+	public StringProperty getString(final Element element, final NodeType nodeType) {
+		SimpleStringProperty string = new SimpleStringProperty();
+		string.bind(new StringBinding() {
 
-            @Override
-            protected String computeValue() {
-                String label;
-                try {
-                    label = getResourceBundle().getString(element.getBean().getClass().getSimpleName()
-                            + "-" + element.getName()
-                            + "-" + nodeType.name().toLowerCase());
-                } catch (Exception e) {
-                    // Look for a generic label without the bean name
-                    try {
-                        label = getResourceBundle().getString(element.getName()
-                                + "-" + nodeType.name().toLowerCase());
-                    } catch (Exception e1) {
-                        // Label is undefined in the resource bundle
-                        label = handleDefaultValue(element.getName(), nodeType);
-                    }
-                }
-                return label;
-            }
-        });
-        return string;
-    }
+			{
+				bind(resourceBundle);
+			}
 
-    private String handleDefaultValue(String name, NodeType nodeType) {
-        if (nodeType == NodeType.LABEL) {
-            return name;
-        } else {
-            return null;
-        }
-    }
+			@Override
+			protected String computeValue() {
+				String label;
+				try {
+					label = getResourceBundle().getString(element.getDeclaringClass().getName()
+							+ "-" + element.getName()
+							+ "-" + nodeType.name().toLowerCase());
+				} catch (Exception e1) {
+					try {
+						label = getResourceBundle().getString(element.getDeclaringClass().getSimpleName()
+								+ "-" + element.getName()
+								+ "-" + nodeType.name().toLowerCase());
+					} catch (Exception e2) {
+						// Look for a generic label without the bean name
+						try {
+							label = getResourceBundle().getString(element.getName()
+									+ "-" + nodeType.name().toLowerCase());
+						} catch (Exception e3) {
+							// Label is undefined in the resource bundle
+							label = handleDefaultValue(element.getName(), nodeType);
+						}
+					}
+				}
+				return label;
+			}
+		});
+		return string;
+	}
 
-    public ResourceBundle getResourceBundle() {
-        return resourceBundle.get();
-    }
+	private String handleDefaultValue(String name, NodeType nodeType) {
+		if (nodeType == NodeType.LABEL) {
+			return name;
+		}
+		else {
+			return null;
+		}
+	}
 
-    public ObjectProperty<ResourceBundle> resourceBundleProperty() {
-        return resourceBundle;
-    }
+	public ResourceBundle getResourceBundle() {
+		return resourceBundle.get();
+	}
 
-    public void setResourceBundle(ResourceBundle resourceBundle) {
-        this.resourceBundle.set(resourceBundle);
-    }
+	public ObjectProperty<ResourceBundle> resourceBundleProperty() {
+		return resourceBundle;
+	}
+
+	public void setResourceBundle(ResourceBundle resourceBundle) {
+		this.resourceBundle.set(resourceBundle);
+	}
 }

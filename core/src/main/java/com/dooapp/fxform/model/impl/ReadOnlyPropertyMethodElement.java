@@ -9,7 +9,6 @@
  * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.dooapp.fxform.model.impl;
 
 import com.dooapp.fxform.model.Element;
@@ -31,57 +30,61 @@ import java.util.logging.Logger;
  */
 public class ReadOnlyPropertyMethodElement<SourceType, WrappedType> extends AbstractSourceElement<SourceType, WrappedType> implements Element<WrappedType> {
 
-    public final static String PROPERTY_GETTER = "Property";
+	public final static String PROPERTY_GETTER = "Property";
 
-    private final static Logger logger = Logger.getLogger(ReadOnlyPropertyMethodElement.class.getName());
+	private final static Logger logger = Logger.getLogger(ReadOnlyPropertyMethodElement.class.getName());
 
-    protected final Field field;
+	protected final Field field;
 
-    private Method method;
+	private Method method;
 
-    public ReadOnlyPropertyMethodElement(Field field) throws NoSuchMethodException {
-        this.field = field;
-        initMethod();
-    }
+	public ReadOnlyPropertyMethodElement(Field field) throws NoSuchMethodException {
+		this.field = field;
+		initMethod();
+	}
 
-    @Override
-    protected ObservableValue<WrappedType> computeValue() {
-        try {
-            return (ObservableValue<WrappedType>) method.invoke(getSource());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+	@Override
+	protected ObservableValue<WrappedType> computeValue() {
+		try {
+			return (ObservableValue<WrappedType>) method.invoke(getSource());
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
-    @Override
-    public Class<?> getType() {
-        return method.getReturnType();
-    }
+	@Override
+	public Class<?> getType() {
+		return method.getReturnType();
+	}
 
-    @Override
-    public Class<WrappedType> getWrappedType() {
-        return ReflectionUtils.getMethodReturnTypeGeneric(getSource(), method);
-    }
+	@Override
+	public Class<WrappedType> getWrappedType() {
+		return ReflectionUtils.getMethodReturnTypeGeneric(getSource(), method);
+	}
 
-    @Override
-    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-        T annotation = method.getAnnotation(annotationClass);
-        if (annotation == null) {
-            annotation = field.getAnnotation(annotationClass);
-        }
-        return annotation;
-    }
+	@Override
+	public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+		T annotation = method.getAnnotation(annotationClass);
+		if (annotation == null) {
+			annotation = field.getAnnotation(annotationClass);
+		}
+		return annotation;
+	}
 
-    @Override
-    public String getName() {
-        return field.getName();
-    }
+	@Override
+	public String getName() {
+		return field.getName();
+	}
 
-    private void initMethod() throws NoSuchMethodException {
-        method = field.getDeclaringClass().getMethod(field.getName() + PROPERTY_GETTER);
-    }
+	private void initMethod() throws NoSuchMethodException {
+		method = field.getDeclaringClass().getMethod(field.getName() + PROPERTY_GETTER);
+	}
 
+	@Override
+	public Class getDeclaringClass() {
+		return field.getDeclaringClass();
+	}
 }

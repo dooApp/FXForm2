@@ -9,10 +9,13 @@
  * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.dooapp.fxform.reflection;
 
 import com.dooapp.fxform.model.Element;
+import com.sun.javaws.exceptions.InvalidArgumentException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -21,31 +24,29 @@ import com.dooapp.fxform.model.Element;
  */
 public class MultipleBeanSource {
 
-    private final Object[] sources;
+	private final Object[] sources;
 
-    public MultipleBeanSource(Object... sources) {
-        this.sources = sources;
-    }
+	public MultipleBeanSource(Object... sources) throws InvalidArgumentException {
+		this.sources = sources;
+		List<Class> declaringClasses = new ArrayList<Class>();
+		for (Object o : sources) {
+			if (declaringClasses.contains(o.getClass())) {
+				throw new InvalidArgumentException(new String[]{"You can't give two beans of the same type."});
+			}
+			declaringClasses.add(o.getClass());
+		}
+	}
 
-    public Object[] getSources() {
-        return sources;
-    }
+	public Object[] getSources() {
+		return sources;
+	}
 
-    public Object getSource(Element element) {
-        for (Object source : sources) {
-            try {
-                source.getClass().getDeclaredField(element.getName());
-                return source;
-            } catch (NoSuchFieldException e) {
-
-            }
-            try {
-                source.getClass().getField(element.getName());
-                return source;
-            } catch (NoSuchFieldException e) {
-            }
-        }
-        return null;
-    }
-
+	public Object getSource(Element element)  {
+		for (Object source : sources) {
+			if (element.getDeclaringClass().getName().equals(source.getClass().getName())) {
+				return source;
+			}
+		}
+		return null;
+	}
 }
