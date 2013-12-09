@@ -64,8 +64,9 @@ public class PropertyEditorController extends NodeController {
                     Object newValue = propertyElementValidator.adapt(o1, adapter);
                     propertyElementValidator.validate(newValue);
                     if (!propertyElementValidator.isInvalid()) {
-                        ((PropertyElement) getElement()).setValue(newValue);
-                    }
+                        if (!((PropertyElement) getElement()).isBound()) {
+                            ((PropertyElement) getElement()).setValue(newValue);
+                        }                    }
                 } catch (AdapterException e) {
                     // The input value can not be adapted as model value
                     // Nothing to do, a constraint violation should have been reported by the PropertyElementValidator
