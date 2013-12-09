@@ -13,7 +13,6 @@
 package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.AbstractFXForm;
-import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.adapter.AnnotationAdapterProvider;
@@ -64,7 +63,9 @@ public class PropertyEditorController extends NodeController {
                     Object newValue = propertyElementValidator.adapt(o1, adapter);
                     propertyElementValidator.validate(newValue);
                     if (!propertyElementValidator.isInvalid()) {
-                        ((PropertyElement) getElement()).setValue(newValue);
+                        if (!((PropertyElement) getElement()).isBound()) {
+                            ((PropertyElement) getElement()).setValue(newValue);
+                        }
                     }
                 } catch (AdapterException e) {
                     // The input value can not be adapted as model value
@@ -92,7 +93,9 @@ public class PropertyEditorController extends NodeController {
             }
             Object newValue = adapter.adaptTo(o1);
             fxFormNode.getProperty().setValue(newValue);
-            fxFormNode.getNode().setDisable((((PropertyElement) getElement()).isBound()));
+            if (!fxFormNode.getNode().disableProperty().isBound()) {
+                fxFormNode.getNode().setDisable((((PropertyElement) getElement()).isBound()));
+            }
         } catch (AdapterException e) {
             // The model value can not be adapted to the view
             logger.log(Level.FINE, e.getMessage(), e);
