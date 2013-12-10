@@ -13,6 +13,7 @@ package com.dooapp.fxform.filter;
 
 import com.dooapp.fxform.model.Element;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,11 +27,11 @@ public class ExcludeFilter extends AbstractNameFilter implements FieldFilter {
 	}
 
 	public List<Element> filter(List<Element> toFilter) throws FilterException {
-		//List<Element> filtered = new ArrayList<Element>(toFilter);
+		List<Element> filtered = new ArrayList<Element>(toFilter);
 		for (String name : names) {
-			extractFieldByName(toFilter, name);
+			filtered.remove(extractFieldByName(toFilter, name));
 		}
-		return toFilter;
+		return filtered;
 	}
 
 	public String toString() {
