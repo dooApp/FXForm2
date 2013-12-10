@@ -13,6 +13,7 @@
 package com.dooapp.fxform.builder;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.ReadOnlyFXForm;
 import com.dooapp.fxform.filter.IncludeFilter;
 import com.dooapp.fxform.filter.ReorderFilter;
 import com.dooapp.fxform.view.skin.FXMLSkin;
@@ -41,10 +42,15 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
 
     private URL fxmlUrl;
 
+    private boolean readOnly;
+
     public FXForm build() {
-        FXForm res = new FXForm();
-
-
+        FXForm res;
+        if (readOnly == true) {
+            res = new ReadOnlyFXForm();
+        } else {
+            res = new FXForm();
+        }
         if (skin == null) {
             handleDefaultSkin(res);
         } else {
@@ -115,4 +121,8 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
         return (BUILDER) this;
     }
 
+    public BUILDER readOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+        return (BUILDER) this;
+    }
 }
