@@ -32,32 +32,19 @@ public class ReflectionFieldProvider implements FieldProvider {
 
 	private Map<Class, WeakReference<List<Field>>> includeCache = new HashMap<Class, WeakReference<List<Field>>>();
 
+	private Object multipleFields;
+
 	public List<Field> getProperties(Object source, String... fields) {
 		List<Field> result = new LinkedList<Field>();
 		if (source != null) {
 			if (source instanceof MultipleBeanSource) {
 				MultipleBeanSource multipleBeanSource = (MultipleBeanSource) source;
-				List<String> notSpecificFields = new ArrayList<String>();
-				List<SpecificField> specificFields = new ArrayList<SpecificField>();
-				for (String field : fields) {
-					String[] fieldValues = field.split("-");
-					if (fieldValues.length == 2) {
-						specificFields.add(new SpecificField(fieldValues[0], fieldValues[1]));
-					}
-					else {
-						notSpecificFields.add(field);
-					}
+				if (fields.length > 0) {
+					getMultipleFields(result, multipleBeanSource, fields);
 				}
-				for (SpecificField specificField : specificFields) {
+				else {
 					for (Object s : multipleBeanSource.getSources()) {
-						if (s.getClass().getName().equals(specificField.getClassName())) {
-							getFields(result, s.getClass(), new String[]{specificField.getName()});
-						}
-					}
-				}
-				for (Object s : multipleBeanSource.getSources()) {
-					if (!notSpecificFields.isEmpty()) {
-						getFields(result, s.getClass(), notSpecificFields.toArray(new String[notSpecificFields.size()]));
+						getFields(result, s.getClass(), fields);
 					}
 				}
 			}
@@ -116,6 +103,32 @@ public class ReflectionFieldProvider implements FieldProvider {
 			else {
 				ReflectionUtils.fillFields(clazz, result);
 				fullCache.put(clazz, new WeakReference<List<Field>>(result));
+			}
+		}
+	}
+
+	public void getMultipleFields(List<Field> result, MultipleBeanSource source, String... fields) {
+		List<String> notSpecificFields = new ArrayList<String>();
+		List<SpecificField> specificFields = new ArrayList<SpecificField>();
+		for (String field : fields) {
+			String[] fieldValues = field.split("-");
+			if (fieldValues.length == 2) {
+				specificFields.add(new SpecificField(fieldValues[0], fieldValues[1]));
+			}
+			else {
+				notSpecificFields.add(field);
+			}
+		}
+		for (SpecificField specificField : specificFields) {
+			for (Object s : source.getSources()) {
+				if (s.getClass().getName().equals(specificField.getClassName())) {
+					getFields(result, s.getClass(), new String[]{specificField.getName()});
+				}
+			}
+		}
+		if (!notSpecificFields.isEmpty()) {
+			for (Object s : source.getSources()) {
+				getFields(result, s.getClass(), notSpecificFields.toArray(new String[notSpecificFields.size()]));
 			}
 		}
 	}

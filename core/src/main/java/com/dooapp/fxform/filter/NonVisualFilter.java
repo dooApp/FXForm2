@@ -14,6 +14,7 @@ package com.dooapp.fxform.filter;
 
 import com.dooapp.fxform.annotation.NonVisual;
 import com.dooapp.fxform.model.Element;
+import javafx.beans.property.ReadOnlyListProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 public class NonVisualFilter implements FieldFilter {
 
-    public List<Element> filter(List<Element> toFilter) {
+    public List<Element> filter(ReadOnlyListProperty<Element> toFilter) {
         List<Element> filtered = new ArrayList<Element>();
         for (Element field : toFilter) {
             if (field.getAnnotation(NonVisual.class) == null) {

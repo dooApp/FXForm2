@@ -25,12 +25,12 @@ public class MultipleBeanSource {
 
 	private final Object[] sources;
 
-	public MultipleBeanSource(Object... sources) throws InvalidArgumentException {
+	public MultipleBeanSource(Object... sources) throws IllegalArgumentException {
 		this.sources = sources;
 		List<Class> declaringClasses = new ArrayList<Class>();
 		for (Object o : sources) {
 			if (declaringClasses.contains(o.getClass())) {
-				throw new InvalidArgumentException("You can't give two beans of the same type.");
+				throw new IllegalArgumentException("You can't give two beans of the same type.");
 			}
 			declaringClasses.add(o.getClass());
 		}

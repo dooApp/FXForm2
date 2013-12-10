@@ -34,7 +34,7 @@ public class MultipleBeanSourceTest {
 	}
 
 	@Test
-	public void testMultipleBeanSource() throws InvalidArgumentException {
+	public void testMultipleBeanSource() throws IllegalArgumentException {
 		FXForm fxForm = new FXForm();
 		fxForm.setSource(new MultipleBeanSource(new TestBean(), new TestBean2()));
 		Assert.assertEquals(5, fxForm.getElements().size());

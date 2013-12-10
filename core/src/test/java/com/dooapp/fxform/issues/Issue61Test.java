@@ -11,8 +11,11 @@
  */
 package com.dooapp.fxform.issues;
 
+import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.filter.ExcludeFilter;
+import com.dooapp.fxform.filter.IncludeFilter;
+import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.FormException;
-import com.dooapp.fxform.reflection.InvalidArgumentException;
 import com.dooapp.fxform.reflection.MultipleBeanSource;
 import com.dooapp.fxform.reflection.ReflectionUtils;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
@@ -39,12 +42,14 @@ public class Issue61Test {
 	public static class Bean2 {
 
 		private StringProperty property = new SimpleStringProperty();
+
+		private StringProperty property2 = new SimpleStringProperty();
 	}
 
 	@Test
 	public void testExtractExpectedFields()
 			throws
-			FormException, InvalidArgumentException {
+			FormException, IllegalArgumentException {
 		Bean1 bean1 = new Bean1();
 		Bean2 bean2 = new Bean2();
 		ReflectionFieldProvider reflectionFieldProvider = new ReflectionFieldProvider();
@@ -52,5 +57,62 @@ public class Issue61Test {
 				Bean1.class.getName() + "-property");
 		Assert.assertEquals(1, fields.size());
 		Assert.assertEquals(fields.get(0), ReflectionUtils.getFieldByName(Bean1.class, "property"));
+	}
+
+	@Test
+	public void testMultipleBeanSource() throws IllegalArgumentException {
+		FXForm fxForm = new FXForm();
+		Bean1 bean1 = new Bean1();
+		Bean2 bean2 = new Bean2();
+		fxForm.setSource(new MultipleBeanSource(bean1, bean2));
+		Assert.assertEquals(3, fxForm.getElements().size());
+	}
+
+	@Test
+	public void testMultipleBeanSourceWithIncludeFilter() throws IllegalArgumentException {
+		FXForm fxForm = new FXForm();
+		Bean1 bean1 = new Bean1();
+		Bean2 bean2 = new Bean2();
+		fxForm.getFilters().add(new IncludeFilter(bean1.getClass().getName() + "-property"));
+		fxForm.setSource(new MultipleBeanSource(bean1, bean2));
+		Assert.assertEquals(1, fxForm.getElements().size());
+		Assert.assertEquals(fxForm.getElements().get(0).getDeclaringClass(), Bean1.class);
+		fxForm.getFilters().clear();
+		fxForm.getFilters().add(new IncludeFilter(bean2.getClass().getName() + "-property"));
+		Assert.assertEquals(1, fxForm.getElements().size());
+		Assert.assertEquals(fxForm.getElements().get(0).getDeclaringClass(), Bean2.class);
+	}
+
+	@Test
+	public void testMultipleBeanSourceWithExcludeFilter() throws IllegalArgumentException {
+		FXForm fxForm = new FXForm();
+		Bean1 bean1 = new Bean1();
+		Bean2 bean2 = new Bean2();
+		fxForm.getFilters().add(new ExcludeFilter(bean1.getClass().getName() + "-property"));
+		fxForm.setSource(new MultipleBeanSource(bean1, bean2));
+		Assert.assertEquals(2, fxForm.getElements().size());
+		Assert.assertEquals(fxForm.getElements().get(0).getDeclaringClass(), Bean2.class);
+		Assert.assertEquals(fxForm.getElements().get(1).getDeclaringClass(), Bean2.class);
+	}
+
+	@Test
+	public void testMultipleBeanSourceWithIncludeAndExcludeFilter() throws IllegalArgumentException {
+		FXForm fxForm = new FXForm();
+		Bean1 bean1 = new Bean1();
+		Bean2 bean2 = new Bean2();
+		fxForm.getFilters().addAll(new ExcludeFilter(bean1.getClass().getName() + "-property"),
+				new IncludeFilter(bean2.getClass().getName() + "-property"));
+		fxForm.setSource(new MultipleBeanSource(bean1, bean2));
+		Assert.assertEquals(1, fxForm.getElements().size());
+		Assert.assertEquals(fxForm.getElements().get(0).getDeclaringClass(), Bean2.class);
+	}
+
+	protected boolean hasElement(List<Element> elementList, String name) {
+		for (Element element : elementList) {
+			if (name.equals(element.getName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
