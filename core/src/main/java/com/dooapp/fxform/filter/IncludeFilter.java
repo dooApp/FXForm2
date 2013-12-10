@@ -27,9 +27,10 @@ public class IncludeFilter extends AbstractNameFilter implements FieldFilter {
 	}
 
 	public List<Element> filter(List<Element> toFilter) throws FilterException {
+		List<Element> remaining = new ArrayList<Element>(toFilter);
 		List<Element> filtered = new ArrayList<Element>();
 		for (String name : names) {
-			filtered.add(extractFieldByName(toFilter, name));
+			filtered.add(extractFieldByName(remaining, name));
 		}
 		return filtered;
 	}
