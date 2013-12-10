@@ -42,7 +42,7 @@ public class MultipleBeanSource {
 
 	public Object getSource(Element element) {
 		for (Object source : sources) {
-			if (element.getDeclaringClass().getName().equals(source.getClass().getName())) {
+			if (element.getDeclaringClass().isAssignableFrom(source.getClass())) {
 				return source;
 			}
 		}
