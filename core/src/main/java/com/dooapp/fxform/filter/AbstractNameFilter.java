@@ -29,7 +29,7 @@ public abstract class AbstractNameFilter implements FieldFilter {
 	}
 
 	protected Element extractFieldByName(List<Element> remaining, String name) throws FilterException {
-	    for (Element field : remaining) {
+		for (Element field : remaining) {
 			String fullName = field.getDeclaringClass().getName() + "-" + field.getName();
 			if (name.equals(fullName) || name.equals(field.getName())) {
 				remaining.remove(field);

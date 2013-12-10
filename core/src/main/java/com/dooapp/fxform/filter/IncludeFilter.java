@@ -12,8 +12,6 @@
 package com.dooapp.fxform.filter;
 
 import com.dooapp.fxform.model.Element;
-import com.sun.javafx.UnmodifiableArrayList;
-import javafx.beans.property.ReadOnlyListProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
