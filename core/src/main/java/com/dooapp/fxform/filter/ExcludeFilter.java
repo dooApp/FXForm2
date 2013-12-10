@@ -29,7 +29,7 @@ public class ExcludeFilter extends AbstractNameFilter implements FieldFilter {
 	public List<Element> filter(List<Element> toFilter) throws FilterException {
 		List<Element> filtered = new ArrayList<Element>(toFilter);
 		for (String name : names) {
-			filtered.remove(extractFieldByName(toFilter, name));
+			extractFieldByName(filtered, name);
 		}
 		return filtered;
 	}
