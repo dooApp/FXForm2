@@ -12,7 +12,6 @@
 package com.dooapp.fxform.filter;
 
 import com.dooapp.fxform.model.Element;
-import javafx.beans.property.ReadOnlyListProperty;
 
 import java.util.List;
 
@@ -23,5 +22,12 @@ import java.util.List;
  */
 public interface FieldFilter {
 
-	public List<Element> filter(ReadOnlyListProperty<Element> toFilter) throws FilterException;
+	/**
+	 * Filter the given list. The given list must not be modified by the filter method. It must return a new list
+	 * that contains the result of filtering.
+	 * @param toFilter The unmodifiable list to filter
+	 * @return
+	 * @throws FilterException
+	 */
+	public List<Element> filter(List<Element> toFilter) throws FilterException;
 }

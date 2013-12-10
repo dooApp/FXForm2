@@ -12,7 +12,6 @@
 package com.dooapp.fxform.filter;
 
 import com.dooapp.fxform.model.Element;
-import javafx.beans.property.ReadOnlyListProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +26,7 @@ public class ReorderFilter extends AbstractNameFilter implements FieldFilter {
 		super(names);
 	}
 
-	public List<Element> filter(ReadOnlyListProperty<Element> toFilter) throws FilterException {
+	public List<Element> filter(List<Element> toFilter) throws FilterException {
 		List<Element> remaining = new ArrayList<Element>(toFilter);
 		List<Element> filtered = new ArrayList<Element>();
 		for (String name : names) {

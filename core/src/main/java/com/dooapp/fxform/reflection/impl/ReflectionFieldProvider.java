@@ -32,8 +32,6 @@ public class ReflectionFieldProvider implements FieldProvider {
 
 	private Map<Class, WeakReference<List<Field>>> includeCache = new HashMap<Class, WeakReference<List<Field>>>();
 
-	private Object multipleFields;
-
 	public List<Field> getProperties(Object source, String... fields) {
 		List<Field> result = new LinkedList<Field>();
 		if (source != null) {

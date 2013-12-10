@@ -25,6 +25,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,7 +88,7 @@ public class DefaultElementProvider implements ElementProvider {
 		}
 		for (FieldFilter filter : filters) {
 			try {
-				elements.setAll(filter.filter(elements));
+				elements.setAll(filter.filter(Collections.unmodifiableList(elements.get())));
 			} catch (FilterException e) {
 				logger.log(Level.WARNING, e.getMessage(), e);
 			}

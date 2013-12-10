@@ -12,9 +12,8 @@
 package com.dooapp.fxform.filter;
 
 import com.dooapp.fxform.model.Element;
-import javafx.beans.property.ReadOnlyListProperty;
+import com.sun.javafx.UnmodifiableArrayList;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,12 +26,12 @@ public class ExcludeFilter extends AbstractNameFilter implements FieldFilter {
 		super(names);
 	}
 
-	public List<Element> filter(ReadOnlyListProperty<Element> toFilter) throws FilterException {
-		List<Element> filtered = new ArrayList<Element>(toFilter);
+	public List<Element> filter(List<Element> toFilter) throws FilterException {
+		//List<Element> filtered = new ArrayList<Element>(toFilter);
 		for (String name : names) {
-			filtered.remove(extractFieldByName(toFilter, name));
+			extractFieldByName(toFilter, name);
 		}
-		return filtered;
+		return toFilter;
 	}
 
 	public String toString() {
