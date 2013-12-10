@@ -12,10 +12,10 @@
 package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.model.FormException;
+import com.dooapp.fxform.reflection.InvalidArgumentException;
 import com.dooapp.fxform.reflection.MultipleBeanSource;
 import com.dooapp.fxform.reflection.ReflectionUtils;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import junit.framework.Assert;
@@ -44,8 +44,7 @@ public class Issue61Test {
 	@Test
 	public void testExtractExpectedFields()
 			throws
-			FormException,
-			InvalidArgumentException {
+			FormException, InvalidArgumentException {
 		Bean1 bean1 = new Bean1();
 		Bean2 bean2 = new Bean2();
 		ReflectionFieldProvider reflectionFieldProvider = new ReflectionFieldProvider();

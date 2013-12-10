@@ -12,7 +12,6 @@
 package com.dooapp.fxform.reflection;
 
 import com.dooapp.fxform.model.Element;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class MultipleBeanSource {
 		List<Class> declaringClasses = new ArrayList<Class>();
 		for (Object o : sources) {
 			if (declaringClasses.contains(o.getClass())) {
-				throw new InvalidArgumentException(new String[]{"You can't give two beans of the same type."});
+				throw new InvalidArgumentException("You can't give two beans of the same type.");
 			}
 			declaringClasses.add(o.getClass());
 		}
@@ -41,7 +40,7 @@ public class MultipleBeanSource {
 		return sources;
 	}
 
-	public Object getSource(Element element)  {
+	public Object getSource(Element element) {
 		for (Object source : sources) {
 			if (element.getDeclaringClass().getName().equals(source.getClass().getName())) {
 				return source;

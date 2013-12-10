@@ -14,7 +14,6 @@ package com.dooapp.fxform.reflection;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.TestBean;
 import com.dooapp.fxform.model.Element;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import junit.framework.Assert;
