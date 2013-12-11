@@ -74,7 +74,8 @@ public class InlineSkin extends FXFormSkin {
         FXFormNode constraint = createConstraint(element);
         FXFormNode tooltip = createTooltip(element);
         GridPane.setHgrow(editor.getNode(), Priority.SOMETIMES);
-        gridPane.addRow(row, label.getNode(), editor.getNode(), constraint.getNode());
+        gridPane.addRow(row, label.getNode(), editor.getNode());
+        gridPane.add(constraint.getNode(), 1, ++row);
         gridPane.add(tooltip.getNode(), 1, ++row);
         row++;
         return new ElementNodes(label, editor, tooltip, constraint);
@@ -84,6 +85,7 @@ public class InlineSkin extends FXFormSkin {
     protected void deleteElementNodes(ElementNodes elementNodes) {
         removeRow(GridPane.getRowIndex(elementNodes.getEditor().getNode()));
         removeRow(GridPane.getRowIndex(elementNodes.getTooltip().getNode()));
+        removeRow(GridPane.getRowIndex(elementNodes.getConstraint().getNode()));
     }
 
 

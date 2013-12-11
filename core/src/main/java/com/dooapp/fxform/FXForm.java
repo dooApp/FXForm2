@@ -29,7 +29,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Scene;
 
+import java.net.URL;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 /**
@@ -72,6 +76,7 @@ public class FXForm<T> extends AbstractFXForm {
 
     public FXForm(final T source, FactoryProvider labelFactoryProvider, FactoryProvider tooltipFactoryProvider, FactoryProvider editorFactoryProvider) {
         super();
+        initBundle();
         setLabelFactoryProvider(labelFactoryProvider);
         setTooltipFactoryProvider(tooltipFactoryProvider);
         setEditorFactoryProvider(editorFactoryProvider);
@@ -111,6 +116,44 @@ public class FXForm<T> extends AbstractFXForm {
 
     public void addFilters(FieldFilter... filters) {
         this.filters.addAll(filters);
+    }
+
+    /**
+     * Auto loading of default resource bundle and css file.
+     */
+    private void initBundle() {
+        final StackTraceElement element = getCallingClass();
+        String bundle = element.getClassName();
+        if (getResourceBundle() == null) {
+            try {
+                setResourceBundle(ResourceBundle.getBundle(bundle));
+            } catch (MissingResourceException e) {
+                // no default resource bundle found
+            }
+        }
+        sceneProperty().addListener(new ChangeListener<Scene>() {
+            public void changed(ObservableValue<? extends Scene> observableValue, Scene scene, Scene scene1) {
+                String path = element.getClassName().replaceAll("\\.", "/") + ".css";
+                URL css = FXForm.class.getClassLoader().getResource(path);
+                if (css != null && observableValue.getValue() != null) {
+                    getScene().getStylesheets().add(css.toExternalForm());
+                }
+            }
+        });
+    }
+
+    /**
+     * Retrieve the calling class in which the form is being created.
+     *
+     * @return the StackTraceElement representing the calling class
+     */
+    private StackTraceElement getCallingClass() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        int i = 1;
+        while (stackTrace[i].getClassName().equals(getClass().getName())) {
+            i++;
+        }
+        return stackTrace[i];
     }
 
 }
