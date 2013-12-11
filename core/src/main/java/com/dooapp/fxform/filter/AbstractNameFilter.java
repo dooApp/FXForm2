@@ -22,24 +22,29 @@ import java.util.List;
  */
 public abstract class AbstractNameFilter implements FieldFilter {
 
-	protected final String[] names;
+    protected final String[] names;
 
-	public AbstractNameFilter(String[] names) {
-		this.names = names;
-	}
+    public AbstractNameFilter(String[] names) {
+        this.names = names;
+    }
 
-	protected Element extractFieldByName(List<Element> remaining, String name) throws FilterException {
-		for (Element field : remaining) {
-			String fullName = field.getDeclaringClass().getName() + "-" + field.getName();
-			if (name.equals(fullName) || name.equals(field.getName())) {
-				remaining.remove(field);
-				return field;
-			}
-		}
-		throw new FilterException(name + " not found in field list, please check your filters");
-	}
+    protected Element extractFieldByName(List<Element> remaining, String name) throws FilterException {
+        Element element = getFieldByName(remaining, name);
+        remaining.remove(element);
+        return element;
+    }
 
-	public String[] getNames() {
-		return names;
-	}
+    protected Element getFieldByName(List<Element> elements, String name) throws FilterException {
+        for (Element field : elements) {
+            String fullName = field.getDeclaringClass().getName() + "-" + field.getName();
+            if (name.equals(fullName) || name.equals(field.getName())) {
+                return field;
+            }
+        }
+        throw new FilterException(name + " not found in field list, please check your filters");
+    }
+
+    public String[] getNames() {
+        return names;
+    }
 }

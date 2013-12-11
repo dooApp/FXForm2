@@ -12,11 +12,14 @@
 
 package com.dooapp.fxform.model.impl;
 
+import com.dooapp.fxform.model.Category;
 import com.dooapp.fxform.model.Element;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -37,6 +40,8 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
     protected List<InvalidationListener> invalidationListeners = new LinkedList<InvalidationListener>();
 
     private ObjectBinding<ObservableValue<WrappedType>> value;
+
+    private StringProperty category;
 
     protected AbstractSourceElement() {
         wrappedProperty().addListener(new ChangeListener<ObservableValue<WrappedType>>() {
@@ -143,5 +148,24 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
     }
 
     protected abstract ObservableValue<WrappedType> computeValue();
+
+    public String getCategory() {
+        return categoryProperty().get();
+    }
+
+    public StringProperty categoryProperty() {
+        if (category == null) {
+            category = new SimpleStringProperty();
+            Category categoryAnnotation = getAnnotation(Category.class);
+            if (categoryAnnotation != null) {
+                category.set(categoryAnnotation.value());
+            }
+        }
+        return category;
+    }
+
+    public void setCategory(String category) {
+        categoryProperty().set(category);
+    }
 
 }

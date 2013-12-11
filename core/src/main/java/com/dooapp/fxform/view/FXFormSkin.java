@@ -13,7 +13,6 @@
 package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.AbstractFXForm;
-import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.factory.AnnotationFactoryProvider;
 import com.dooapp.fxform.view.factory.FactoryProvider;
@@ -22,6 +21,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Skin;
 import javafx.util.Callback;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +44,8 @@ public abstract class FXFormSkin implements Skin<AbstractFXForm> {
     private Node rootNode;
 
     private AnnotationFactoryProvider annotationFactoryProvider = new AnnotationFactoryProvider();
+
+    protected Map<String, List<Element>> categoryMap = new HashMap<String, List<Element>>();
 
     protected static class ElementNodes {
 
@@ -82,6 +87,7 @@ public abstract class FXFormSkin implements Skin<AbstractFXForm> {
         public FXFormNode getConstraint() {
             return constraint;
         }
+
     }
 
 
@@ -103,36 +109,35 @@ public abstract class FXFormSkin implements Skin<AbstractFXForm> {
     }
 
     public FXFormNode getLabel(Element element) {
-        if (!getNode().getProperties().containsKey(element)) {
-            ElementNodes elementNodes = createElementNodes(element);
-            getNode().getProperties().put(element, elementNodes);
-        }
+        initElementNodes(element);
         return ((ElementNodes) getNode().getProperties().get(element)).getLabel();
     }
 
-
     public FXFormNode getTooltip(Element element) {
-        if (!getNode().getProperties().containsKey(element)) {
-            ElementNodes elementNodes = createElementNodes(element);
-            getNode().getProperties().put(element, elementNodes);
-        }
+        initElementNodes(element);
         return ((ElementNodes) getNode().getProperties().get(element)).getTooltip();
     }
 
     public FXFormNode getEditor(Element element) {
-        if (!getNode().getProperties().containsKey(element)) {
-            ElementNodes elementNodes = createElementNodes(element);
-            getNode().getProperties().put(element, elementNodes);
-        }
+        initElementNodes(element);
         return ((ElementNodes) getNode().getProperties().get(element)).getEditor();
     }
 
     public FXFormNode getConstraint(Element element) {
+        initElementNodes(element);
+        return ((ElementNodes) getNode().getProperties().get(element)).getConstraint();
+    }
+
+    private void initElementNodes(Element element) {
         if (!getNode().getProperties().containsKey(element)) {
+            if (!categoryMap.containsKey(element.getCategory())) {
+                categoryMap.put(element.getCategory(), new LinkedList<Element>());
+                addCategory(element.getCategory());
+            }
+            categoryMap.get(element.getCategory()).add(element);
             ElementNodes elementNodes = createElementNodes(element);
             getNode().getProperties().put(element, elementNodes);
         }
-        return ((ElementNodes) getNode().getProperties().get(element)).getConstraint();
     }
 
     protected FXFormNode createFXFormNode(Element element, FactoryProvider factoryProvider, String suffixId) {
@@ -182,6 +187,11 @@ public abstract class FXFormSkin implements Skin<AbstractFXForm> {
 
     public void removeElement(Element element) {
         ElementNodes elementNodes = (ElementNodes) getNode().getProperties().get(element);
+        categoryMap.get(element.getCategory()).remove(element);
+        if (categoryMap.get(element.getCategory()).size() == 0) {
+            categoryMap.remove(element.getCategory());
+            removeCategory(element.getCategory());
+        }
         if (elementNodes != null) {
             deleteElementNodes(elementNodes);
         }
@@ -191,5 +201,21 @@ public abstract class FXFormSkin implements Skin<AbstractFXForm> {
     protected abstract ElementNodes createElementNodes(Element element);
 
     protected abstract void deleteElementNodes(ElementNodes elementNodes);
+
+    /**
+     * A new category is used in the form. A skin could create some specific nodes here, such as a separator.
+     *
+     * @param category
+     */
+    protected void addCategory(String category) {
+    }
+
+    /**
+     * This category is not used anymore in the form, so remove anything related to this category.
+     *
+     * @param category
+     */
+    protected void removeCategory(String category) {
+    }
 
 }

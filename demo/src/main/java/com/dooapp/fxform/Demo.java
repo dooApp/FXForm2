@@ -12,7 +12,7 @@
 
 package com.dooapp.fxform;
 
-import com.dooapp.fxform.filter.ReorderFilter;
+import com.dooapp.fxform.builder.FXFormBuilder;
 import com.dooapp.fxform.handler.TypeFieldHandler;
 import com.dooapp.fxform.map.MapPropertyFactory;
 import com.dooapp.fxform.view.FXFormSkin;
@@ -36,6 +36,7 @@ import javafx.util.Callback;
 import org.apache.log4j.BasicConfigurator;
 
 import javax.validation.ConstraintViolation;
+import java.util.ResourceBundle;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -45,7 +46,7 @@ import javax.validation.ConstraintViolation;
  */
 public class Demo extends Application {
 
-    private FXForm<MyBean> fxForm = new FXForm<MyBean>();
+    private FXForm<MyBean> fxForm;
 
     private StackPane root = new StackPane();
 
@@ -56,8 +57,11 @@ public class Demo extends Application {
         new ObjectPropertyObserver(joe);
         // register a factory for the userMap field that is not handled by default
         DefaultFactoryProvider.addGlobalFactory(new TypeFieldHandler(MapProperty.class), new MapPropertyFactory());
-        fxForm.setSource(joe);
-        fxForm.addFilters(new ReorderFilter("name", "welcome", "email", "subject", "message"));
+        fxForm = new FXFormBuilder()
+                .source(joe)
+                .categorize("-USER-", "name", "welcome", "email", "-DATA-", "subject", "message")
+                .resourceBundle(ResourceBundle.getBundle("com.dooapp.fxform.Demo"))
+                .build();
         fxForm.setTitle("Dude, where is my form?");
         root.getChildren().add(createNode());
     }
