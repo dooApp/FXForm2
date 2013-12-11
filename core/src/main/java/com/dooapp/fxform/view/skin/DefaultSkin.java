@@ -13,7 +13,6 @@
 package com.dooapp.fxform.view.skin;
 
 import com.dooapp.fxform.AbstractFXForm;
-import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormSkin;
@@ -23,7 +22,12 @@ import com.dooapp.fxform.view.control.ConstraintLabel;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A "vertical" skin.
@@ -37,21 +41,23 @@ public class DefaultSkin extends FXFormSkin {
         super(fxForm);
     }
 
-    private VBox controllerBox;
+    private Map<String, Pane> categoryBox = new HashMap<String, Pane>();
+
+    private VBox contentBox;
+
 
     @Override
     protected Node createRootNode() throws NodeCreationException {
         VBox titleBox = new VBox();
         titleBox.getChildren().add(createTitleNode());
-        final VBox contentBox = new VBox();
+        contentBox = new VBox();
         contentBox.setPadding(new Insets(5.0, 5.0, 5.0, 5.0));
         contentBox.getStyleClass().add("form-content-box");
         titleBox.getChildren().add(contentBox);
         contentBox.setSpacing(5.0);
         ConstraintLabel constraintLabel = new ConstraintLabel();
         constraintLabel.constraintProperty().bind(fxForm.getClassLevelValidator().constraintViolationsProperty());
-        controllerBox = new VBox();
-        contentBox.getChildren().addAll(constraintLabel, controllerBox);
+        contentBox.getChildren().addAll(constraintLabel);
         return titleBox;
     }
 
@@ -61,17 +67,43 @@ public class DefaultSkin extends FXFormSkin {
         FXFormNode label = createLabel(element);
         FXFormNode constraint = createConstraint(element);
         FXFormNode tooltip = createTooltip(element);
-        controllerBox.getChildren().addAll(label.getNode(), editor.getNode(), constraint.getNode());
-        controllerBox.getChildren().add(tooltip.getNode());
+        getCategoryBox(element.getCategory()).getChildren().addAll(label.getNode(), editor.getNode(), constraint.getNode(), tooltip.getNode());
         return new ElementNodes(label, editor, tooltip, constraint);
+    }
+
+    private Pane getCategoryBox(String category) {
+        return categoryBox.get(category);
+    }
+
+    @Override
+    protected void addCategory(String category) {
+        Pane box = createCategoryBox(category);
+        categoryBox.put(category, box);
+        contentBox.getChildren().add(box);
+    }
+
+    protected Pane createCategoryBox(String category) {
+        VBox vBox = new VBox();
+        if (categoryBox.keySet().size() > 0) {
+            vBox.getChildren().addAll(new Separator());
+        }
+        return vBox;
+    }
+
+    @Override
+    protected void removeCategory(String category) {
+        contentBox.getChildren().remove(getCategoryBox(category));
+        categoryBox.remove(category);
     }
 
     @Override
     protected void deleteElementNodes(ElementNodes elementNodes) {
-        controllerBox.getChildren().removeAll(elementNodes.getConstraint().getNode(),
-                elementNodes.getEditor().getNode(),
-                elementNodes.getLabel().getNode(),
-                elementNodes.getTooltip().getNode());
+        for (Pane pane : categoryBox.values()) {
+            pane.getChildren().removeAll(elementNodes.getConstraint().getNode(),
+                    elementNodes.getEditor().getNode(),
+                    elementNodes.getLabel().getNode(),
+                    elementNodes.getTooltip().getNode());
+        }
     }
 
 

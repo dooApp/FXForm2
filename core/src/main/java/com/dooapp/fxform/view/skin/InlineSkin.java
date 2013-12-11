@@ -22,13 +22,16 @@ import com.dooapp.fxform.view.control.ConstraintLabel;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.GridPaneBuilder;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A skin where elements are inlined (label, editor). The tooltip is displayed under the editor.
@@ -37,6 +40,7 @@ import java.util.List;
  * Time: 11:03
  */
 public class InlineSkin extends FXFormSkin {
+
     public InlineSkin(FXForm fxForm) {
         super(fxForm);
     }
@@ -50,6 +54,7 @@ public class InlineSkin extends FXFormSkin {
 
     protected GridPane gridPane;
     protected int row = 0;
+    private Map<String, Node> categoryNode = new HashMap<String, Node>();
 
     @Override
     protected Node createRootNode() throws NodeCreationException {
@@ -74,10 +79,9 @@ public class InlineSkin extends FXFormSkin {
         FXFormNode constraint = createConstraint(element);
         FXFormNode tooltip = createTooltip(element);
         GridPane.setHgrow(editor.getNode(), Priority.SOMETIMES);
-        gridPane.addRow(row, label.getNode(), editor.getNode());
-        gridPane.add(constraint.getNode(), 1, ++row);
-        gridPane.add(tooltip.getNode(), 1, ++row);
-        row++;
+        gridPane.addRow(row++, label.getNode(), editor.getNode());
+        gridPane.add(constraint.getNode(), 1, row++);
+        gridPane.add(tooltip.getNode(), 1, row++);
         return new ElementNodes(label, editor, tooltip, constraint);
     }
 
@@ -86,6 +90,29 @@ public class InlineSkin extends FXFormSkin {
         removeRow(GridPane.getRowIndex(elementNodes.getEditor().getNode()));
         removeRow(GridPane.getRowIndex(elementNodes.getTooltip().getNode()));
         removeRow(GridPane.getRowIndex(elementNodes.getConstraint().getNode()));
+    }
+
+    @Override
+    protected void addCategory(String category) {
+        if (categoryMap.keySet().size() > 1) {
+            Node node = createCategoryNode(category);
+            categoryNode.put(category, node);
+            GridPane.setColumnSpan(node, 2);
+            gridPane.add(node, 0, row++);
+            row++;
+        }
+    }
+
+    private Node createCategoryNode(String category) {
+        return new Separator();
+    }
+
+    @Override
+    protected void removeCategory(String category) {
+        if (categoryNode.containsKey(category)) {
+            removeRow(GridPane.getRowIndex(categoryNode.get(category)));
+            categoryNode.remove(category);
+        }
     }
 
 
@@ -107,6 +134,7 @@ public class InlineSkin extends FXFormSkin {
         }
         this.row--;
     }
+
 
     @Override
     public String toString() {

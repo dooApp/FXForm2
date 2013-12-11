@@ -9,71 +9,44 @@
  * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.dooapp.fxform.model;
 
-import com.dooapp.fxform.utils.Disposable;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyProperty;
+package com.dooapp.fxform.filter;
 
-import java.lang.annotation.Annotation;
+import com.dooapp.fxform.model.Element;
+import sun.launcher.resources.launcher_sv;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
+ * Filter used to attribute categories to the elements.
+ * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 11/04/11
- * Time: 22:22
- * Model object wrapping an object field.
+ * Date: 11/12/2013
+ * Time: 13:28
  */
-public interface Element<WrappedType> extends ReadOnlyProperty<WrappedType>, Disposable {
+public class CategorizeFilter extends AbstractNameFilter implements FieldFilter {
 
-    /**
-     * The raw type of this element.
-     *
-     * @return
-     */
-    public Class<?> getType();
+    public CategorizeFilter(String[] names) {
+        super(names);
+    }
 
-    /**
-     * The type wrapped by this element
-     *
-     * @return
-     */
-    public Class<WrappedType> getWrappedType();
+    @Override
+    public List<Element> filter(List<Element> toFilter) throws FilterException {
+        String category = null;
+        List<Element> remaining = new LinkedList<Element>(toFilter);
+        List<Element> list = new LinkedList<Element>();
+        for (String name : getNames()) {
+            if (name.startsWith("-")) {
+                category = name;
+            } else {
+                Element element = extractFieldByName(remaining, name);
+                element.setCategory(category);
+                list.add(element);
+            }
+        }
+        list.addAll(remaining);
+        return list;
+    }
 
-    /**
-     * The source bean of this element.
-     *
-     * @return
-     */
-    public ObjectProperty sourceProperty();
-
-    /**
-     * Similar to Field#getAnnotation
-     *
-     * @param annotationClass
-     * @return
-     */
-    public <T extends Annotation> T getAnnotation(Class<T> annotationClass);
-
-
-    /**
-     * Return the class declaring this element.
-     *
-     * @return
-     */
-    public Class getDeclaringClass();
-
-    /**
-     * Return the category of this element. The category can be used by the form to group elements.
-     * Can be null if the element has no category.
-     *
-     * @return
-     */
-    public String getCategory();
-
-    /**
-     * Set the category of this element.
-     *
-     * @param category
-     */
-    public void setCategory(String category);
 }
