@@ -9,12 +9,10 @@
  * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package com.dooapp.fxform.reflection;
 
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.TestBean;
-import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.model.Element;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -30,31 +28,29 @@ import java.util.List;
  */
 public class MultipleBeanSourceTest {
 
-    public static class TestBean2 {
+	public static class TestBean2 {
 
-        private final StringProperty propInBean2 = new SimpleStringProperty();
+		private final StringProperty propInBean2 = new SimpleStringProperty();
+	}
 
-    }
+	@Test
+	public void testMultipleBeanSource() throws IllegalArgumentException {
+		FXForm fxForm = new FXForm();
+		fxForm.setSource(new MultipleBeanSource(new TestBean(), new TestBean2()));
+		Assert.assertEquals(5, fxForm.getElements().size());
+		Assert.assertTrue(hasElement(fxForm.getElements(), "propInBean2"));
+		Assert.assertTrue(hasElement(fxForm.getElements(), "stringProperty"));
+		Assert.assertTrue(hasElement(fxForm.getElements(), "booleanProperty"));
+		Assert.assertTrue(hasElement(fxForm.getElements(), "doubleProperty"));
+		Assert.assertTrue(hasElement(fxForm.getElements(), "objectProperty"));
+	}
 
-    @Test
-    public void testMultipleBeanSource() {
-        FXForm fxForm = new FXForm();
-        fxForm.setSource(new MultipleBeanSource(new TestBean(), new TestBean2()));
-        Assert.assertEquals(5, fxForm.getElements().size());
-        Assert.assertTrue(hasElement(fxForm.getElements(), "propInBean2"));
-        Assert.assertTrue(hasElement(fxForm.getElements(), "stringProperty"));
-        Assert.assertTrue(hasElement(fxForm.getElements(), "booleanProperty"));
-        Assert.assertTrue(hasElement(fxForm.getElements(), "doubleProperty"));
-        Assert.assertTrue(hasElement(fxForm.getElements(), "objectProperty"));
-    }
-
-    protected boolean hasElement(List<Element> elementList, String name) {
-        for (Element element : elementList) {
-            if (name.equals(element.getName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+	protected boolean hasElement(List<Element> elementList, String name) {
+		for (Element element : elementList) {
+			if (name.equals(element.getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
