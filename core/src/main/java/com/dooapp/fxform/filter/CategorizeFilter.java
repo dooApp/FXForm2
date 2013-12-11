@@ -13,7 +13,6 @@
 package com.dooapp.fxform.filter;
 
 import com.dooapp.fxform.model.Element;
-import sun.launcher.resources.launcher_sv;
 
 import java.util.LinkedList;
 import java.util.List;
