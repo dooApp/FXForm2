@@ -67,7 +67,12 @@ public class ReflectionUtils {
             // Type is generic, try to get its actual type from the super class
             // e.g.: ObjectProperty<T> where T extends U
             if (source.getClass().getGenericSuperclass() instanceof ParameterizedType) {
-                return (Class) ((ParameterizedType) source.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+                Type parameterizedType = ((ParameterizedType) source.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+                if (parameterizedType instanceof ParameterizedType) {  // it means that the parent class is also generic
+                    return (Class) ((ParameterizedType) parameterizedType).getRawType();
+                } else {
+                    return (Class) parameterizedType;
+                }
             } else {
                 // The actual type is not declared, use the upper bound of the type e.g. U
                 return (Class) ((TypeVariable) type1).getBounds()[0];
