@@ -12,6 +12,7 @@
 package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.JavaFXRule;
 import com.dooapp.fxform.filter.ExcludeFilter;
 import com.dooapp.fxform.filter.IncludeFilter;
 import com.dooapp.fxform.model.Element;
@@ -22,6 +23,7 @@ import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import junit.framework.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -34,6 +36,7 @@ import java.util.List;
  * Time: 15:14
  */
 public class Issue61Test {
+
 
 	public static class Bean1 {
 
@@ -77,12 +80,12 @@ public class Issue61Test {
 		Bean2 bean2 = new Bean2();
 		fxForm.getFilters().add(new IncludeFilter(bean1.getClass().getName() + "-property"));
 		fxForm.setSource(new MultipleBeanSource(bean1, bean2));
-		Assert.assertEquals(1, fxForm.getElements().size());
-		Assert.assertEquals(fxForm.getElements().get(0).getDeclaringClass(), Bean1.class);
+		Assert.assertEquals(1, fxForm.getFilteredElements().size());
+		Assert.assertEquals(fxForm.getFilteredElements().get(0).getDeclaringClass(), Bean1.class);
 		fxForm.getFilters().clear();
 		fxForm.getFilters().add(new IncludeFilter(bean2.getClass().getName() + "-property"));
-		Assert.assertEquals(1, fxForm.getElements().size());
-		Assert.assertEquals(fxForm.getElements().get(0).getDeclaringClass(), Bean2.class);
+		Assert.assertEquals(1, fxForm.getFilteredElements().size());
+		Assert.assertEquals(fxForm.getFilteredElements().get(0).getDeclaringClass(), Bean2.class);
 	}
 
 	@Test
@@ -92,9 +95,9 @@ public class Issue61Test {
 		Bean2 bean2 = new Bean2();
 		fxForm.getFilters().add(new ExcludeFilter(bean1.getClass().getName() + "-property"));
 		fxForm.setSource(new MultipleBeanSource(bean1, bean2));
-		Assert.assertEquals(2, fxForm.getElements().size());
-		Assert.assertEquals(fxForm.getElements().get(0).getDeclaringClass(), Bean2.class);
-		Assert.assertEquals(fxForm.getElements().get(1).getDeclaringClass(), Bean2.class);
+		Assert.assertEquals(2, fxForm.getFilteredElements().size());
+		Assert.assertEquals(fxForm.getFilteredElements().get(0).getDeclaringClass(), Bean2.class);
+		Assert.assertEquals(fxForm.getFilteredElements().get(1).getDeclaringClass(), Bean2.class);
 	}
 
 	@Test
@@ -105,8 +108,8 @@ public class Issue61Test {
 		fxForm.getFilters().addAll(new ExcludeFilter(bean1.getClass().getName() + "-property"),
 				new IncludeFilter(bean2.getClass().getName() + "-property"));
 		fxForm.setSource(new MultipleBeanSource(bean1, bean2));
-		Assert.assertEquals(1, fxForm.getElements().size());
-		Assert.assertEquals(fxForm.getElements().get(0).getDeclaringClass(), Bean2.class);
+		Assert.assertEquals(1, fxForm.getFilteredElements().size());
+		Assert.assertEquals(fxForm.getFilteredElements().get(0).getDeclaringClass(), Bean2.class);
 	}
 
 	protected boolean hasElement(List<Element> elementList, String name) {

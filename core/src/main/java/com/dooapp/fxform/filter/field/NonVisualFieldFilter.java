@@ -25,7 +25,7 @@ public class NonVisualFieldFilter implements FieldFilter {
 
     @Override
     public boolean accept(Field field) {
-        return field.getAnnotation(NonVisual.class) != null;
+        return field.getAnnotation(NonVisual.class) == null;
     }
 
 }

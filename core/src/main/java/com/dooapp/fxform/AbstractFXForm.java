@@ -116,9 +116,7 @@ public class AbstractFXForm extends Control {
         filters.addListener(new ChangeListener<ObservableList<ElementListFilter>>() {
             @Override
             public void changed(ObservableValue<? extends ObservableList<ElementListFilter>> observableValue, ObservableList<ElementListFilter> elementListFilters, ObservableList<ElementListFilter> elementListFilters2) {
-                if (getElements().size() > 0) {
-                    filteredElements.setAll(filter(elements));
-                }
+                filteredElements.setAll(filter(elements));
             }
         });
         elements.addListener(new ChangeListener<ObservableList<Element>>() {
@@ -156,6 +154,9 @@ public class AbstractFXForm extends Control {
      * @return
      */
     protected List<Element> filter(ListProperty<Element> elements) {
+        if (elements.size() == 0) {
+            return elements;
+        }
         List<Element> filteredList = new ArrayList<Element>(elements);
         for (ElementListFilter elementListFilter : filters) {
             try {
@@ -169,8 +170,10 @@ public class AbstractFXForm extends Control {
 
     protected void unconfigure(List<? extends Element> removed) {
         for (Element element : removed) {
-            controllers.get(element).dispose();
-            controllers.remove(element);
+            if (controllers.containsKey(element)) {
+                controllers.get(element).dispose();
+                controllers.remove(element);
+            }
         }
     }
 
