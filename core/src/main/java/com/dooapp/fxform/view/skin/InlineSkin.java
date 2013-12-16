@@ -103,7 +103,7 @@ public class InlineSkin extends FXFormSkin {
         }
     }
 
-    private Node createCategoryNode(String category) {
+    protected Node createCategoryNode(String category) {
         return new Separator();
     }
 
