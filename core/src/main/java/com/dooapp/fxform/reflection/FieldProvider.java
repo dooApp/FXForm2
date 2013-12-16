@@ -22,6 +22,8 @@ import java.util.List;
  */
 public interface FieldProvider {
 
-    public List<Field> getProperties(Object source, String... fields);
+    public List<Field> getProperties(Object source, List<String> fields);
+
+    public List<Field> getProperties(Object source);
 
 }

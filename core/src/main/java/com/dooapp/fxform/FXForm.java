@@ -12,8 +12,7 @@
 
 package com.dooapp.fxform;
 
-import com.dooapp.fxform.filter.FieldFilter;
-import com.dooapp.fxform.filter.NonVisualFilter;
+import com.dooapp.fxform.filter.ElementListFilter;
 import com.dooapp.fxform.model.DefaultElementProvider;
 import com.dooapp.fxform.model.ElementProvider;
 import com.dooapp.fxform.view.factory.DefaultFactoryProvider;
@@ -21,13 +20,10 @@ import com.dooapp.fxform.view.factory.DefaultLabelFactoryProvider;
 import com.dooapp.fxform.view.factory.DefaultTooltipFactoryProvider;
 import com.dooapp.fxform.view.factory.FactoryProvider;
 import com.dooapp.fxform.view.skin.DefaultSkin;
-import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 
@@ -48,7 +44,7 @@ public class FXForm<T> extends AbstractFXForm {
 
     private final ObjectProperty<T> source = new SimpleObjectProperty<T>();
 
-    private final ListProperty<FieldFilter> filters = new SimpleListProperty<FieldFilter>(FXCollections.<FieldFilter>observableArrayList());
+    private final ObjectProperty<ElementProvider> elementProvider = new SimpleObjectProperty<ElementProvider>();
 
     public FXForm() {
         this(new DefaultFactoryProvider());
@@ -80,8 +76,7 @@ public class FXForm<T> extends AbstractFXForm {
         setLabelFactoryProvider(labelFactoryProvider);
         setTooltipFactoryProvider(tooltipFactoryProvider);
         setEditorFactoryProvider(editorFactoryProvider);
-        filters.add(new NonVisualFilter());
-        final ElementProvider elementProvider = new DefaultElementProvider();
+        setElementProvider(new DefaultElementProvider());
         this.source.addListener(new ChangeListener<T>() {
             public void changed(ObservableValue<? extends T> observableValue, T oldSource, T newSource) {
                 if (newSource == null) {
@@ -89,7 +84,7 @@ public class FXForm<T> extends AbstractFXForm {
                     elementsProperty().clear();
                 } else if (oldSource == null || (newSource.getClass() != oldSource.getClass())) {
                     elementsProperty().unbind();
-                    elementsProperty().bind(elementProvider.getElements(sourceProperty(), filters));
+                    elementsProperty().bind(getElementProvider().getElements(sourceProperty()));
                 }
             }
         });
@@ -108,14 +103,6 @@ public class FXForm<T> extends AbstractFXForm {
 
     public ObjectProperty<T> sourceProperty() {
         return source;
-    }
-
-    public ObservableList<FieldFilter> getFilters() {
-        return filters;
-    }
-
-    public void addFilters(FieldFilter... filters) {
-        this.filters.addAll(filters);
     }
 
     /**
@@ -156,4 +143,15 @@ public class FXForm<T> extends AbstractFXForm {
         return stackTrace[i];
     }
 
+    public ElementProvider getElementProvider() {
+        return elementProvider.get();
+    }
+
+    public ObjectProperty<ElementProvider> elementProviderProperty() {
+        return elementProvider;
+    }
+
+    public void setElementProvider(ElementProvider elementProvider) {
+        this.elementProvider.set(elementProvider);
+    }
 }

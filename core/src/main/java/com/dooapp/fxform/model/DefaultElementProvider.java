@@ -11,9 +11,8 @@
  */
 package com.dooapp.fxform.model;
 
-import com.dooapp.fxform.filter.FieldFilter;
-import com.dooapp.fxform.filter.FilterException;
-import com.dooapp.fxform.filter.IncludeFilter;
+import com.dooapp.fxform.filter.field.FieldFilter;
+import com.dooapp.fxform.filter.field.SyntheticFieldFilter;
 import com.dooapp.fxform.reflection.FieldProvider;
 import com.dooapp.fxform.reflection.MultipleBeanSource;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
@@ -22,95 +21,112 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Default implementation used to create elements for a bean.
+ * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 03/12/2013
  * Time: 14:51
  */
 public class DefaultElementProvider implements ElementProvider {
 
-	private final static Logger logger = Logger.getLogger(DefaultElementProvider.class.getName());
+    private final static Logger logger = Logger.getLogger(DefaultElementProvider.class.getName());
 
-	FieldProvider fieldProvider = new ReflectionFieldProvider();
+    FieldProvider fieldProvider = new ReflectionFieldProvider();
 
-	ElementFactory elementFactory = new DefaultElementFactory();
+    ElementFactory elementFactory = new DefaultElementFactory();
 
-	@Override
-	public <T> ListProperty<Element> getElements(final ObjectProperty<T> source, final ListProperty<FieldFilter> filters) {
-		final ListProperty<Element> elements = new SimpleListProperty<Element>(FXCollections.<Element>observableArrayList());
-		filters.addListener(new ListChangeListener<FieldFilter>() {
+    private final String[] includes;
 
-			@Override
-			public void onChanged(Change<? extends FieldFilter> change) {
-				elements.clear();
-				elements.setAll(createElements(source, filters));
-			}
-		});
-		elements.setAll(createElements(source, filters));
-		return elements;
-	}
+    private List<FieldFilter> filters;
 
-	protected <T> ListProperty<Element> createElements(final ObjectProperty<T> source, List<FieldFilter> filters) {
-		ListProperty<Element> elements = new SimpleListProperty<Element>(FXCollections.<Element>observableArrayList());
-		List<Field> fields = extractFields(source.get(), getIncludeFilter(filters));
-		for (Field field : fields) {
-			try {
-				final Element element = elementFactory.create(field);
-				element.sourceProperty().bind(new ObjectBinding() {
+    public DefaultElementProvider(String... includes) {
+        this(new ReflectionFieldProvider(), includes);
+    }
 
-					{
-						bind(source);
-					}
+    public DefaultElementProvider(FieldProvider fieldProvider, String... includes) {
+        this(new DefaultElementFactory(), fieldProvider, includes);
+    }
 
-					@Override
-					protected Object computeValue() {
-						if (source.get() != null && source.get() instanceof MultipleBeanSource) {
-							MultipleBeanSource multipleBeanSource = (MultipleBeanSource) source.get();
-							return multipleBeanSource.getSource(element);
-						}
-						return source.get();
-					}
-				});
-				if (element.getType() != null) {
-					elements.add(element);
-				}
-			} catch (FormException e) {
-				logger.log(Level.WARNING, e.getMessage(), e);
-			}
-		}
-		for (FieldFilter filter : filters) {
-			try {
-				elements.setAll(filter.filter(Collections.unmodifiableList(elements.get())));
-			} catch (FilterException e) {
-				logger.log(Level.WARNING, e.getMessage(), e);
-			}
-		}
-		return elements;
-	}
+    public DefaultElementProvider(ElementFactory elementFactory, FieldProvider fieldProvider, String... includes) {
+        this.elementFactory = elementFactory;
+        this.fieldProvider = fieldProvider;
+        this.includes = includes;
+        this.filters = new LinkedList<FieldFilter>();
+        this.filters.add(new SyntheticFieldFilter());
+    }
 
-	private <T> List<Field> extractFields(T source, IncludeFilter includeFilter) {
-		if (includeFilter != null) {
-			return fieldProvider.getProperties(source, includeFilter.getNames());
-		}
-		else {
-			return fieldProvider.getProperties(source);
-		}
-	}
+    @Override
+    public <T> ListProperty<Element> getElements(final ObjectProperty<T> source) {
+        final ListProperty<Element> elements = new SimpleListProperty<Element>(FXCollections.<Element>observableArrayList());
+        elements.setAll(createElements(source));
+        return elements;
+    }
 
-	private IncludeFilter getIncludeFilter(List<FieldFilter> filters) {
-		for (FieldFilter filter : filters) {
-			if (IncludeFilter.class.isAssignableFrom(filter.getClass())) {
-				return (IncludeFilter) filter;
-			}
-		}
-		return null;
-	}
+    protected <T> ListProperty<Element> createElements(final ObjectProperty<T> source) {
+        ListProperty<Element> elements = new SimpleListProperty<Element>(FXCollections.<Element>observableArrayList());
+        List<Field> fields = applyFilters(extractFields(source.get()));
+        // Create elements for the resulting field list
+        for (Field field : fields) {
+            try {
+                final Element element = elementFactory.create(field);
+                element.sourceProperty().bind(new ObjectBinding() {
+
+                    {
+                        bind(source);
+                    }
+
+                    @Override
+                    protected Object computeValue() {
+                        if (source.get() != null && source.get() instanceof MultipleBeanSource) {
+                            MultipleBeanSource multipleBeanSource = (MultipleBeanSource) source.get();
+                            return multipleBeanSource.getSource(element);
+                        }
+                        return source.get();
+                    }
+                });
+                if (element.getType() != null) {
+                    elements.add(element);
+                }
+            } catch (FormException e) {
+                logger.log(Level.WARNING, e.getMessage(), e);
+            }
+        }
+        return elements;
+    }
+
+    private List<Field> applyFilters(List<Field> fields) {
+        List<Field> filtered = new ArrayList<Field>();
+        for (Field field : fields) {
+            boolean accept = true;
+            for (FieldFilter filter : filters) {
+                accept = accept && filter.accept(field);
+            }
+            if (accept) {
+                filtered.add(field);
+            }
+        }
+        return filtered;
+    }
+
+    private <T> List<Field> extractFields(T source) {
+        if (includes != null && includes.length > 0) {
+            return fieldProvider.getProperties(source, Arrays.asList(includes));
+        } else {
+            return fieldProvider.getProperties(source);
+        }
+    }
+
+    public List<FieldFilter> getFilters() {
+        return filters;
+    }
 }

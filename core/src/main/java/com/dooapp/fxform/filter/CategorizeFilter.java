@@ -24,7 +24,7 @@ import java.util.List;
  * Date: 11/12/2013
  * Time: 13:28
  */
-public class CategorizeFilter extends AbstractNameFilter implements FieldFilter {
+public class CategorizeFilter extends AbstractNameFilter implements ElementListFilter {
 
     public CategorizeFilter(String[] names) {
         super(names);

@@ -16,6 +16,8 @@ import com.dooapp.fxform.adapter.AdapterProvider;
 import com.dooapp.fxform.adapter.DefaultAdapterProvider;
 import com.dooapp.fxform.controller.ElementController;
 import com.dooapp.fxform.controller.PropertyElementController;
+import com.dooapp.fxform.filter.ElementListFilter;
+import com.dooapp.fxform.filter.FilterException;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.resource.DefaultResourceProvider;
@@ -33,6 +35,8 @@ import com.dooapp.fxform.view.property.DefaultPropertyProvider;
 import com.dooapp.fxform.view.property.PropertyProvider;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -40,8 +44,10 @@ import javafx.scene.control.Control;
 import javafx.util.Callback;
 
 import javax.validation.ConstraintViolation;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -87,6 +93,10 @@ public class AbstractFXForm extends Control {
 
     private final ResourceProvider resourceProvider = new DefaultResourceProvider();
 
+    private final ListProperty<ElementListFilter> filters = new SimpleListProperty<ElementListFilter>(FXCollections.<ElementListFilter>observableArrayList());
+
+    private final ListProperty<Element> filteredElements = new SimpleListProperty<Element>(FXCollections.<Element>observableArrayList());
+
     public void setTitle(String title) {
         this.title.set(title);
     }
@@ -103,7 +113,21 @@ public class AbstractFXForm extends Control {
                 return new DefaultConstraintFactory();
             }
         });
-        elements.addListener(new ListChangeListener<Element>() {
+        filters.addListener(new ChangeListener<ObservableList<ElementListFilter>>() {
+            @Override
+            public void changed(ObservableValue<? extends ObservableList<ElementListFilter>> observableValue, ObservableList<ElementListFilter> elementListFilters, ObservableList<ElementListFilter> elementListFilters2) {
+                if (getElements().size() > 0) {
+                    filteredElements.setAll(filter(elements));
+                }
+            }
+        });
+        elements.addListener(new ChangeListener<ObservableList<Element>>() {
+            @Override
+            public void changed(ObservableValue<? extends ObservableList<Element>> observableValue, ObservableList<Element> oldElements, ObservableList<Element> newElements) {
+                filteredElements.setAll(filter(elements));
+            }
+        });
+        filteredElements.addListener(new ListChangeListener<Element>() {
             @Override
             public void onChanged(Change<? extends Element> change) {
                 while (change.next()) {
@@ -123,6 +147,24 @@ public class AbstractFXForm extends Control {
             }
         });
         this.setSkin(new DefaultSkin(this));
+    }
+
+    /**
+     * Apply high level ElememtListFilter filters.
+     *
+     * @param elements
+     * @return
+     */
+    protected List<Element> filter(ListProperty<Element> elements) {
+        List<Element> filteredList = new ArrayList<Element>(elements);
+        for (ElementListFilter elementListFilter : filters) {
+            try {
+                filteredList = elementListFilter.filter(filteredList);
+            } catch (FilterException e) {
+                logger.log(Level.WARNING, e.getMessage(), e);
+            }
+        }
+        return filteredList;
     }
 
     protected void unconfigure(List<? extends Element> removed) {
@@ -281,8 +323,24 @@ public class AbstractFXForm extends Control {
         this.elements.set(elements);
     }
 
+    public ObservableList<Element> getFilteredElements() {
+        return FXCollections.unmodifiableObservableList(filteredElements.get());
+    }
+
+    public ReadOnlyListProperty<Element> filteredElementsProperty() {
+        return new ReadOnlyListWrapper<Element>(filteredElements);
+    }
+
     public ClassLevelValidator getClassLevelValidator() {
         return classLevelValidator;
+    }
+
+    public ObservableList<ElementListFilter> getFilters() {
+        return filters;
+    }
+
+    public void addFilters(ElementListFilter... filters) {
+        this.filters.addAll(filters);
     }
 
 }

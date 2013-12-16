@@ -85,6 +85,18 @@ public class ReflectionUtils {
      * @param result the list of Fields to fill with the extracted fields
      * @param fields the field names
      */
+    public static void fillFieldsByName(Class clazz, List<Field> result, List<String> fields) {
+        fillFieldsByName(clazz, result, fields.toArray(new String[fields.size()]));
+    }
+
+    /**
+     * Extract a collection of fields using their name from a given class and fill
+     * a list with it.
+     *
+     * @param clazz  the Class to extract the fields from
+     * @param result the list of Fields to fill with the extracted fields
+     * @param fields the field names
+     */
     public static void fillFieldsByName(Class clazz, List<Field> result, String... fields) {
         for (String fieldName : fields) {
             Field field = getFieldByName(clazz, fieldName);
@@ -117,8 +129,7 @@ public class ReflectionUtils {
     }
 
     /**
-     * Get a list of all fields from a given class. This includes all declared fields excepted
-     * synthetic fields from the given class and its super classes.
+     * Get a list of all fields from a given class. This includes all declared fields from the given class and its super classes.
      *
      * @param clazz the class to get the fields from
      * @return the list of all declared fields
@@ -130,18 +141,14 @@ public class ReflectionUtils {
     }
 
     /**
-     * Fill a list with all fields from a given class.This includes all declared fields excepted
-     * synthetic fields from the given class and its super classes.
+     * Fill a list with all fields from a given class.This includes all declared fields from the given class and its super classes.
      *
      * @param clazz  the class to get the fields from
      * @param result the list to fill
      */
     public static void fillFields(Class clazz, List<Field> result) {
         for (Field field : clazz.getDeclaredFields()) {
-            // ignore synthetic fields, see #21
-            if (!field.isSynthetic()) {
-                result.add(field);
-            }
+            result.add(field);
         }
 
         fixAccessible(result);

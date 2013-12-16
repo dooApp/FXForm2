@@ -24,7 +24,7 @@ import org.junit.Test;
 public class ExcludeFilterTest extends AbstractFilterTest {
 
     @Override
-    FieldFilter createFilter() {
+    ElementListFilter createFilter() {
         return new ExcludeFilter(new String[]{"integerProperty", "booleanProperty"});
     }
 

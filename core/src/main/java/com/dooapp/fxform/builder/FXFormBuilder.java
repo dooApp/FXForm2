@@ -15,14 +15,19 @@ package com.dooapp.fxform.builder;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.ReadOnlyFXForm;
 import com.dooapp.fxform.filter.CategorizeFilter;
-import com.dooapp.fxform.filter.ExcludeFilter;
-import com.dooapp.fxform.filter.IncludeFilter;
 import com.dooapp.fxform.filter.ReorderFilter;
+import com.dooapp.fxform.filter.field.ExcludeFieldFilter;
+import com.dooapp.fxform.filter.field.FieldFilter;
+import com.dooapp.fxform.filter.field.PrivateFinalStaticFilter;
+import com.dooapp.fxform.model.DefaultElementProvider;
 import com.dooapp.fxform.view.skin.FXMLSkin;
 import com.dooapp.fxform.view.skin.InlineSkin;
 import javafx.scene.control.Skin;
 
 import java.net.URL;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -46,16 +51,32 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
 
     private ResourceBundle resourceBundle;
 
+    private FieldFilter[] fieldFilters;
+
     private URL fxmlUrl;
 
     private boolean readOnly;
 
     public FXForm build() {
         FXForm res;
+        DefaultElementProvider elementProvider;
+        if (includeFilters != null) {
+            elementProvider = new DefaultElementProvider(includeFilters);
+        } else {
+            elementProvider = new DefaultElementProvider();
+        }
+        if (fieldFilters != null) {
+            for (FieldFilter fieldFilter : fieldFilters) {
+                elementProvider.getFilters().add(fieldFilter);
+            }
+        } else {
+            elementProvider.getFilters().addAll(handleDefaultFieldFilters());
+        }
         if (readOnly == true) {
-            res = new ReadOnlyFXForm();
+            res = new ReadOnlyFXForm(elementProvider);
         } else {
             res = new FXForm();
+            res.setElementProvider(elementProvider);
         }
         if (skin == null) {
             handleDefaultSkin(res);
@@ -67,15 +88,10 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
         } else {
             res.setResourceBundle(resourceBundle);
         }
-        if (includeFilters == null) {
-
-        } else {
-            res.addFilters(new IncludeFilter(includeFilters));
-        }
         if (excludeFilters == null) {
 
         } else {
-            res.addFilters(new ExcludeFilter(excludeFilters));
+            elementProvider.getFilters().add(new ExcludeFieldFilter(excludeFilters));
         }
         if (reorderFilter == null) {
 
@@ -95,6 +111,12 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
             res.setSkin(new FXMLSkin(res, fxmlUrl));
         }
         return res;
+    }
+
+    protected Collection<? extends FieldFilter> handleDefaultFieldFilters() {
+        List<FieldFilter> filters = new LinkedList<FieldFilter>();
+        filters.add(new PrivateFinalStaticFilter());
+        return filters;
     }
 
     protected void handleDefaultSkin(FXForm fxForm) {
@@ -149,6 +171,18 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
 
     public BUILDER categorize(String... strings) {
         this.categorizeFilter = strings;
+        return (BUILDER) this;
+    }
+
+    public BUILDER categorizeAndInclude(String... strings) {
+        this.categorizeFilter = strings;
+        List<String> includes = new LinkedList<String>();
+        for (String s : strings) {
+            if (!s.startsWith("-")) {
+                includes.add(s);
+            }
+        }
+        this.includeFilters = includes.toArray(new String[includes.size()]);
         return (BUILDER) this;
     }
 
