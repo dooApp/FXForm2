@@ -7,7 +7,8 @@ import org.junit.Rule;
 import org.junit.Test;
 
 /**
- * TODO write documentation<br>
+ * This class test if the ClassCastException is not reproduced.
+ * The classCast come when you add this to the Device class "extends SuperDevice<Device<?>>"
  * <br>
  * Created at 13/12/13 17:01.<br>
  *
