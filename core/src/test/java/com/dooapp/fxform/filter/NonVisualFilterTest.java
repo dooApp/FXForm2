@@ -23,7 +23,7 @@ import org.junit.Test;
  */
 public class NonVisualFilterTest extends AbstractFilterTest {
     @Override
-    FieldFilter createFilter() {
+    ElementListFilter createFilter() {
         return new NonVisualFilter();
     }
 

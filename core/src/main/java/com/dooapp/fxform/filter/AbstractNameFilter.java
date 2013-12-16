@@ -20,7 +20,7 @@ import java.util.List;
  * Date: 12/09/11
  * Time: 15:15
  */
-public abstract class AbstractNameFilter implements FieldFilter {
+public abstract class AbstractNameFilter implements ElementListFilter {
 
     protected final String[] names;
 

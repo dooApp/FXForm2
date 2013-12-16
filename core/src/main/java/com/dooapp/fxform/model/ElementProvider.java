@@ -12,12 +12,11 @@
 
 package com.dooapp.fxform.model;
 
-import com.dooapp.fxform.filter.FieldFilter;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 
 /**
- * An ElementProvider is used to extract elements from a source bean. An Element is an entry in the field.
+ * An ElementProvider is used to extract elements from a source bean. An Element is an entry in the form.
  * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 03/12/2013
@@ -25,6 +24,13 @@ import javafx.beans.property.ObjectProperty;
  */
 public interface ElementProvider {
 
-    public <T> ListProperty<Element> getElements(ObjectProperty<T> source, ListProperty<FieldFilter> filters);
+    /**
+     * Build the list of elements to add into the form for the given source.
+     *
+     * @param source
+     * @param <T>
+     * @return
+     */
+    public <T> ListProperty<Element> getElements(ObjectProperty<T> source);
 
 }

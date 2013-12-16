@@ -22,7 +22,7 @@ import java.util.List;
  * Date: 01/09/11
  * Time: 17:12
  */
-public class NonVisualFilter implements FieldFilter {
+public class NonVisualFilter implements ElementListFilter {
 
 	public List<Element> filter(List<Element> toFilter) {
 		List<Element> filtered = new ArrayList<Element>();

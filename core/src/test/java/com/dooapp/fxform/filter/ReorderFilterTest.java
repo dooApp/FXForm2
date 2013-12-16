@@ -23,7 +23,7 @@ import org.junit.Test;
 public class ReorderFilterTest extends AbstractFilterTest {
 
     @Override
-    FieldFilter createFilter() {
+    ElementListFilter createFilter() {
         return new ReorderFilter(new String[]{"doubleProperty", "booleanProperty"});
     }
 

@@ -28,7 +28,7 @@ import java.util.List;
 @Ignore
 public abstract class AbstractFilterTest {
 
-	private FieldFilter filter;
+	private ElementListFilter filter;
 
 	private List<Element> toFilter;
 
@@ -41,5 +41,5 @@ public abstract class AbstractFilterTest {
 		filtered = filter.filter(new SimpleListProperty<Element>(FXCollections.observableArrayList(toFilter)));
 	}
 
-	abstract FieldFilter createFilter();
+	abstract ElementListFilter createFilter();
 }

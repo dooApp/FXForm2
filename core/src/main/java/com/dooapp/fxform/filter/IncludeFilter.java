@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * User: Antoine Mischler <antoine@dooapp.com> Date: 12/09/11 Time: 15:10
  */
-public class IncludeFilter extends AbstractNameFilter implements FieldFilter {
+public class IncludeFilter extends AbstractNameFilter implements ElementListFilter {
 
 	public IncludeFilter(String... names) {
 		super(names);

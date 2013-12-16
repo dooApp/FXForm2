@@ -25,6 +25,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,8 +54,9 @@ public class Issue61Test {
 		Bean1 bean1 = new Bean1();
 		Bean2 bean2 = new Bean2();
 		ReflectionFieldProvider reflectionFieldProvider = new ReflectionFieldProvider();
-		List<Field> fields = reflectionFieldProvider.getProperties(new MultipleBeanSource(bean1, bean2),
-				Bean1.class.getName() + "-property");
+        List<String> include = new ArrayList<String>();
+        include.add(Bean1.class.getName() + "-property");
+		List<Field> fields = reflectionFieldProvider.getProperties(new MultipleBeanSource(bean1, bean2), include);
 		Assert.assertEquals(1, fields.size());
 		Assert.assertEquals(fields.get(0), ReflectionUtils.getFieldByName(Bean1.class, "property"));
 	}

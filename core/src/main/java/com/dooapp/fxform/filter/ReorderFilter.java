@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * User: Antoine Mischler <antoine@dooapp.com> Date: 01/09/11 Time: 17:12
  */
-public class ReorderFilter extends AbstractNameFilter implements FieldFilter {
+public class ReorderFilter extends AbstractNameFilter implements ElementListFilter {
 
 	public ReorderFilter(String... names) {
 		super(names);
