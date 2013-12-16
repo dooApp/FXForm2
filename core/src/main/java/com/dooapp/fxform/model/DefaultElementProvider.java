@@ -12,6 +12,7 @@
 package com.dooapp.fxform.model;
 
 import com.dooapp.fxform.filter.field.FieldFilter;
+import com.dooapp.fxform.filter.field.NonVisualFieldFilter;
 import com.dooapp.fxform.filter.field.SyntheticFieldFilter;
 import com.dooapp.fxform.reflection.FieldProvider;
 import com.dooapp.fxform.reflection.MultipleBeanSource;
@@ -63,6 +64,7 @@ public class DefaultElementProvider implements ElementProvider {
         this.includes = includes;
         this.filters = new LinkedList<FieldFilter>();
         this.filters.add(new SyntheticFieldFilter());
+        this.filters.add(new NonVisualFieldFilter());
     }
 
     @Override
