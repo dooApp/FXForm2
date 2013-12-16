@@ -15,6 +15,7 @@ package com.dooapp.fxform.builder;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.ReadOnlyFXForm;
 import com.dooapp.fxform.filter.CategorizeFilter;
+import com.dooapp.fxform.filter.ExcludeFilter;
 import com.dooapp.fxform.filter.IncludeFilter;
 import com.dooapp.fxform.filter.ReorderFilter;
 import com.dooapp.fxform.view.skin.FXMLSkin;
@@ -40,6 +41,8 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
     private String[] reorderFilter;
 
     private String[] categorizeFilter;
+
+    private String[] excludeFilters;
 
     private ResourceBundle resourceBundle;
 
@@ -68,6 +71,11 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
 
         } else {
             res.addFilters(new IncludeFilter(includeFilters));
+        }
+        if (excludeFilters == null) {
+
+        } else {
+            res.addFilters(new ExcludeFilter(excludeFilters));
         }
         if (reorderFilter == null) {
 
@@ -110,6 +118,11 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
 
     public BUILDER include(String... includeFilters) {
         this.includeFilters = includeFilters;
+        return (BUILDER) this;
+    }
+
+    public BUILDER exclude(String... excludeFilters) {
+        this.excludeFilters = excludeFilters;
         return (BUILDER) this;
     }
 
