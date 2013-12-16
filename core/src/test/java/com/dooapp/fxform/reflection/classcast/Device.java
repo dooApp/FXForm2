@@ -5,7 +5,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 /**
- * TODO write documentation<br>
+ * A Device use for testing.
  * <br>
  * Created at 13/12/13 16:58.<br>
  *
