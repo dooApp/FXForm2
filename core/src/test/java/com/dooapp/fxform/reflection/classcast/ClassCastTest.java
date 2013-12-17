@@ -1,9 +1,7 @@
 package com.dooapp.fxform.reflection.classcast;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.JavaFXRule;
 import com.dooapp.fxform.filter.IncludeFilter;
-import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -15,9 +13,6 @@ import org.junit.Test;
  * @author Bastien
  */
 public class ClassCastTest {
-
-    @Rule
-    public JavaFXRule javaFXRule = new JavaFXRule();
 
     @Test
     public void classCastTest() {
