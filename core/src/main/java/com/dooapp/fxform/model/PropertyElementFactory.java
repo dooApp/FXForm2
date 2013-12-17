@@ -43,12 +43,14 @@ public class PropertyElementFactory implements ElementFactory {
                     element = new PropertyMethodElement(field);
                 } catch (NoSuchMethodException e) {
                     logger.log(Level.INFO, "No property getter found for " + field);
+                    throw new FormException(e);
                 }
             } else {
                 try {
                     element = new ReadOnlyPropertyMethodElement(field);
                 } catch (NoSuchMethodException e) {
                     logger.log(Level.INFO, "No property getter found for " + field);
+                    throw new FormException(e);
                 }
             }
         } else {
