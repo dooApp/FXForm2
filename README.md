@@ -56,8 +56,8 @@ Reports
 -------
 * [Javadoc](http://dooapp.github.io/FXForm2/2.2.6/site/apidocs/index.html)
 * [Javadoc for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.6-SNApSHOT/site/apidocs/index.html)
-* [Maven site](http://dooapp.github.io/FXForm2/2.2.6)
-* [Maven site for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.6-SNAPSHOT)
+* [Maven site](http://dooapp.github.io/FXForm2/2.2.6/site)
+* [Maven site for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.6-SNAPSHOT/site)
 
 Links
 -----
