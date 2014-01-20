@@ -22,6 +22,8 @@ import javafx.beans.value.WritableValue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -29,6 +31,8 @@ import java.lang.reflect.Field;
  * Time: 12:16
  */
 public abstract class AbstractJavaBeanElement<WrappedType> extends AbstractFieldElement<Object, WrappedType> implements PropertyElement<WrappedType> {
+
+    private final static Logger logger = Logger.getLogger(AbstractJavaBeanElement.class.getName());
 
     public AbstractJavaBeanElement(Field field) throws FormException {
         super(field);
@@ -46,7 +50,7 @@ public abstract class AbstractJavaBeanElement<WrappedType> extends AbstractField
         try {
             return buildJavaBeanProperty();
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
         return null;
     }
