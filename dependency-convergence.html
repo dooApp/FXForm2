@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Maven - About</title>
+    <title>Maven - Reactor Dependency Convergence</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -60,8 +60,8 @@
                           <a href="project-info.html" title="Project Information">Project Information</a>
                     <ul>
                       <li class="none">
-            <strong>About</strong>
-          </li>
+                          <a href="index.html" title="About">About</a>
+            </li>
                       <li class="none">
                           <a href="plugin-management.html" title="Plugin Management">Plugin Management</a>
             </li>
@@ -72,8 +72,8 @@
                           <a href="dependency-info.html" title="Dependency Information">Dependency Information</a>
             </li>
                       <li class="none">
-                          <a href="dependency-convergence.html" title="Dependency Convergence">Dependency Convergence</a>
-            </li>
+            <strong>Dependency Convergence</strong>
+          </li>
                       <li class="none">
                           <a href="source-repository.html" title="Source Repository">Source Repository</a>
             </li>
@@ -126,21 +126,111 @@
         <div id="bodyColumn"  class="span9" >
                                   
             <div class="section">
-<h2>About FXForm 2<a name="About_FXForm_2"></a></h2><a name="About_FXForm_2"></a>
-<p>Dynamic JavaFX 2.0 form generation</p>
+<h2>Reactor Dependency Convergence<a name="Reactor_Dependency_Convergence"></a></h2>
+<table border="0" class="table table-striped"><caption>
+  <b>Legend:</b>
+</caption>
+<tr class="a">
+<td><img alt="success" src="images/icon_success_sml.gif" /></td>
+<td>All projects share one version of the dependency.</td></tr>
+<tr class="b">
+<td><img alt="error" src="images/icon_error_sml.gif" /></td>
+<td>At least one project has a differing version of the dependency.</td></tr></table><br />
+<table border="0" class="table table-striped"><caption>
+  <b>Statistics:</b>
+</caption>
+<tr class="a">
+<th>Number of sub-projects:</th>
+<td>3</td></tr>
+<tr class="b">
+<th>Number of dependencies (NOD):</th>
+<td>6</td></tr>
+<tr class="a">
+<th>Number of unique artifacts (NOA):</th>
+<td>6</td></tr>
+<tr class="b">
+<th>Number of SNAPSHOT artifacts (NOS):</th>
+<td>0</td></tr>
+<tr class="a">
+<th>Convergence (NOD/NOA):</th>
+<td><img alt="success" src="images/icon_success_sml.gif" />&#160;<b>100%</b></td></tr>
+<tr class="b">
+<th>Ready for Release (100% Convergence and no SNAPSHOTS):</th>
+<td><img alt="success" src="images/icon_success_sml.gif" />&#160;<b>Success</b></td></tr></table></div>
 <div class="section">
-<h3>Project Modules<a name="Project_Modules"></a></h3><a name="Project_Modules"></a>
-<p>This project has declared the following modules:</p>
+<h3>Dependencies used in sub-projects<a name="Dependencies_used_in_sub-projects"></a></h3>
+<div class="section">
+<h4>com.dooapp.fxform2:core<a name="com.dooapp.fxform2:core"></a></h4>
 <table border="0" class="table table-striped">
 <tr class="a">
-<th>Name</th>
-<th>Description</th></tr>
+<td><img alt="success" src="images/icon_success_sml.gif" /></td>
+<td>
+<table border="0" class="table table-striped">
 <tr class="b">
-<td><a href="core/index.html">core</a></td>
-<td>Dynamic JavaFX 2.0 form generation</td></tr>
+<td width="25%">8.0.6-SNAPSHOT</td>
+<td>
+<ol style="list-style-type: lower-alpha">
+<li><a class="externalLink" href="http://dooapp.github.com/FXForm2/demo/">com.dooapp.fxform2:demo</a></li></ol></td></tr></table></td></tr></table></div>
+<div class="section">
+<h4>javax.validation:validation-api<a name="javax.validation:validation-api"></a></h4>
+<table border="0" class="table table-striped">
 <tr class="a">
-<td><a href="demo/index.html">demo</a></td>
-<td>Dynamic JavaFX 2.0 form generation</td></tr></table></div></div>
+<td><img alt="success" src="images/icon_success_sml.gif" /></td>
+<td>
+<table border="0" class="table table-striped">
+<tr class="b">
+<td width="25%">1.0.0.GA</td>
+<td>
+<ol style="list-style-type: lower-alpha">
+<li><a class="externalLink" href="http://dooapp.github.com/FXForm2/core/">com.dooapp.fxform2:core</a></li></ol></td></tr></table></td></tr></table></div>
+<div class="section">
+<h4>junit:junit<a name="junit:junit"></a></h4>
+<table border="0" class="table table-striped">
+<tr class="a">
+<td><img alt="success" src="images/icon_success_sml.gif" /></td>
+<td>
+<table border="0" class="table table-striped">
+<tr class="b">
+<td width="25%">4.10</td>
+<td>
+<ol style="list-style-type: lower-alpha">
+<li><a class="externalLink" href="http://dooapp.github.com/FXForm2/core/">com.dooapp.fxform2:core</a></li></ol></td></tr></table></td></tr></table></div>
+<div class="section">
+<h4>org.hibernate:hibernate-validator<a name="org.hibernate:hibernate-validator"></a></h4>
+<table border="0" class="table table-striped">
+<tr class="a">
+<td><img alt="success" src="images/icon_success_sml.gif" /></td>
+<td>
+<table border="0" class="table table-striped">
+<tr class="b">
+<td width="25%">4.1.0.Final</td>
+<td>
+<ol style="list-style-type: lower-alpha">
+<li><a class="externalLink" href="http://dooapp.github.com/FXForm2/demo/">com.dooapp.fxform2:demo</a></li></ol></td></tr></table></td></tr></table></div>
+<div class="section">
+<h4>org.slf4j:slf4j-api<a name="org.slf4j:slf4j-api"></a></h4>
+<table border="0" class="table table-striped">
+<tr class="a">
+<td><img alt="success" src="images/icon_success_sml.gif" /></td>
+<td>
+<table border="0" class="table table-striped">
+<tr class="b">
+<td width="25%">1.6.1</td>
+<td>
+<ol style="list-style-type: lower-alpha">
+<li><a class="externalLink" href="http://dooapp.github.com/FXForm2/demo/">com.dooapp.fxform2:demo</a></li></ol></td></tr></table></td></tr></table></div>
+<div class="section">
+<h4>org.slf4j:slf4j-log4j12<a name="org.slf4j:slf4j-log4j12"></a></h4>
+<table border="0" class="table table-striped">
+<tr class="a">
+<td><img alt="success" src="images/icon_success_sml.gif" /></td>
+<td>
+<table border="0" class="table table-striped">
+<tr class="b">
+<td width="25%">1.6.1</td>
+<td>
+<ol style="list-style-type: lower-alpha">
+<li><a class="externalLink" href="http://dooapp.github.com/FXForm2/demo/">com.dooapp.fxform2:demo</a></li></ol></td></tr></table></td></tr></table></div></div>
                   </div>
             </div>
       
