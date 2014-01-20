@@ -53,6 +53,10 @@
             <organizationUrl>www.dooapp.com</organizationUrl>
         </developer>
     </developers>
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>https://buildhive.cloudbees.com/job/dooApp/job/FXForm2/</url>
+    </ciManagement>
     <repositories>
         <repository>
             <id>jboss-maven2-release-repository</id>
@@ -61,6 +65,38 @@
     </repositories>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.9</version>
+                <configuration>
+                    <message>Creating site for ${project.artifactId}, ${project.version}</message>
+                    <!-- this does the trick to place every module in the correct subfolder -->
+                    <path>${project.distributionManagement.site.url}</path>
+                    <merge>true</merge>
+                    <repositoryName>FXForm2</repositoryName>
+                    <repositoryOwner>dooapp</repositoryOwner>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>github-site</id>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>site-deploy</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <skipDeploy>true</skipDeploy>
+                </configuration>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -70,14 +106,6 @@
                     <configuration>
                         <source>1.6</source>
                         <target>1.6</target>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9.1</version>
-                    <configuration>
-                        <additionalparam>-Xdoclint:none</additionalparam>
                     </configuration>
                 </plugin>
             </plugins>
