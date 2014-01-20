@@ -52,6 +52,13 @@ Key benefits
 * Less code and improved quality
 * Easy to use and to customize
 
+Reports
+-------
+* [Javadoc](http://dooapp.github.io/FXForm2/2.2.6/site/apidocs/index.html)
+* [Javadoc for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.6-SNApSHOT/site/apidocs/index.html)
+* [Maven site](http://dooapp.github.io/FXForm2/2.2.6)
+* [Maven site for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.6-SNAPSHOT)
+
 Links
 -----
 Articles about FXForm2 on [dooApp technical blog](http://blog.dooapp.com/search/label/fxform).
