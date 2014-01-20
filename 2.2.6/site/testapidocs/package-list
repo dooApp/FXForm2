@@ -1,0 +1,8 @@
+com.dooapp.fxform
+com.dooapp.fxform.filter
+com.dooapp.fxform.handler
+com.dooapp.fxform.issues
+com.dooapp.fxform.model.impl
+com.dooapp.fxform.reflection
+com.dooapp.fxform.reflection.classcast
+com.dooapp.fxform.reflection.impl
