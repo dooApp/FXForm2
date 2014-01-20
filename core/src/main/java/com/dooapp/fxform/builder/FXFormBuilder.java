@@ -73,11 +73,11 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
             elementProvider.getFilters().addAll(handleDefaultFieldFilters());
         }
         if (readOnly == true) {
-            res = new ReadOnlyFXForm(elementProvider);
+            res = new ReadOnlyFXForm();
         } else {
             res = new FXForm();
-            res.setElementProvider(elementProvider);
         }
+        res.setElementProvider(elementProvider);
         if (skin == null) {
             handleDefaultSkin(res);
         } else {
