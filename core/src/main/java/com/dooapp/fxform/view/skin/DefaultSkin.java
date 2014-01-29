@@ -18,7 +18,6 @@ import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
 import com.dooapp.fxform.view.control.AutoHidableLabel;
-import com.dooapp.fxform.view.control.ConstraintLabel;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -55,9 +54,7 @@ public class DefaultSkin extends FXFormSkin {
         contentBox.getStyleClass().add("form-content-box");
         titleBox.getChildren().add(contentBox);
         contentBox.setSpacing(5.0);
-        ConstraintLabel constraintLabel = new ConstraintLabel();
-        constraintLabel.constraintProperty().bind(fxForm.getClassLevelValidator().constraintViolationsProperty());
-        contentBox.getChildren().addAll(constraintLabel);
+        contentBox.getChildren().addAll(createClassLevelConstraintNode());
         return titleBox;
     }
 

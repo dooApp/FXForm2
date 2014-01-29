@@ -17,6 +17,7 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
+import com.dooapp.fxform.view.NodeType;
 import com.dooapp.fxform.view.control.AutoHidableLabel;
 import com.dooapp.fxform.view.control.ConstraintLabel;
 import javafx.geometry.Insets;
@@ -56,6 +57,8 @@ public class InlineSkin extends FXFormSkin {
     protected int row = 0;
     private Map<String, Node> categoryNode = new HashMap<String, Node>();
 
+
+
     @Override
     protected Node createRootNode() throws NodeCreationException {
         VBox titleBox = new VBox();
@@ -65,10 +68,8 @@ public class InlineSkin extends FXFormSkin {
         contentBox.getStyleClass().add("form-content-box");
         titleBox.getChildren().add(contentBox);
         contentBox.setSpacing(5.0);
-        ConstraintLabel constraintLabel = new ConstraintLabel();
-        constraintLabel.constraintProperty().bind(fxForm.getClassLevelValidator().constraintViolationsProperty());
         gridPane = GridPaneBuilder.create().hgap(5.0).vgap(5.0).build();
-        contentBox.getChildren().addAll(constraintLabel, gridPane);
+        contentBox.getChildren().addAll(createClassLevelConstraintNode(), gridPane);
         return titleBox;
     }
 

@@ -41,6 +41,9 @@ public class ConstraintLabel extends VBox {
             for (Object o : constraint.get()) {
                 ConstraintViolation constraintViolation = (ConstraintViolation) o;
                 Label errorLabel = new Label(constraintViolation.getMessage());
+                if (constraintViolation.getConstraintDescriptor() != null) {
+                    errorLabel.getStyleClass().add(constraintViolation.getConstraintDescriptor().getAnnotation().getClass().getName());
+                }
                 errorLabel.setWrapText(true);
                 errorLabel.setMinHeight(Region.USE_PREF_SIZE);
                 ImageView warningView = new ImageView(WARNING);
