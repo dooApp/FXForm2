@@ -19,6 +19,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import javax.validation.ConstraintViolation;
@@ -40,6 +41,8 @@ public class ConstraintLabel extends VBox {
             for (Object o : constraint.get()) {
                 ConstraintViolation constraintViolation = (ConstraintViolation) o;
                 Label errorLabel = new Label(constraintViolation.getMessage());
+                errorLabel.setWrapText(true);
+                errorLabel.setMinHeight(Region.USE_PREF_SIZE);
                 ImageView warningView = new ImageView(WARNING);
                 warningView.setFitHeight(15);
                 warningView.setPreserveRatio(true);
