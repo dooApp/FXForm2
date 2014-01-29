@@ -14,6 +14,7 @@ package com.dooapp.fxform.view;
 
 import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.view.control.ConstraintLabel;
 import com.dooapp.fxform.view.factory.AnnotationFactoryProvider;
 import com.dooapp.fxform.view.factory.FactoryProvider;
 import javafx.scene.Node;
@@ -216,6 +217,13 @@ public abstract class FXFormSkin implements Skin<AbstractFXForm> {
      * @param category
      */
     protected void removeCategory(String category) {
+    }
+
+    protected Node createClassLevelConstraintNode() {
+        ConstraintLabel constraintLabel = new ConstraintLabel();
+        constraintLabel.getStyleClass().add(NodeType.CONSTRAINT.getStyle());
+        constraintLabel.constraintProperty().bind(fxForm.getClassLevelValidator().constraintViolationsProperty());
+        return constraintLabel;
     }
 
 }
