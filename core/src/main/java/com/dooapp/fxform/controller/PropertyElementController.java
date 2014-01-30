@@ -71,21 +71,33 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
     }
 
     protected void addStyle(String styleSuffix) {
-        if (labelController.getNode() != null)
+        if (labelController.getNode() != null) {
             labelController.getNode().getNode().getStyleClass().add(NodeType.LABEL.getStyle() + styleSuffix);
-        if (editorController.getNode() != null)
+        }
+        if (editorController.getNode() != null) {
             editorController.getNode().getNode().getStyleClass().add(NodeType.EDITOR.getStyle() + styleSuffix);
-        if (tooltipController.getNode() != null)
+        }
+        if (tooltipController.getNode() != null) {
             tooltipController.getNode().getNode().getStyleClass().add(NodeType.TOOLTIP.getStyle() + styleSuffix);
+        }
+        if (constraintController.getNode() != null) {
+            constraintController.getNode().getNode().getStyleClass().add(NodeType.CONSTRAINT.getStyle() + styleSuffix);
+        }
     }
 
     protected void removeStyle(String styleSuffix) {
-        if (labelController.getNode() != null)
+        if (labelController.getNode() != null) {
             labelController.getNode().getNode().getStyleClass().remove(NodeType.LABEL.getStyle() + styleSuffix);
-        if (editorController.getNode() != null)
+        }
+        if (editorController.getNode() != null) {
             editorController.getNode().getNode().getStyleClass().remove(NodeType.EDITOR.getStyle() + styleSuffix);
-        if (tooltipController.getNode() != null)
+        }
+        if (tooltipController.getNode() != null) {
             tooltipController.getNode().getNode().getStyleClass().remove(NodeType.TOOLTIP.getStyle() + styleSuffix);
+        }
+        if (constraintController.getNode() != null) {
+            constraintController.getNode().getNode().getStyleClass().remove(NodeType.CONSTRAINT.getStyle() + styleSuffix);
+        }
     }
 
     @Override
@@ -96,7 +108,8 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
     @Override
     protected void updateSkin(FXFormSkin skin) {
         super.updateSkin(skin);
-        if (constraintController != null)
+        if (constraintController != null) {
             constraintController.setNode(skin.getConstraint(element));
+        }
     }
 }

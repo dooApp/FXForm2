@@ -12,6 +12,7 @@
 package com.dooapp.fxform.validation;
 
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.reflection.MultipleBeanSource;
 
 import javax.validation.*;
 import javax.validation.metadata.BeanDescriptor;
@@ -30,61 +31,73 @@ import java.util.logging.Logger;
  */
 public class DefaultFXFormValidator implements FXFormValidator {
 
-	private final Logger logger = Logger.getLogger(DefaultFXFormValidator.class.getName());
+    private final Logger logger = Logger.getLogger(DefaultFXFormValidator.class.getName());
 
-	static ValidatorFactory factory;
+    static ValidatorFactory factory;
 
-	Validator validator;
+    Validator validator;
 
-	MessageInterpolator messageInterpolator;
+    MessageInterpolator messageInterpolator;
 
-	/**
-	 * Initialize the constraint validator. Might be null after that if no implementation has been provided.
-	 */
-	protected void createValidator() {
-		try {
-			if (factory == null) {
-				factory = Validation.buildDefaultValidatorFactory();
-			}
-			validator = factory.getValidator();
-			messageInterpolator = factory.getMessageInterpolator();
-		} catch (ValidationException e) {
-			// validation is not activated, since no implementation has been provided
-			logger.log(Level.INFO, "Validation disabled", e);
-		}
-	}
+    /**
+     * Initialize the constraint validator. Might be null after that if no implementation has been provided.
+     */
+    protected void createValidator() {
+        try {
+            if (factory == null) {
+                factory = Validation.buildDefaultValidatorFactory();
+            }
+            validator = factory.getValidator();
+            messageInterpolator = factory.getMessageInterpolator();
+        } catch (ValidationException e) {
+            // validation is not activated, since no implementation has been provided
+            logger.log(Level.INFO, "Validation disabled", e);
+        }
+    }
 
-	public DefaultFXFormValidator() {
-		createValidator();
-	}
+    public DefaultFXFormValidator() {
+        createValidator();
+    }
 
-	@Override
-	public List<ConstraintViolation> validate(Element element, Object newValue, Class... groups) {
-		final List<ConstraintViolation> list = new LinkedList<ConstraintViolation>();
-		if (validator != null) {
-			list.addAll(validator.validateValue((Class<Object>) (element.getDeclaringClass()), element.getName(), newValue, groups));
-		}
-		return list;
-	}
+    @Override
+    public List<ConstraintViolation> validate(Element element, Object newValue, Class... groups) {
+        final List<ConstraintViolation> list = new LinkedList<ConstraintViolation>();
+        if (validator != null) {
+            list.addAll(validator.validateValue((Class<Object>) (element.getDeclaringClass()), element.getName(), newValue, groups));
+        }
+        return list;
+    }
 
-	@Override
-	public List<ConstraintViolation> validateClassConstraint(Object bean) {
-		final List<ConstraintViolation> list = new LinkedList<ConstraintViolation>();
-		if (validator != null && bean != null) {
-			BeanDescriptor beanDescriptor = validator.getConstraintsForClass(bean.getClass());
-			Set<ConstraintDescriptor<?>> classLevelConstraints = beanDescriptor.findConstraints().declaredOn(ElementType.TYPE).getConstraintDescriptors();
-			Set<ConstraintViolation<Object>> constraintViolations = validator.validate(bean);
-			for (ConstraintViolation constraintViolation : constraintViolations) {
-				if (classLevelConstraints.contains(constraintViolation.getConstraintDescriptor())) {
-					list.add(constraintViolation);
-				}
-			}
-		}
-		return list;
-	}
+    @Override
+    public List<ConstraintViolation> validateClassConstraint(Object bean) {
+        final List<ConstraintViolation> list = new LinkedList<ConstraintViolation>();
+        if (validator != null && bean != null) {
+            if (bean instanceof MultipleBeanSource) {
+                for (Object object : ((MultipleBeanSource) bean).getSources()) {
+                    list.addAll(getConstraintViolation(object));
+                }
+            } else {
+                list.addAll(getConstraintViolation(bean));
+            }
+        }
+        return list;
+    }
 
-	@Override
-	public MessageInterpolator getMessageInterpolator() {
-		return messageInterpolator;
-	}
+    private List<ConstraintViolation> getConstraintViolation(Object bean) {
+        final List<ConstraintViolation> list = new LinkedList<ConstraintViolation>();
+        BeanDescriptor beanDescriptor = validator.getConstraintsForClass(bean.getClass());
+        Set<ConstraintDescriptor<?>> classLevelConstraints = beanDescriptor.findConstraints().declaredOn(ElementType.TYPE).getConstraintDescriptors();
+        Set<ConstraintViolation<Object>> constraintViolations = validator.validate(bean);
+        for (ConstraintViolation constraintViolation : constraintViolations) {
+            if (classLevelConstraints.contains(constraintViolation.getConstraintDescriptor())) {
+                list.add(constraintViolation);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public MessageInterpolator getMessageInterpolator() {
+        return messageInterpolator;
+    }
 }
