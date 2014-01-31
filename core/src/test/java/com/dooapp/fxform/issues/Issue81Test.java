@@ -12,14 +12,12 @@
 package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.JavaFXRule;
 import com.dooapp.fxform.validation.DefaultFXFormValidator;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import junit.framework.Assert;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -29,41 +27,38 @@ import org.junit.Test;
  */
 public class Issue81Test {
 
-	@Rule
-	public JavaFXRule javaFXRule = new JavaFXRule();
+    private DefaultFXFormValidator validator;
 
-	private DefaultFXFormValidator validator;
+    public static class Bean1 {
 
-	public static class Bean1 {
+        private StringProperty property = new SimpleStringProperty();
 
-		private StringProperty property = new SimpleStringProperty();
+        public String getProperty() {
+            return property.get();
+        }
+    }
 
-		public String getProperty() {
-			return property.get();
-		}
-	}
+    public static class Bean2 extends Bean1 {
 
-	public static class Bean2 extends Bean1 {
+        @NotEmpty
+        public String getProperty() {
+            return super.getProperty();
+        }
+    }
 
-		@NotEmpty
-		public String getProperty() {
-			return super.getProperty();
-		}
-	}
+    @Before
+    public void setup() {
+        validator = new DefaultFXFormValidator();
+    }
 
-	@Before
-	public void setup() {
-		validator = new DefaultFXFormValidator();
-	}
-
-	@Test
-	public void testThatBean1ValidationIsOk() {
-		FXForm fxForm = new FXForm();
-		Bean1 bean1 = new Bean1();
-		fxForm.setSource(bean1);
-		Assert.assertEquals(0, validator.validate(fxForm.getElements().get(0), "").size());
-		Bean2 bean2 = new Bean2();
-		fxForm.setSource(bean2);
-		Assert.assertEquals(1, validator.validate(fxForm.getElements().get(0), "").size());
-	}
+    @Test
+    public void testThatBean1ValidationIsOk() {
+        FXForm fxForm = new FXForm();
+        Bean1 bean1 = new Bean1();
+        fxForm.setSource(bean1);
+        Assert.assertEquals(0, validator.validate(fxForm.getElements().get(0), "").size());
+        Bean2 bean2 = new Bean2();
+        fxForm.setSource(bean2);
+        Assert.assertEquals(1, validator.validate(fxForm.getElements().get(0), "").size());
+    }
 }

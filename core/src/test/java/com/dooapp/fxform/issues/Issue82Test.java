@@ -12,7 +12,6 @@
 package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.JavaFXRule;
 import com.dooapp.fxform.builder.FXFormBuilder;
 import com.dooapp.fxform.filter.FilterException;
 import com.dooapp.fxform.filter.ReorderFilter;
@@ -23,7 +22,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -33,53 +31,50 @@ import org.junit.Test;
  */
 public class Issue82Test {
 
-	@Rule
-	public JavaFXRule javaFXRule = new JavaFXRule();
+    public static class Address {
 
-	public static class Address {
+        private StringProperty address = new SimpleStringProperty();
 
-		private StringProperty address = new SimpleStringProperty();
+        public String getAddress() {
+            return address.get();
+        }
+    }
 
-		public String getAddress() {
-			return address.get();
-		}
-	}
+    public static class MyAddress extends Address {
 
-	public static class MyAddress extends Address {
+        @NotEmpty
+        public String getAddress() {
+            return super.getAddress();
+        }
+    }
 
-		@NotEmpty
-		public String getAddress() {
-			return super.getAddress();
-		}
-	}
+    public static class Bean1 {
 
-	public static class Bean1 {
+        private StringProperty name = new SimpleStringProperty();
 
-		private StringProperty name = new SimpleStringProperty();
+        private ObjectProperty<Address> address = new SimpleObjectProperty(new Address());
+    }
 
-		private ObjectProperty<Address> address = new SimpleObjectProperty(new Address());
-	}
+    public static class Bean2 extends Bean1 {
 
-	public static class Bean2 extends Bean1 {
+        private ObjectProperty<MyAddress> address = new SimpleObjectProperty(new MyAddress());
 
-		private ObjectProperty<MyAddress> address = new SimpleObjectProperty(new MyAddress());
+        public MyAddress getAddress() {
+            return address.get();
+        }
+    }
 
-		public MyAddress getAddress() {
-			return address.get();
-		}
-	}
+    @Before
+    public void setup() {
+    }
 
-	@Before
-	public void setup() {
-	}
-
-	@Test
-	public void testThatReorderWorksWellWithSpecificFieldFilter() throws FilterException {
-		Bean2 bean2 = new Bean2();
-		FXForm fxForm = new FXFormBuilder().include("name", MyAddress.class.getName() + "-address").build
-				();
-		fxForm.setSource(new MultipleBeanSource(bean2, bean2.getAddress()));
-		ReorderFilter reorderFilter = new ReorderFilter("name", MyAddress.class.getName() + "-address");
-		reorderFilter.filter(fxForm.getElements());
-	}
+    @Test
+    public void testThatReorderWorksWellWithSpecificFieldFilter() throws FilterException {
+        Bean2 bean2 = new Bean2();
+        FXForm fxForm = new FXFormBuilder().include("name", MyAddress.class.getName() + "-address").build
+                ();
+        fxForm.setSource(new MultipleBeanSource(bean2, bean2.getAddress()));
+        ReorderFilter reorderFilter = new ReorderFilter("name", MyAddress.class.getName() + "-address");
+        reorderFilter.filter(fxForm.getElements());
+    }
 }
