@@ -94,6 +94,7 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
+		    <skip>true</skip>
                     <skipDeploy>true</skipDeploy>
                 </configuration>
             </plugin>
