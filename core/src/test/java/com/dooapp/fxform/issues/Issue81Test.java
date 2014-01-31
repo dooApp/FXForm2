@@ -9,45 +9,61 @@
  * Neither the name of dooApp nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.dooapp.fxform.filter;
+package com.dooapp.fxform.issues;
 
-import com.dooapp.fxform.model.Element;
-
-import java.util.List;
+import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.JavaFXRule;
+import com.dooapp.fxform.validation.DefaultFXFormValidator;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import junit.framework.Assert;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
- * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 12/09/11
- * Time: 15:15
+ * User: Kevin Senechal <kevin.senechal@dooapp.com>
+ * Date: 09/12/2013
+ * Time: 15:14
  */
-public abstract class AbstractNameFilter implements ElementListFilter {
+public class Issue81Test {
 
-	protected final String[] names;
+	@Rule
+	public JavaFXRule javaFXRule = new JavaFXRule();
 
-	public AbstractNameFilter(String[] names) {
-		this.names = names;
-	}
+	private DefaultFXFormValidator validator;
 
-	protected Element extractFieldByName(List<Element> remaining, String name) throws FilterException {
-		Element element = getFieldByName(remaining, name);
-		remaining.remove(element);
-		return element;
-	}
+	public static class Bean1 {
 
-	protected Element getFieldByName(List<Element> elements, String name) throws FilterException {
-		for (Element field : elements) {
-			String fullName = field.getDeclaringClass().getName() + "-" + field.getName();
-			if (field.sourceProperty().get() != null) {
-				fullName = field.sourceProperty().get().getClass().getName() + "-" + field.getName();
-			}
-			if (name.equals(fullName) || name.equals(field.getName())) {
-				return field;
-			}
+		private StringProperty property = new SimpleStringProperty();
+
+		public String getProperty() {
+			return property.get();
 		}
-		throw new FilterException(name + " not found in field list, please check your filters");
 	}
 
-	public String[] getNames() {
-		return names;
+	public static class Bean2 extends Bean1 {
+
+		@NotEmpty
+		public String getProperty() {
+			return super.getProperty();
+		}
+	}
+
+	@Before
+	public void setup() {
+		validator = new DefaultFXFormValidator();
+	}
+
+	@Test
+	public void testThatBean1ValidationIsOk() {
+		FXForm fxForm = new FXForm();
+		Bean1 bean1 = new Bean1();
+		fxForm.setSource(bean1);
+		Assert.assertEquals(0, validator.validate(fxForm.getElements().get(0), "").size());
+		Bean2 bean2 = new Bean2();
+		fxForm.setSource(bean2);
+		Assert.assertEquals(1, validator.validate(fxForm.getElements().get(0), "").size());
 	}
 }
