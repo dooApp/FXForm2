@@ -79,7 +79,7 @@ Considerations about [GUI Generation with JavaFX](http://ustesis.wordpress.com/2
 
 Oliver Probst. [Investigating a Constraint-Based Approach to Data Quality in Information Systems](http://e-collection.library.ethz.ch/eserv/eth:7430/eth-7430-01.pdf), 12.2.5.1 FXForm2, pages 85-88.
 
-[Screenshots](http://infiltrea.com/index.php/visuels) of Infiltrea, a real-world application using FXForm2 - all forms you can see there are based on FXForm2
+[Infiltrea](http://www.infiltrea.com), an application dedicated to the measure of the airtightness of buildings, is using FXForm2.
 
 Licensing
 ---------
