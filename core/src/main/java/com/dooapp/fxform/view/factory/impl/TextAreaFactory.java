@@ -26,6 +26,7 @@ public class TextAreaFactory implements Callback<Void, FXFormNode> {
 
     public FXFormNode call(Void aVoid) {
         TextArea textArea = new TextArea();
+        textArea.setWrapText(true);
         return new FXFormNodeWrapper(textArea, textArea.textProperty());
     }
 
