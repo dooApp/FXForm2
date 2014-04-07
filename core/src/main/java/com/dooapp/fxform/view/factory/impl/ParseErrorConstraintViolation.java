@@ -55,6 +55,16 @@ public class ParseErrorConstraintViolation implements ConstraintViolation<Number
         throw new UnsupportedOperationException("Not implemented");
     }
 
+    @Override
+    public Object[] getExecutableParameters() {
+        return new Object[0];
+    }
+
+    @Override
+    public Object getExecutableReturnValue() {
+        return null;
+    }
+
     public Path getPropertyPath() {
         throw new UnsupportedOperationException("Not implemented");
     }
@@ -65,5 +75,10 @@ public class ParseErrorConstraintViolation implements ConstraintViolation<Number
 
     public ConstraintDescriptor<?> getConstraintDescriptor() {
         throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @Override
+    public <U> U unwrap(Class<U> uClass) {
+        return null;
     }
 }

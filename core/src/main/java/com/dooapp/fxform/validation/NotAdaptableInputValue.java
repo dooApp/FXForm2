@@ -45,7 +45,12 @@ public class NotAdaptableInputValue implements ConstraintViolation {
 			public Object getValidatedValue() {
 				return value;
 			}
-		};
+
+            @Override
+            public <T> T unwrap(Class<T> tClass) {
+                return null;
+            }
+        };
 		if (messageInterpolator != null) {
 			this.message = messageInterpolator.interpolate(getMessageTemplate(), context);
 		}
@@ -80,7 +85,17 @@ public class NotAdaptableInputValue implements ConstraintViolation {
 		return element.getBean();
 	}
 
-	@Override
+    @Override
+    public Object[] getExecutableParameters() {
+        return new Object[0];
+    }
+
+    @Override
+    public Object getExecutableReturnValue() {
+        return null;
+    }
+
+    @Override
 	public Path getPropertyPath() {
 		return null;
 	}
@@ -94,4 +109,9 @@ public class NotAdaptableInputValue implements ConstraintViolation {
 	public ConstraintDescriptor<?> getConstraintDescriptor() {
 		return null;
 	}
+
+    @Override
+    public Object unwrap(Class aClass) {
+        return null;
+    }
 }

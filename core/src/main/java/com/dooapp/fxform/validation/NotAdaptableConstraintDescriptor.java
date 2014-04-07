@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.validation;
 
+import javax.validation.ConstraintTarget;
 import javax.validation.ConstraintValidator;
 import javax.validation.Payload;
 import javax.validation.metadata.ConstraintDescriptor;
@@ -34,6 +35,11 @@ public class NotAdaptableConstraintDescriptor implements ConstraintDescriptor {
     }
 
     @Override
+    public String getMessageTemplate() {
+        return null;
+    }
+
+    @Override
     public Set<Class<?>> getGroups() {
         return Collections.emptySet();
     }
@@ -41,6 +47,11 @@ public class NotAdaptableConstraintDescriptor implements ConstraintDescriptor {
     @Override
     public Set<Class<? extends Payload>> getPayload() {
         return Collections.emptySet();
+    }
+
+    @Override
+    public ConstraintTarget getValidationAppliesTo() {
+        return null;
     }
 
     @Override
