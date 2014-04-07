@@ -17,6 +17,7 @@
     <modules>
         <module>core</module>
         <module>demo</module>
+        <module>samples</module>
     </modules>
     <parent>
         <groupId>org.sonatype.oss</groupId>
