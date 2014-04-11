@@ -4,23 +4,25 @@ import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.FXFormSample;
 import com.dooapp.fxform.Utils;
 import com.dooapp.fxform.builder.FXFormBuilder;
-import com.dooapp.fxform.model.User;
+import com.dooapp.fxform.model.UserWithConstraintsValidation;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
  * TODO write documentation<br>
- * <br>
- * Created at 27/03/14 17:00.<br>
+ *<br>
+ * Created at 11/04/14 16:16.<br>
  *
  * @author Bastien
+ *
  */
-public class SimpleForm extends FXFormSample {
+public class ValidationForm extends FXFormSample {
+
 
     @Override
     public String getSampleName() {
-        return "simple form";
+        return "Simple validation form";
     }
 
     @Override
@@ -31,7 +33,7 @@ public class SimpleForm extends FXFormSample {
                 .includeAndReorder("firstName", "lastName", "age", "favoriteMovie", "coolDeveloper")
                 .resourceBundle(Utils.SAMPLE)
                 .build();
-        User user = new User();
+        UserWithConstraintsValidation user = new UserWithConstraintsValidation();
         form.setSource(user);
 
         root.getChildren().add(form);
@@ -47,8 +49,10 @@ public class SimpleForm extends FXFormSample {
     public String getSampleSourceURL() {
         return "";
     }
+
+
     @Override
     public String getSampleDescription() {
-        return "This is an example to do a very basic form with a simple bean";
+        return "A form with really cool colors";
     }
 }
