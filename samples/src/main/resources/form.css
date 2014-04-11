@@ -2,8 +2,9 @@
     -fx-font-size: 20;
 }
 
-label .form-label #age-label{
+ #age-form-label{
     -fx-font-size: 29;
+    -fx-text-fill: green;
 }
 
 .form-editor {

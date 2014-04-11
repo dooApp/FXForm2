@@ -11,7 +11,7 @@
     <Label id="firstName-form-label" layoutX="272.0" layoutY="14.0" text="Label" />
     <TextField id="firstName-form-editor" layoutX="199.0" layoutY="36.0" prefWidth="200.0" />
     <Label id="lastName-form-label" layoutX="14.0" layoutY="184.0" text="Label" />
-    <TextArea id="lastName-form-editor" layoutX="59.0" layoutY="115.0" prefWidth="200.0" wrapText="true" />
+    <TextArea id="lastName-form-editor" layoutX="79.0" layoutY="115.0" prefWidth="200.0" wrapText="true" />
     <Label id="age-form-label" layoutX="334.0" layoutY="326.0" text="Label" />
     <TextField id="age-form-editor" layoutX="362.0" layoutY="342.0" prefWidth="200.0" />
   </children>
