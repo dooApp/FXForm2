@@ -20,7 +20,7 @@ public class SimpleForm extends FXFormSample {
 
     @Override
     public String getSampleName() {
-        return "simple form";
+        return "Simple form";
     }
 
     @Override
@@ -45,7 +45,7 @@ public class SimpleForm extends FXFormSample {
 
     @Override
     public String getSampleSourceURL() {
-        return "com/dooapp/fxform/samples/SimpleForm.java";
+        return "https://github.com/dooApp/FXForm2/raw/master/samples/src/main/java/com/dooapp/fxform/samples/SimpleForm.java";
     }
 
     @Override
