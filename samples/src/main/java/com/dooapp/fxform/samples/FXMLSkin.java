@@ -11,29 +11,27 @@ import javafx.stage.Stage;
 
 /**
  * TODO write documentation<br>
- * <br>
- * Created at 27/03/14 17:00.<br>
+ *<br>
+ * Created at 11/04/14 12:56.<br>
  *
  * @author Bastien
+ *
  */
-public class SimpleForm extends FXFormSample {
+public class FXMLSkin extends FXFormSample {
 
     @Override
     public String getSampleName() {
-        return "simple form";
+        return "FXML Skin";
     }
 
     @Override
     public Node getPanel(Stage stage) {
         Pane root = new Pane();
 
-        FXForm form = new FXFormBuilder<>()
-                .includeAndReorder("firstName", "lastName", "age", "favoriteMovie", "coolDeveloper")
-                .resourceBundle(Utils.SAMPLE)
-                .build();
+        FXForm form = new FXFormBuilder<>().include("lastName", "firstName", "age").resourceBundle(Utils.SAMPLE).build();
+        form.setSkin(new com.dooapp.fxform.view.skin.FXMLSkin(form, getClass().getResource("/fxmlSkin.fxml")));
         User user = new User();
         form.setSource(user);
-
         root.getChildren().add(form);
         return root;
     }
@@ -45,11 +43,11 @@ public class SimpleForm extends FXFormSample {
 
     @Override
     public String getSampleSourceURL() {
-        return "https://raw.githubusercontent.com/dooApp/FXForm2/master/samples/src/main/java/com/dooapp/fxform/samples/SimpleForm.java";
+        return "";
     }
 
     @Override
     public String getSampleDescription() {
-        return "This is an example to do a very basic form with a simple bean";
+        return "This is an example to use FXForm with FXML";
     }
 }
