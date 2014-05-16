@@ -39,16 +39,6 @@ public class SimpleForm extends FXFormSample {
     }
 
     @Override
-    public String getJavaDocURL() {
-        return "";
-    }
-
-    @Override
-    public String getSampleSourceURL() {
-        return "https://github.com/dooApp/FXForm2/raw/master/samples/src/main/java/com/dooapp/fxform/samples/SimpleForm.java";
-    }
-
-    @Override
     public String getSampleDescription() {
         return "This is an example to do a very basic form with a simple bean";
     }

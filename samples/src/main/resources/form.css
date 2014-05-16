@@ -4,7 +4,12 @@
 
  #age-form-label{
     -fx-font-size: 29;
-    -fx-text-fill: green;
+    -fx-text-fill: red;
+}
+
+ #age-form-editor{
+    -fx-background-color: pink;
+
 }
 
 .form-editor {
@@ -13,8 +18,5 @@
 }
 
 .form-content-box {
-    -fx-background-color : linear (0%,0%) to (0%,100%) stops (0%, rgba(255,20,147,1)) (100%, white);
     -fx-background-radius : 5, 5, 5, 5;
-    -fx-border-color: linear (0%,0%) to (0%,100%) stops (0%, dimgray) (100%, white);
-    -fx-border-radius: 5;
 }

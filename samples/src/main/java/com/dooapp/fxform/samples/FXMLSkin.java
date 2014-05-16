@@ -37,16 +37,6 @@ public class FXMLSkin extends FXFormSample {
     }
 
     @Override
-    public String getJavaDocURL() {
-        return "";
-    }
-
-    @Override
-    public String getSampleSourceURL() {
-        return "";
-    }
-
-    @Override
     public String getSampleDescription() {
         return "This is an example to use FXForm with FXML";
     }

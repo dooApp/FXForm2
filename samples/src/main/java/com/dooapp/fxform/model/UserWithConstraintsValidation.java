@@ -15,6 +15,7 @@ import javax.validation.constraints.Min;
  */
 @Accessor(value = Accessor.AccessType.METHOD)
 public class UserWithConstraintsValidation {
+
     private StringProperty firstName = new SimpleStringProperty();
     private StringProperty lastName = new SimpleStringProperty();
     private IntegerProperty age = new SimpleIntegerProperty(10);
@@ -34,7 +35,6 @@ public class UserWithConstraintsValidation {
         return lastName;
     }
 
-    @Min(value = 42)
     public IntegerProperty ageProperty() {
         return age;
     }
@@ -51,6 +51,8 @@ public class UserWithConstraintsValidation {
     public ObjectProperty<Movies> favoriteMovieProperty() {
         return favoriteMovie;
     }
-
-
+    @Min(value = 5)
+    public int getAge() {
+        return age.get();
+    }
 }

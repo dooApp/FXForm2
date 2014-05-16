@@ -41,16 +41,6 @@ public class CuteCssForm extends FXFormSample {
     }
 
     @Override
-    public String getJavaDocURL() {
-        return "";
-    }
-
-    @Override
-    public String getSampleSourceURL() {
-        return "";
-    }
-
-    @Override
     public String getSampleDescription() {
         return "A form with really cool colors";
     }

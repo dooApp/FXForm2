@@ -2,6 +2,8 @@ package com.dooapp.fxform;
 
 import fxsampler.SampleBase;
 
+import java.util.ResourceBundle;
+
 /**
  * TODO write documentation<br>
  *<br>
@@ -18,6 +20,17 @@ public abstract class FXFormSample extends SampleBase {
 
     @Override
     public String getProjectVersion() {
-        return "1.0";
+        return ResourceBundle.getBundle("fxformSampler").getString("version");
+    }
+
+    @Override
+    public String getSampleSourceURL() {
+        return "https://raw.githubusercontent.com/dooApp/FXForm2/master/samples/src/main/java/com/dooapp/fxform/samples/"+ getClass().getSimpleName() + ".java";
+    }
+
+
+    @Override
+    public String getJavaDocURL() {
+        return "";
     }
 }
