@@ -37,6 +37,6 @@ public class CustomFactoryForm extends FXFormSample {
 
     @Override
     public String getSampleDescription() {
-        return "This is an example to use FXForm with a custom Factory. Here the default lastName TextField is replaced by a TextArea";
+        return "This is an example of how to use FXForm with a custom Factory. Here the default lastName TextField is replaced by a TextArea";
     }
 }

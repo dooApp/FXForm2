@@ -85,6 +85,6 @@ public class DifferentSkinForm extends FXFormSample {
 
     @Override
     public String getSampleDescription() {
-        return "This is an example to use different skins with your form";
+        return "This is an example of how to use different skins with your form";
     }
 }

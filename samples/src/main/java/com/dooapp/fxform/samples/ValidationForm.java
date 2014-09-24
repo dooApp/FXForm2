@@ -42,6 +42,6 @@ public class ValidationForm extends FXFormSample {
 
     @Override
     public String getSampleDescription() {
-        return "A form with validation, age must be greater than 5";
+        return "A form with field validation, age must be greater than 5";
     }
 }

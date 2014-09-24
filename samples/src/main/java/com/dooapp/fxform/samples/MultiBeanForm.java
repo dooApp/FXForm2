@@ -42,6 +42,6 @@ public class MultiBeanForm extends FXFormSample {
 
     @Override
     public String getSampleDescription() {
-        return "This is an example to do a very basic form with more than one bean";
+        return "This is an example of how to do a very basic form with more than one bean";
     }
 }

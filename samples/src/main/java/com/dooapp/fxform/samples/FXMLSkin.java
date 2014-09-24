@@ -38,6 +38,6 @@ public class FXMLSkin extends FXFormSample {
 
     @Override
     public String getSampleDescription() {
-        return "This is an example to use FXForm with FXML";
+        return "This is an example of how to use FXForm with FXML";
     }
 }
