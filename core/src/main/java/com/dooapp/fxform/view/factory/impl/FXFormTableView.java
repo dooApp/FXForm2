@@ -41,8 +41,9 @@ public class FXFormTableView extends TableView {
         addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if (getSelectionModel().getSelectedItem() == null)
+                if (getSelectionModel().getSelectedItem() == null) {
                     return;
+                }
                 if (popup == null) {
                     createPopup();
                 }
@@ -56,6 +57,7 @@ public class FXFormTableView extends TableView {
     protected void createPopup() {
         popup = new Popup();
         popup.getContent().add(fxForm);
+        fxForm.getStyleClass().add("popup-form");
         popup.setAutoHide(true);
         popup.setHideOnEscape(true);
         popup.setAutoFix(true);

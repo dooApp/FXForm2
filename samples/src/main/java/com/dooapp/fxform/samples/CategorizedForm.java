@@ -6,20 +6,25 @@ import com.dooapp.fxform.Utils;
 import com.dooapp.fxform.annotation.Accessor;
 import com.dooapp.fxform.builder.FXFormBuilder;
 import com.dooapp.fxform.model.Movies;
+import com.dooapp.fxform.reflection.MultipleBeanSource;
 import javafx.beans.property.*;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
+ * TODO write documentation<br>
+ *<br>
+ * Created at 25/09/2014 10:03.<br>
+ *
  * @author Bastien
+ *
  */
-public class SimpleForm extends FXFormSample {
+public class CategorizedForm extends FXFormSample {
 
     @Override
     public String getSampleName() {
-        return "Simple form";
+        return "Categorized form";
     }
 
     @Accessor(value = Accessor.AccessType.FIELD)
@@ -30,7 +35,15 @@ public class SimpleForm extends FXFormSample {
         public IntegerProperty age = new SimpleIntegerProperty(10);
         public ObjectProperty<Movies> favoriteMovie = new SimpleObjectProperty<>();
         public BooleanProperty coolDeveloper = new SimpleBooleanProperty();
-        public ObjectProperty<Color> color = new SimpleObjectProperty<>();
+        public ObjectProperty<Address> address = new SimpleObjectProperty<>(new Address());
+    }
+
+    @Accessor(value = Accessor.AccessType.FIELD)
+    public class Address {
+
+        public StringProperty street = new SimpleStringProperty();
+        public StringProperty city = new SimpleStringProperty();
+        public StringProperty zip = new SimpleStringProperty();
     }
 
     @Override
@@ -38,18 +51,18 @@ public class SimpleForm extends FXFormSample {
         Pane root = new Pane();
 
         FXForm form = new FXFormBuilder<>()
-                .includeAndReorder("firstName", "lastName", "age", "favoriteMovie", "coolDeveloper", "color")
+                .categorizeAndInclude("firstName", "lastName", "age", "favoriteMovie", "coolDeveloper", "-Where ?", "street", "city", "zip")
                 .resourceBundle(Utils.SAMPLE)
                 .build();
+
         User user = new User();
-        form.setSource(user);
+        form.setSource(new MultipleBeanSource(user, user.address.get()));
 
         root.getChildren().add(form);
         return root;
     }
-
     @Override
     public String getSampleDescription() {
-        return "This is an example of how to do a very basic form with a simple bean";
+        return "This is an example of how to split your form in different parts";
     }
 }

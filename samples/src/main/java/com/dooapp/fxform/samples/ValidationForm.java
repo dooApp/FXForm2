@@ -3,22 +3,38 @@ package com.dooapp.fxform.samples;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.FXFormSample;
 import com.dooapp.fxform.Utils;
+import com.dooapp.fxform.annotation.Accessor;
 import com.dooapp.fxform.builder.FXFormBuilder;
-import com.dooapp.fxform.model.UserWithConstraintsValidation;
+import com.dooapp.fxform.model.Movies;
+import javafx.beans.property.*;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import javax.validation.constraints.Min;
+
 /**
- * TODO write documentation<br>
- *<br>
- * Created at 11/04/14 16:16.<br>
- *
  * @author Bastien
- *
  */
 public class ValidationForm extends FXFormSample {
 
+    @Accessor(value = Accessor.AccessType.FIELD)
+    public class UserWithConstraintsValidation {
+
+        private StringProperty firstName = new SimpleStringProperty();
+        private StringProperty lastName = new SimpleStringProperty();
+        private IntegerProperty age = new SimpleIntegerProperty(10);
+        private ObjectProperty<Movies> favoriteMovie = new SimpleObjectProperty<>();
+        private BooleanProperty coolDeveloper = new SimpleBooleanProperty();
+        @Min(value = 5)
+        public int getAge() {
+            return age.get();
+        }
+
+        public IntegerProperty ageProperty() {
+            return age;
+        }
+    }
 
     @Override
     public String getSampleName() {

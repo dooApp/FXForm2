@@ -1,0 +1,36 @@
+.popup-form {
+    -fx-background-color : linear-gradient(from 0% 0% to 0% 20%, rgba(225,225,225,1) 0%, white 100%);
+    -fx-background-radius : 5, 5, 5, 5;
+    -fx-border-color: linear-gradient(from 0% 0% to 0% 20%, dimgray 0%, white 100%);
+    -fx-border-radius: 5;
+}
+
+.form-label {
+    -fx-font-size: 14;
+    -fx-text-fill: dimgray;
+}
+.form-editor {
+    -fx-font-size: 16;
+}
+
+.form-editor-invalid {
+    -fx-text-fill: red;
+}
+
+.form-label-invalid {
+    -fx-font-weight: bold;
+}
+
+.form-editor-warning {
+    -fx-text-fill: orange;
+}
+
+.form-title {
+    -fx-font-size: 20;
+    -fx-text-fill: dimgray;
+}
+
+.form-tooltip {
+    -fx-font-size: 11;
+    -fx-text-fill: gray;
+}

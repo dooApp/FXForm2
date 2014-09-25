@@ -3,27 +3,25 @@ package com.dooapp.fxform.samples;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.FXFormSample;
 import com.dooapp.fxform.Utils;
+import com.dooapp.fxform.annotation.Accessor;
 import com.dooapp.fxform.builder.FXFormBuilder;
-import com.dooapp.fxform.model.User;
+import com.dooapp.fxform.model.Movies;
 import com.dooapp.fxform.view.skin.DefaultSkin;
+import com.dooapp.fxform.view.skin.InlineSkin;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
- * TODO write documentation<br>
- *<br>
- * Created at 04/04/14 14:33.<br>
- *
  * @author Bastien
- *
  */
 public class DifferentSkinForm extends FXFormSample {
 
@@ -35,52 +33,47 @@ public class DifferentSkinForm extends FXFormSample {
     @Override
     public Node getPanel(Stage stage) {
         final BorderPane bp = new BorderPane();
-        bp.setStyle("-fx-padding: 10;");
+        Label title = new Label("Inline skin");
+        VBox box = new VBox(10);
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
-        choiceBox.getItems().addAll("first", "second");
-       bp.setTop(choiceBox);
+        User user = new User();
+
+        bp.setStyle("-fx-padding: 10;");
+        choiceBox.getItems().addAll("Inline skin", "Default skin");
+        bp.setTop(choiceBox);
+        title.setFont(Font.font(24));
+
+        FXForm form = new FXFormBuilder<>()
+                .includeAndReorder("firstName", "lastName", "age", "favoriteMovie", "coolDeveloper")
+                .resourceBundle(Utils.SAMPLE)
+                .build();
+        form.setSource(user);
+        box.getChildren().addAll(title, form);
         choiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String s2) {
-                VBox box = new VBox(10);
-
-                if (s2.equals("first")) {
-                    /**
-                     ** INLINE SKIN STUFF. INLINE SKIN IS THE DEFAULT SKIN.
-                     **/
-                    Label inlineSkinTitle = new Label("Inline skin");
-                    inlineSkinTitle.setFont(Font.font(24));
-
-                    FXForm inlineForm = new FXFormBuilder<>()
-                            .includeAndReorder("firstName", "lastName", "age", "favoriteMovie", "coolDeveloper")
-                            .resourceBundle(Utils.SAMPLE)
-                            .build();
-                    User user = new User();
-                    inlineForm.setSource(user);
-                    box.getChildren().addAll(inlineSkinTitle, inlineForm);
+                if (s2.equals("Inline skin")) {
+                    title.setText("Inline skin");
+                    form.setSkin(new InlineSkin(form));
                 } else {
-
-
-                    /**
-                     ** INLINE SKIN STUFF. INLINE SKIN IS THE DEFAULT SKIN WHEN YOU USE FXFormBuilder.
-                     **/
-                    Label otherSkinTitle = new Label("Other skin");
-                    otherSkinTitle.setFont(Font.font(24));
-
-                    FXForm otherForm = new FXFormBuilder<>()
-                            .includeAndReorder("firstName", "lastName", "age", "favoriteMovie", "coolDeveloper")
-                            .resourceBundle(Utils.SAMPLE)
-                            .build();
-                    otherForm.setSkin(new DefaultSkin(otherForm));
-                    User user2 = new User();
-                    otherForm.setSource(user2);
-                    box.getChildren().addAll(otherSkinTitle, otherForm);
+                    title.setText("Default skin");
+                    form.setSkin(new DefaultSkin(form));
                 }
-                bp.setCenter(box);
             }
         });
+        bp.setCenter(box);
         choiceBox.getSelectionModel().selectFirst();
         return bp;
+    }
+
+    @Accessor(value = Accessor.AccessType.FIELD)
+    public class User {
+
+        public StringProperty firstName = new SimpleStringProperty();
+        public StringProperty lastName = new SimpleStringProperty();
+        public IntegerProperty age = new SimpleIntegerProperty(10);
+        public ObjectProperty<Movies> favoriteMovie = new SimpleObjectProperty<>();
+        public BooleanProperty coolDeveloper = new SimpleBooleanProperty();
     }
 
     @Override
