@@ -52,6 +52,21 @@ Key benefits
 * Less code and improved quality
 * Easy to use and to customize
 
+Keep in touch
+-------------
+* For help, use [Stack Overflow](http://stackoverflow.com).
+* If you found a bug, use [GitHub issues](https://github.com/dooapp/FXForm2/issues?state=open).
+* If you have an idea, use [GitHub issues](https://github.com/dooapp/FXForm2/issues?state=open).
+* If you'd like to ask a general question, use [GitHub issues](https://github.com/dooapp/FXForm2/issues?state=open).
+* If you want to contribute, submit a pull request.
+
+Reports
+-------
+* [Javadoc](http://dooapp.github.io/FXForm2/2.2.6/site/core/apidocs/index.html)
+* [Javadoc for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.6-SNAPSHOT/site/core/apidocs/index.html)
+* [Maven site](http://dooapp.github.io/FXForm2/2.2.6/site)
+* [Maven site for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.6-SNAPSHOT/site)
+
 Links
 -----
 Articles about FXForm2 on [dooApp technical blog](http://blog.dooapp.com/search/label/fxform).
@@ -64,7 +79,7 @@ Considerations about [GUI Generation with JavaFX](http://ustesis.wordpress.com/2
 
 Oliver Probst. [Investigating a Constraint-Based Approach to Data Quality in Information Systems](http://e-collection.library.ethz.ch/eserv/eth:7430/eth-7430-01.pdf), 12.2.5.1 FXForm2, pages 85-88.
 
-[Screenshots](http://infiltrea.com/index.php/visuels) of Infiltrea, a real-world application using FXForm2 - all forms you can see there are based on FXForm2
+[Infiltrea](http://www.infiltrea.com), an application dedicated to the measure of the airtightness of buildings, is using FXForm2.
 
 Licensing
 ---------
