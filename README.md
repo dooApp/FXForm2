@@ -54,7 +54,7 @@ Key benefits
 
 Keep in touch
 -------------
-* For help, use [Stack Overflow](http://stackoverflow.com) with the tag [**fxform**](http://stackoverflow.com/questions/tagged/fxform).
+* For help, use [Stack Overflow](http://stackoverflow.com).
 * If you found a bug, use [GitHub issues](https://github.com/dooapp/FXForm2/issues?state=open).
 * If you have an idea, use [GitHub issues](https://github.com/dooapp/FXForm2/issues?state=open).
 * If you'd like to ask a general question, use [GitHub issues](https://github.com/dooapp/FXForm2/issues?state=open).
