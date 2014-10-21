@@ -129,8 +129,8 @@ public class AbstractFXForm extends Control {
             @Override
             public void onChanged(Change<? extends Element> change) {
                 while (change.next()) {
-                    configure(change.getAddedSubList());
                     unconfigure(change.getRemoved());
+                    configure(change.getAddedSubList());
                 }
             }
         });
