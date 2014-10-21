@@ -63,9 +63,9 @@ Keep in touch
 Reports
 -------
 * [Javadoc](http://dooapp.github.io/FXForm2/2.2.6/site/core/apidocs/index.html)
-* [Javadoc for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.7/site/core/apidocs/index.html)
+* [Javadoc for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.7-SNAPSHOT/site/core/apidocs/index.html)
 * [Maven site](http://dooapp.github.io/FXForm2/2.2.6/site)
-* [Maven site for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.7/site)
+* [Maven site for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.7-SNAPSHOT/site)
 
 Links
 -----
