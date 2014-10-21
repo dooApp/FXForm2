@@ -22,7 +22,7 @@ Add FXForm to your project dependencies:
     <dependency>
         <groupId>com.dooapp.fxform2</groupId>
         <artifactId>core</artifactId>
-        <version>8.0.6</version> <!-- Note: For JavaFX 2.2, use 2.2.6 -->
+        <version>8.0.7</version> <!-- Note: For JavaFX 2.2, use 2.2.6 -->
     </dependency>
 
 Get your FXForm...
@@ -63,9 +63,9 @@ Keep in touch
 Reports
 -------
 * [Javadoc](http://dooapp.github.io/FXForm2/2.2.6/site/core/apidocs/index.html)
-* [Javadoc for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.6-SNAPSHOT/site/core/apidocs/index.html)
+* [Javadoc for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.7/site/core/apidocs/index.html)
 * [Maven site](http://dooapp.github.io/FXForm2/2.2.6/site)
-* [Maven site for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.6-SNAPSHOT/site)
+* [Maven site for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.7/site)
 
 Links
 -----
