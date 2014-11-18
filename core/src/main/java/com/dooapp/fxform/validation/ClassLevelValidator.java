@@ -12,12 +12,18 @@
 
 package com.dooapp.fxform.validation;
 
+import com.dooapp.fxform.AbstractFXForm;
+import com.dooapp.fxform.controller.ElementController;
+import com.dooapp.fxform.controller.NodeController;
+import com.dooapp.fxform.controller.PropertyEditorController;
+import com.dooapp.fxform.model.Element;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 
 import javax.validation.ConstraintViolation;
+import java.util.List;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -32,8 +38,10 @@ public class ClassLevelValidator {
 
     private final ListProperty<ConstraintViolation> constraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.<ConstraintViolation>observableArrayList());
 
+    private AbstractFXForm abstractFXForm;
 
-    public ClassLevelValidator() {
+    public ClassLevelValidator(AbstractFXForm abstractFXForm) {
+        this.abstractFXForm = abstractFXForm;
         bean.addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observableValue, Object o, Object o2) {
@@ -49,7 +57,31 @@ public class ClassLevelValidator {
     }
 
     public void validate() {
-        constraintViolations.setAll(validator.get().validateClassConstraint(bean.getValue()));
+        constraintViolations.clear();
+        List<ConstraintViolation> violationList = validator.get().validateClassConstraint(bean.getValue());
+        // for each violation, check if this violation relates to some specific field, or if it should be treated as a
+        // class violation  (see #92)
+        for (ConstraintViolation violation : violationList) {
+            boolean fieldConstraint = false;
+            for (Element element : abstractFXForm.getElements()) {
+                PropertyElementValidator propertyElementValidator = getElementValidator(element, abstractFXForm);
+                if (propertyElementValidator != null && propertyElementValidator.reportClassLevelConstraintViolation(violation)) {
+                    fieldConstraint = true;
+                }
+            }
+            if (!fieldConstraint) {
+                constraintViolations.add(violation);
+            }
+        }
+    }
+
+    private PropertyElementValidator getElementValidator(Element element, AbstractFXForm abstractFXForm) {
+        ElementController elementController = abstractFXForm.getController(element);
+        NodeController nodeController = elementController.getEditorController();
+        if (PropertyEditorController.class.isAssignableFrom(nodeController.getClass())) {
+            return ((PropertyEditorController) nodeController).getPropertyElementValidator();
+        }
+        return null;
     }
 
     public Object getBean() {

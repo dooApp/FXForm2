@@ -12,38 +12,34 @@
 
 package com.dooapp.fxform.validation;
 
-import com.dooapp.fxform.MyBean;
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * Dummy example of cross field validation that will be reported a class level. The violation
+ * will appear at the top of the form.
+ * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 21/11/2013
- * Time: 11:52
+ * Date: 18/11/14
+ * Time: 11:48
  */
-public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch, Object> {
+@Target({TYPE, ANNOTATION_TYPE})
+@Retention(RUNTIME)
+@Constraint(validatedBy = ColorAndDateValidator.class)
+@Documented
+public @interface ColorAndDate {
 
-    @Override
-    public void initialize(final PasswordMatch constraintAnnotation) {
-    }
+    String message() default "Please select a Date and Color";
 
-    @Override
-    public boolean isValid(final Object value, final ConstraintValidatorContext context) {
-        try {
-            MyBean myBean = (MyBean) value;
+    Class<?>[] groups() default {};
 
-            boolean valid = myBean.getPassword() == null && myBean.getRepeatPassword() == null || myBean.getPassword() != null && myBean.getPassword().equals(myBean.getRepeatPassword());
+    Class<? extends Payload>[] payload() default {};
 
-            if (!valid) {
-                context.disableDefaultConstraintViolation();
-                // by setting the PropertyNode, the validation will be reported at field level and not at class level
-                context.buildConstraintViolationWithTemplate("Password do not match").addPropertyNode("repeatPassword").addConstraintViolation();
-            }
-            return valid;
-        } catch (final Exception ignore) {
-            // ignore
-        }
-        return true;
-    }
 }

@@ -89,7 +89,7 @@ public class AbstractFXForm extends Control {
 
     private final ObjectProperty<FXFormValidator> fxFormValidator = new SimpleObjectProperty<FXFormValidator>(new DefaultFXFormValidator());
 
-    private final ClassLevelValidator classLevelValidator = new ClassLevelValidator();
+    private final ClassLevelValidator classLevelValidator = new ClassLevelValidator(this);
 
     private final ResourceProvider resourceProvider = new DefaultResourceProvider();
 
@@ -344,6 +344,10 @@ public class AbstractFXForm extends Control {
 
     public void addFilters(ElementListFilter... filters) {
         this.filters.addAll(filters);
+    }
+
+    public ElementController getController(Element element) {
+        return controllers.get(element);
     }
 
 }

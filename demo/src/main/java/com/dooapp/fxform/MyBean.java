@@ -14,6 +14,7 @@ package com.dooapp.fxform;
 
 import com.dooapp.fxform.adapter.FormAdapter;
 import com.dooapp.fxform.annotation.FormFactory;
+import com.dooapp.fxform.validation.ColorAndDate;
 import com.dooapp.fxform.validation.PasswordMatch;
 import com.dooapp.fxform.validation.Warning;
 import com.dooapp.fxform.view.factory.impl.PasswordFieldFactory;
@@ -34,6 +35,7 @@ import java.time.LocalDate;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 @PasswordMatch
+@ColorAndDate
 public class MyBean {
 
     public static enum Subject {
@@ -122,4 +124,19 @@ public class MyBean {
         return repeatPassword.get();
     }
 
+    public Color getColor() {
+        return color.get();
+    }
+
+    public ObjectProperty<Color> colorProperty() {
+        return color;
+    }
+
+    public LocalDate getDate() {
+        return date.get();
+    }
+
+    public ObjectProperty<LocalDate> dateProperty() {
+        return date;
+    }
 }

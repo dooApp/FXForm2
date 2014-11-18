@@ -77,6 +77,23 @@ public class PropertyElementValidator {
         constraintViolations.addAll(warningList);
     }
 
+    /**
+     * Report a class level constraint violation. This method will check if the class level constraint violation
+     * relates to this element and add it to this list of violated constraints if required.
+     *
+     * @param constraintViolation
+     */
+    public boolean reportClassLevelConstraintViolation(ConstraintViolation constraintViolation) {
+        if (constraintViolation.getPropertyPath() != null && element.getName().equals(constraintViolation.getPropertyPath().toString())) {
+            if (!constraintViolations.contains(constraintViolation)) {
+                constraintViolations.add(constraintViolation);
+                invalid.set(true);
+            }
+            return true;
+        }
+        return false;
+    }
+
     public ReadOnlyListProperty<ConstraintViolation> constraintViolationsProperty() {
         return constraintViolations;
     }

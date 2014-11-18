@@ -19,31 +19,18 @@ import javax.validation.ConstraintValidatorContext;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
- * Date: 21/11/2013
- * Time: 11:52
+ * Date: 18/11/14
+ * Time: 11:50
  */
-public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch, Object> {
-
+public class ColorAndDateValidator implements ConstraintValidator<ColorAndDate, Object> {
     @Override
-    public void initialize(final PasswordMatch constraintAnnotation) {
+    public void initialize(ColorAndDate colorAndDate) {
+
     }
 
     @Override
-    public boolean isValid(final Object value, final ConstraintValidatorContext context) {
-        try {
-            MyBean myBean = (MyBean) value;
-
-            boolean valid = myBean.getPassword() == null && myBean.getRepeatPassword() == null || myBean.getPassword() != null && myBean.getPassword().equals(myBean.getRepeatPassword());
-
-            if (!valid) {
-                context.disableDefaultConstraintViolation();
-                // by setting the PropertyNode, the validation will be reported at field level and not at class level
-                context.buildConstraintViolationWithTemplate("Password do not match").addPropertyNode("repeatPassword").addConstraintViolation();
-            }
-            return valid;
-        } catch (final Exception ignore) {
-            // ignore
-        }
-        return true;
+    public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
+        MyBean myBean = (MyBean) o;
+        return myBean.getColor() != null && myBean.getDate() != null;
     }
 }

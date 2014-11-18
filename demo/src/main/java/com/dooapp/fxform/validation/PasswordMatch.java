@@ -23,6 +23,10 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * Example of cross field validation using a class level annotation. The validator will
+ * report the constraint violation at a property level, so that de violations appears next
+ * to the related property in the form.
+ * <p/>
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 21/11/2013
  * Time: 11:51

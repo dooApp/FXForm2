@@ -84,4 +84,15 @@ public class ElementController<WrappedType> {
         return element;
     }
 
+    public NodeController getEditorController() {
+        return editorController;
+    }
+
+    public NodeController getLabelController() {
+        return labelController;
+    }
+
+    public NodeController getTooltipController() {
+        return tooltipController;
+    }
 }
