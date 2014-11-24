@@ -23,7 +23,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 
 import javax.validation.ConstraintViolation;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -59,20 +61,18 @@ public class ClassLevelValidator {
     public void validate() {
         constraintViolations.clear();
         List<ConstraintViolation> violationList = validator.get().validateClassConstraint(bean.getValue());
+        Set<ConstraintViolation> violationSetRelatingToElements = new HashSet<>();
         // for each violation, check if this violation relates to some specific field, or if it should be treated as a
         // class violation  (see #92)
-        for (ConstraintViolation violation : violationList) {
-            boolean fieldConstraint = false;
-            for (Element element : abstractFXForm.getElements()) {
-                PropertyElementValidator propertyElementValidator = getElementValidator(element, abstractFXForm);
-                if (propertyElementValidator != null && propertyElementValidator.reportClassLevelConstraintViolation(violation)) {
-                    fieldConstraint = true;
-                }
-            }
-            if (!fieldConstraint) {
-                constraintViolations.add(violation);
+        for (Element element : abstractFXForm.getElements()) {
+            PropertyElementValidator propertyElementValidator = getElementValidator(element, abstractFXForm);
+            if (propertyElementValidator != null) {
+                List<ConstraintViolation> elementViolations = propertyElementValidator.reportClassLevelConstraintViolation(violationList);
+                violationSetRelatingToElements.addAll(elementViolations);
             }
         }
+        violationList.removeAll(violationSetRelatingToElements);
+        constraintViolations.addAll(violationList);
     }
 
     private PropertyElementValidator getElementValidator(Element element, AbstractFXForm abstractFXForm) {

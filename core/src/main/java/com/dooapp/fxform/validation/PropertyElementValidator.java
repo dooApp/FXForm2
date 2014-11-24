@@ -21,6 +21,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.ElementKind;
+import javax.validation.Path;
 import java.util.List;
 
 /**
@@ -35,6 +37,8 @@ public class PropertyElementValidator {
     private final ObjectProperty<FXFormValidator> validator = new SimpleObjectProperty<FXFormValidator>();
 
     private final ListProperty<ConstraintViolation> constraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.<ConstraintViolation>observableArrayList());
+
+    private final ListProperty<ConstraintViolation> classLevelConstraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.<ConstraintViolation>observableArrayList());
 
     private final BooleanProperty invalid = new SimpleBooleanProperty(false);
 
@@ -78,18 +82,39 @@ public class PropertyElementValidator {
     }
 
     /**
-     * Report a class level constraint violation. This method will check if the class level constraint violation
-     * relates to this element and add it to this list of violated constraints if required.
-     *
-     * @param constraintViolation
+     * This method will check for each of those class level constraint violations
+     * if the violation relates to this element and add it to this list of violated constraints if required.
+     * <p/>
+     * Return the list of constraints related to the element handled by this property validator.
      */
-    public boolean reportClassLevelConstraintViolation(ConstraintViolation constraintViolation) {
-        if (constraintViolation.getPropertyPath() != null && element.getName().equals(constraintViolation.getPropertyPath().toString())) {
-            if (!constraintViolations.contains(constraintViolation)) {
-                constraintViolations.add(constraintViolation);
+    public List<ConstraintViolation> reportClassLevelConstraintViolation(List<ConstraintViolation> violations) {
+        constraintViolations.removeAll(classLevelConstraintViolations);
+        invalid.set(!constraintViolations.isEmpty());
+        classLevelConstraintViolations.clear();
+        for (ConstraintViolation constraintViolation : violations) {
+            if (isRelated(constraintViolation)) {
+                classLevelConstraintViolations.add(constraintViolation);
                 invalid.set(true);
             }
-            return true;
+        }
+        constraintViolations.addAll(classLevelConstraintViolations);
+        return classLevelConstraintViolations;
+    }
+
+    /**
+     * This method checks if the given constraint violation is related to the element handled by this validator.
+     *
+     * @param constraintViolation
+     * @return
+     */
+    private boolean isRelated(ConstraintViolation constraintViolation) {
+        if (constraintViolation.getPropertyPath() == null)
+            return false;
+        for (Path.Node node : constraintViolation.getPropertyPath()) {
+            if (node.getKind() == ElementKind.PROPERTY) {
+                return element.getName().equals(node.getName());
+            }
+
         }
         return false;
     }
