@@ -112,7 +112,9 @@ public class PropertyElementValidator {
             return false;
         for (Path.Node node : constraintViolation.getPropertyPath()) {
             if (node.getKind() == ElementKind.PROPERTY) {
-                return element.getName().equals(node.getName());
+                if (element.getName().equals(node.getName())) {
+                    return true;
+                }
             }
 
         }
