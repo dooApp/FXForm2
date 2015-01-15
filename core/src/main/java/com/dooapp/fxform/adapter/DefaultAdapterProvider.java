@@ -53,6 +53,8 @@ public class DefaultAdapterProvider implements AdapterProvider {
                 new ConverterWrapper(new LongStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(DoubleProperty.class, StringProperty.class),
                 new ConverterWrapper(new DoubleStringConverter()));
+        DEFAULT_MAP.put(new TypeAdapterMatcher(FloatProperty.class, StringProperty.class),
+                new ConverterWrapper(new FloatStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(BooleanProperty.class, StringProperty.class),
                 new ConverterWrapper(new BooleanStringConverter()));
         DEFAULT_MAP.put(new ObjectPropertyAdapterMatcher(BigDecimal.class, StringProperty.class),
