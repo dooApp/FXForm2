@@ -41,6 +41,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
+import javafx.scene.control.Skin;
 import javafx.util.Callback;
 
 import javax.validation.ConstraintViolation;
@@ -59,35 +60,19 @@ import java.util.logging.Logger;
  */
 public class AbstractFXForm extends Control {
 
-    private final static Logger logger = Logger.getLogger(FXForm.class.getName());
-
     public final static String INVALID_STYLE = "-invalid";
 
     public static final String WARNING_STYLE = "-warning";
 
-    private StringProperty title = new SimpleStringProperty();
+    private final static Logger logger = Logger.getLogger(FXForm.class.getName());
+
+    protected final ObservableList<ConstraintViolation> constraintViolationsList = FXCollections.<ConstraintViolation>observableArrayList();
 
     private final MapProperty<Element, ElementController> controllers = new SimpleMapProperty<Element, ElementController>(FXCollections.<Element, ElementController>observableHashMap());
 
     private final ListProperty<Element> elements = new SimpleListProperty<Element>(FXCollections.<Element>observableArrayList());
 
     private final ObjectProperty<ResourceBundle> resourceBundle = new SimpleObjectProperty<ResourceBundle>();
-
-    private final ObjectProperty<FactoryProvider> editorFactoryProvider = new SimpleObjectProperty<FactoryProvider>();
-
-    private final ObjectProperty<FactoryProvider> tooltipFactoryProvider = new SimpleObjectProperty<FactoryProvider>();
-
-    private final ObjectProperty<FactoryProvider> labelFactoryProvider = new SimpleObjectProperty<FactoryProvider>();
-
-    private final ObjectProperty<FactoryProvider> constraintFactoryProvider = new SimpleObjectProperty<FactoryProvider>();
-
-    private final ObjectProperty<AdapterProvider> adapterProvider = new SimpleObjectProperty<AdapterProvider>();
-
-    private final ObjectProperty<PropertyProvider> propertyProvider = new SimpleObjectProperty<PropertyProvider>();
-
-    protected final ObservableList<ConstraintViolation> constraintViolationsList = FXCollections.<ConstraintViolation>observableArrayList();
-
-    private final ObjectProperty<FXFormValidator> fxFormValidator = new SimpleObjectProperty<FXFormValidator>(new DefaultFXFormValidator());
 
     private final ClassLevelValidator classLevelValidator = new ClassLevelValidator(this);
 
@@ -97,22 +82,24 @@ public class AbstractFXForm extends Control {
 
     private final ListProperty<Element> filteredElements = new SimpleListProperty<Element>(FXCollections.<Element>observableArrayList());
 
-    public void setTitle(String title) {
-        this.title.set(title);
-    }
+    private StringProperty title = new SimpleStringProperty();
+
+    private ObjectProperty<FactoryProvider> editorFactoryProvider;
+
+    private ObjectProperty<FactoryProvider> tooltipFactoryProvider;
+
+    private ObjectProperty<FactoryProvider> labelFactoryProvider;
+
+    private ObjectProperty<FactoryProvider> constraintFactoryProvider;
+
+    private ObjectProperty<AdapterProvider> adapterProvider;
+
+    private ObjectProperty<PropertyProvider> propertyProvider;
+
+    private ObjectProperty<FXFormValidator> fxFormValidator;
 
     public AbstractFXForm() {
         resourceProvider.resourceBundleProperty().bind(resourceBundleProperty());
-        setPropertyProvider(new DefaultPropertyProvider());
-        setAdapterProvider(new DefaultAdapterProvider());
-        setEditorFactoryProvider(new DefaultFactoryProvider());
-        setLabelFactoryProvider(new DefaultLabelFactoryProvider());
-        setTooltipFactoryProvider(new DefaultTooltipFactoryProvider());
-        setConstraintFactoryProvider(new FactoryProvider() {
-            public Callback<Void, FXFormNode> getFactory(Element element) {
-                return new DefaultConstraintFactory();
-            }
-        });
         filters.addListener(new ChangeListener<ObservableList<ElementListFilter>>() {
             @Override
             public void changed(ObservableValue<? extends ObservableList<ElementListFilter>> observableValue, ObservableList<ElementListFilter> elementListFilters, ObservableList<ElementListFilter> elementListFilters2) {
@@ -144,7 +131,15 @@ public class AbstractFXForm extends Control {
                 }
             }
         });
-        this.setSkin(new DefaultSkin(this));
+    }
+
+    public void setTitle(String title) {
+        this.title.set(title);
+    }
+
+    @Override
+    protected Skin<?> createDefaultSkin() {
+        return new DefaultSkin(this);
     }
 
     /**
@@ -197,6 +192,14 @@ public class AbstractFXForm extends Control {
         return title;
     }
 
+    public ObjectProperty<ResourceBundle> resourceBundleProperty() {
+        return resourceBundle;
+    }
+
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle.get();
+    }
+
     /**
      * Set the resource bundle used by this form to i18n labels, tooltips,...
      *
@@ -206,44 +209,84 @@ public class AbstractFXForm extends Control {
         this.resourceBundle.set(resourceBundle);
     }
 
-    public ObjectProperty<ResourceBundle> resourceBundleProperty() {
-        return resourceBundle;
-    }
-
-    public ResourceBundle getResourceBundle() {
-        return resourceBundle.get();
-    }
-
     public FactoryProvider getEditorFactoryProvider() {
-        return editorFactoryProvider.get();
-    }
-
-    public FactoryProvider getTooltipFactoryProvider() {
-        return tooltipFactoryProvider.get();
-    }
-
-    public FactoryProvider getLabelFactoryProvider() {
-        return labelFactoryProvider.get();
-    }
-
-    public FactoryProvider getConstraintFactoryProvider() {
-        return constraintFactoryProvider.get();
+        return editorFactoryProviderProperty().get();
     }
 
     public void setEditorFactoryProvider(FactoryProvider editorFactoryProvider1) {
-        editorFactoryProvider.set(editorFactoryProvider1);
+        editorFactoryProviderProperty().set(editorFactoryProvider1);
     }
 
-    public void setLabelFactoryProvider(FactoryProvider labelFactoryProvider1) {
-        labelFactoryProvider.set(labelFactoryProvider1);
+    public FactoryProvider getTooltipFactoryProvider() {
+        return tooltipFactoryProviderProperty().get();
     }
 
     public void setTooltipFactoryProvider(FactoryProvider tooltipFactoryProvider1) {
-        tooltipFactoryProvider.set(tooltipFactoryProvider1);
+        tooltipFactoryProviderProperty().set(tooltipFactoryProvider1);
+    }
+
+    public FactoryProvider getLabelFactoryProvider() {
+        return labelFactoryProviderProperty().get();
+    }
+
+    public void setLabelFactoryProvider(FactoryProvider labelFactoryProvider1) {
+        labelFactoryProviderProperty().set(labelFactoryProvider1);
+    }
+
+    public FactoryProvider getConstraintFactoryProvider() {
+        return constraintFactoryProviderProperty().get();
     }
 
     public void setConstraintFactoryProvider(FactoryProvider constraintFactoryProvider1) {
-        constraintFactoryProvider.set(constraintFactoryProvider1);
+        constraintFactoryProviderProperty().set(constraintFactoryProvider1);
+    }
+
+    public ObjectProperty<FactoryProvider> constraintFactoryProviderProperty() {
+        if (constraintFactoryProvider == null) {
+            constraintFactoryProvider = createConstraintFactoryProvider();
+        }
+        return constraintFactoryProvider;
+    }
+
+    protected ObjectProperty<FactoryProvider> createConstraintFactoryProvider() {
+        return new SimpleObjectProperty<>(new FactoryProvider() {
+            public Callback<Void, FXFormNode> getFactory(Element element) {
+                return new DefaultConstraintFactory();
+            }
+        });
+    }
+
+    public ObjectProperty<FactoryProvider> editorFactoryProviderProperty() {
+        if (editorFactoryProvider == null) {
+            editorFactoryProvider = createEditorFactoryProviderProperty();
+        }
+        return editorFactoryProvider;
+    }
+
+    protected ObjectProperty<FactoryProvider> createEditorFactoryProviderProperty() {
+        return new SimpleObjectProperty<>(new DefaultFactoryProvider());
+    }
+
+    public ObjectProperty<FactoryProvider> labelFactoryProviderProperty() {
+        if (labelFactoryProvider == null) {
+            labelFactoryProvider = createLabelFactoryProvider();
+        }
+        return labelFactoryProvider;
+    }
+
+    protected ObjectProperty<FactoryProvider> createLabelFactoryProvider() {
+        return new SimpleObjectProperty<>(new DefaultLabelFactoryProvider());
+    }
+
+    public ObjectProperty<FactoryProvider> tooltipFactoryProviderProperty() {
+        if (tooltipFactoryProvider == null) {
+            tooltipFactoryProvider = createTooltipFactoryProviderProperty();
+        }
+        return tooltipFactoryProvider;
+    }
+
+    protected ObjectProperty<FactoryProvider> createTooltipFactoryProviderProperty() {
+        return new SimpleObjectProperty<>(new DefaultTooltipFactoryProvider());
     }
 
     public ObjectProperty<FactoryProvider> editorFactoryProvider() {
@@ -263,39 +306,60 @@ public class AbstractFXForm extends Control {
     }
 
     public AdapterProvider getAdapterProvider() {
-        return adapterProvider.get();
+        return adapterProviderProperty().get();
     }
 
     public void setAdapterProvider(AdapterProvider adapterProvider1) {
-        this.adapterProvider.set(adapterProvider1);
+        this.adapterProviderProperty().set(adapterProvider1);
     }
 
     public ObjectProperty<AdapterProvider> adapterProviderProperty() {
+        if (adapterProvider == null) {
+            adapterProvider = createAdapterProviderProperty();
+        }
         return adapterProvider;
     }
 
+    protected ObjectProperty<AdapterProvider> createAdapterProviderProperty() {
+        return new SimpleObjectProperty<>(new DefaultAdapterProvider());
+    }
+
     public PropertyProvider getPropertyProvider() {
-        return propertyProvider.get();
+        return propertyProviderProperty().get();
     }
 
     public void setPropertyProvider(PropertyProvider propertyProvider) {
-        this.propertyProvider.set(propertyProvider);
+        this.propertyProviderProperty().set(propertyProvider);
     }
 
     public ObjectProperty<PropertyProvider> propertyProviderProperty() {
+        if (propertyProvider == null) {
+            propertyProvider = createPropertyProviderProperty();
+        }
         return propertyProvider;
     }
 
+    protected ObjectProperty<PropertyProvider> createPropertyProviderProperty() {
+        return new SimpleObjectProperty<>(new DefaultPropertyProvider());
+    }
+
     public FXFormValidator getFxFormValidator() {
-        return fxFormValidator.get();
+        return fxFormValidatorProperty().get();
     }
 
     public void setFxFormValidator(FXFormValidator fxFormValidator) {
-        this.fxFormValidator.set(fxFormValidator);
+        this.fxFormValidatorProperty().set(fxFormValidator);
     }
 
     public ObjectProperty<FXFormValidator> fxFormValidatorProperty() {
+        if (fxFormValidator == null) {
+            fxFormValidator = createFxFormValidatorProperty();
+        }
         return fxFormValidator;
+    }
+
+    protected SimpleObjectProperty<FXFormValidator> createFxFormValidatorProperty() {
+        return new SimpleObjectProperty<>(new DefaultFXFormValidator());
     }
 
     /**
@@ -318,12 +382,12 @@ public class AbstractFXForm extends Control {
         return elements.get();
     }
 
-    public ListProperty<Element> elementsProperty() {
-        return elements;
-    }
-
     public void setElements(ListProperty<Element> elements) {
         this.elements.set(elements);
+    }
+
+    public ListProperty<Element> elementsProperty() {
+        return elements;
     }
 
     public ObservableList<Element> getFilteredElements() {
