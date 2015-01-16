@@ -28,6 +28,8 @@ public class ReflectionUtils {
 
     private final static Logger logger = Logger.getLogger(ReflectionUtils.class.getName());
 
+    public final static String PROPERTY_GETTER = "Property";
+
     /**
      * Tries to retrieve the generic parameter of an ObjectProperty at runtime.
      */
@@ -182,6 +184,16 @@ public class ReflectionUtils {
         if (!field.isAccessible()) {
             field.setAccessible(true);
         }
+    }
+
+    /**
+     * This method tries to find the property getter corresponding to a given javafx property field.
+     *
+     * @param field
+     * @return
+     */
+    public static Method getPropertyGetter(Field field) throws NoSuchMethodException {
+         return field.getDeclaringClass().getMethod(field.getName() + PROPERTY_GETTER);
     }
 
 }

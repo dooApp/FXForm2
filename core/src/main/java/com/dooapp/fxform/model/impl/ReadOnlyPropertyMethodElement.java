@@ -30,61 +30,59 @@ import java.util.logging.Logger;
  */
 public class ReadOnlyPropertyMethodElement<SourceType, WrappedType> extends AbstractSourceElement<SourceType, WrappedType> implements Element<WrappedType> {
 
-	public final static String PROPERTY_GETTER = "Property";
+    private final static Logger logger = Logger.getLogger(ReadOnlyPropertyMethodElement.class.getName());
 
-	private final static Logger logger = Logger.getLogger(ReadOnlyPropertyMethodElement.class.getName());
+    protected final Field field;
 
-	protected final Field field;
+    private Method method;
 
-	private Method method;
+    public ReadOnlyPropertyMethodElement(Field field) throws NoSuchMethodException {
+        this.field = field;
+        initMethod();
+    }
 
-	public ReadOnlyPropertyMethodElement(Field field) throws NoSuchMethodException {
-		this.field = field;
-		initMethod();
-	}
+    @Override
+    protected ObservableValue<WrappedType> computeValue() {
+        try {
+            return (ObservableValue<WrappedType>) method.invoke(getSource());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	@Override
-	protected ObservableValue<WrappedType> computeValue() {
-		try {
-			return (ObservableValue<WrappedType>) method.invoke(getSource());
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    @Override
+    public Class<?> getType() {
+        return method.getReturnType();
+    }
 
-	@Override
-	public Class<?> getType() {
-		return method.getReturnType();
-	}
+    @Override
+    public Class<WrappedType> getWrappedType() {
+        return ReflectionUtils.getMethodReturnTypeGeneric(getSource(), method);
+    }
 
-	@Override
-	public Class<WrappedType> getWrappedType() {
-		return ReflectionUtils.getMethodReturnTypeGeneric(getSource(), method);
-	}
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+        T annotation = method.getAnnotation(annotationClass);
+        if (annotation == null) {
+            annotation = field.getAnnotation(annotationClass);
+        }
+        return annotation;
+    }
 
-	@Override
-	public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-		T annotation = method.getAnnotation(annotationClass);
-		if (annotation == null) {
-			annotation = field.getAnnotation(annotationClass);
-		}
-		return annotation;
-	}
+    @Override
+    public String getName() {
+        return field.getName();
+    }
 
-	@Override
-	public String getName() {
-		return field.getName();
-	}
+    private void initMethod() throws NoSuchMethodException {
+        method = ReflectionUtils.getPropertyGetter(field);
+    }
 
-	private void initMethod() throws NoSuchMethodException {
-		method = field.getDeclaringClass().getMethod(field.getName() + PROPERTY_GETTER);
-	}
-
-	@Override
-	public Class getDeclaringClass() {
-		return field.getDeclaringClass();
-	}
+    @Override
+    public Class getDeclaringClass() {
+        return field.getDeclaringClass();
+    }
 }

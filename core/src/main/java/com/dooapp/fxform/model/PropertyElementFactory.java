@@ -17,10 +17,12 @@ import com.dooapp.fxform.model.impl.PropertyFieldElement;
 import com.dooapp.fxform.model.impl.PropertyMethodElement;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyMethodElement;
+import com.dooapp.fxform.reflection.ReflectionUtils;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyProperty;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,20 +40,17 @@ public class PropertyElementFactory implements ElementFactory {
         Element element = null;
         if (field.getDeclaringClass().isAnnotationPresent(Accessor.class)
                 && (Accessor.AccessType.METHOD == field.getDeclaringClass().getAnnotation(Accessor.class).value())) {
-            if (Property.class.isAssignableFrom(field.getType())) {
-                try {
+            try {
+                Method propertyGetter = ReflectionUtils.getPropertyGetter(field);
+                if (Property.class.isAssignableFrom(propertyGetter.getReturnType())) {
                     element = new PropertyMethodElement(field);
-                } catch (NoSuchMethodException e) {
-                    logger.log(Level.INFO, "No property getter found for " + field);
-                    throw new FormException(e);
-                }
-            } else {
-                try {
+
+                } else {
                     element = new ReadOnlyPropertyMethodElement(field);
-                } catch (NoSuchMethodException e) {
-                    logger.log(Level.INFO, "No property getter found for " + field);
-                    throw new FormException(e);
                 }
+            } catch (NoSuchMethodException e) {
+                logger.log(Level.INFO, "No property getter found for " + field);
+                throw new FormException(e);
             }
         } else {
             if (Property.class.isAssignableFrom(field.getType())) {
