@@ -64,7 +64,7 @@ public class ClassLevelValidator {
         Set<ConstraintViolation> violationSetRelatingToElements = new HashSet<>();
         // for each violation, check if this violation relates to some specific field, or if it should be treated as a
         // class violation  (see #92)
-        for (Element element : abstractFXForm.getElements()) {
+        for (Element element : abstractFXForm.getFilteredElements()) {
             PropertyElementValidator propertyElementValidator = getElementValidator(element, abstractFXForm);
             if (propertyElementValidator != null) {
                 List<ConstraintViolation> elementViolations = propertyElementValidator.reportClassLevelConstraintViolation(violationList);
