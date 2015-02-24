@@ -88,4 +88,4 @@ FXForm2 is licensed under the Lesser GPL license.
 
 Build status
 ------------
-[![Build Status](https://buildhive.cloudbees.com/job/dooApp/job/FXForm2/badge/icon)](https://buildhive.cloudbees.com/job/dooApp/job/FXForm2/)
+[![Build Status](https://travis-ci.org/dooApp/FXForm2.svg?branch=master)](https://travis-ci.org/dooApp/FXForm2)
