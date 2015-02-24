@@ -74,7 +74,7 @@ public class AbstractFXForm extends Control {
 
     private final ObjectProperty<ResourceBundle> resourceBundle = new SimpleObjectProperty<ResourceBundle>();
 
-    private final ClassLevelValidator classLevelValidator = new ClassLevelValidator(this);
+    private ClassLevelValidator classLevelValidator = null;
 
     private final ResourceProvider resourceProvider = new DefaultResourceProvider();
 
@@ -118,16 +118,6 @@ public class AbstractFXForm extends Control {
                 while (change.next()) {
                     unconfigure(change.getRemoved());
                     configure(change.getAddedSubList());
-                }
-            }
-        });
-        classLevelValidator.validatorProperty().bind(fxFormValidatorProperty());
-        classLevelValidator.constraintViolationsProperty().addListener(new ListChangeListener<ConstraintViolation>() {
-            @Override
-            public void onChanged(Change<? extends ConstraintViolation> change) {
-                while (change.next()) {
-                    constraintViolationsList.removeAll(change.getRemoved());
-                    constraintViolationsList.addAll(change.getAddedSubList());
                 }
             }
         });
@@ -399,7 +389,25 @@ public class AbstractFXForm extends Control {
     }
 
     public ClassLevelValidator getClassLevelValidator() {
+        if (classLevelValidator == null) {
+            classLevelValidator = createClassLevelValidator();
+        }
         return classLevelValidator;
+    }
+
+    protected ClassLevelValidator createClassLevelValidator() {
+        ClassLevelValidator clv = new ClassLevelValidator(this);
+        clv.validatorProperty().bind(fxFormValidatorProperty());
+        clv.constraintViolationsProperty().addListener(new ListChangeListener<ConstraintViolation>() {
+            @Override
+            public void onChanged(Change<? extends ConstraintViolation> change) {
+                while (change.next()) {
+                    constraintViolationsList.removeAll(change.getRemoved());
+                    constraintViolationsList.addAll(change.getAddedSubList());
+                }
+            }
+        });
+        return clv;
     }
 
     public ObservableList<ElementListFilter> getFilters() {
