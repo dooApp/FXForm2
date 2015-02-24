@@ -46,6 +46,7 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
                 }
             }
         });
+        fxForm.getConstraintViolations().addAll(validator.constraintViolationsProperty().get());
         constraintController = new ConstraintController(fxForm, element, validator.constraintViolationsProperty());
         updateSkin((FXFormSkin) fxForm.getSkin());
         validator.invalidProperty().addListener(new ChangeListener<Boolean>() {
