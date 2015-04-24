@@ -16,10 +16,7 @@ import com.dooapp.fxform.model.Category;
 import com.dooapp.fxform.model.Element;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -72,7 +69,7 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
         this.source.set(source);
     }
 
-    public ObjectProperty<SourceType> sourceProperty() {
+    public Property sourceProperty() {
         return source;
     }
 

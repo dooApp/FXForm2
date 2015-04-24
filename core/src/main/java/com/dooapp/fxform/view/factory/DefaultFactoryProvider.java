@@ -47,22 +47,34 @@ public class DefaultFactoryProvider implements FactoryProvider {
 
     public DefaultFactoryProvider() {
         // register default delegates
+        DEFAULT_MAP.put(new EnumHandler(), new EnumChoiceBoxFactory());
+
+        // based on element type
         DEFAULT_MAP.put(new TypeFieldHandler(StringProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(BooleanProperty.class), new CheckboxFactory());
-        DEFAULT_MAP.put(new EnumHandler(), new EnumChoiceBoxFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(IntegerProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(LongProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(DoubleProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(FloatProperty.class), new TextFieldFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(ListProperty.class), new TableViewFactory());
-        DEFAULT_MAP.put(new WrappedTypeHandler(BigDecimal.class), new TextFieldFactory());
-        DEFAULT_MAP.put(new WrappedTypeHandler(Color.class), new ColorPickerFactory());
-        DEFAULT_MAP.put(new WrappedTypeHandler(LocalDate.class), new DatePickerFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyStringProperty.class), new LabelFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyBooleanProperty.class), new CheckboxFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyIntegerProperty.class), new LabelFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyLongProperty.class), new LabelFactory());
         DEFAULT_MAP.put(new TypeFieldHandler(ReadOnlyDoubleProperty.class), new LabelFactory());
+        DEFAULT_MAP.put(new TypeFieldHandler(MapProperty.class), new MapEditorControlFactory());
+
+        // based on element wrapped type
+        DEFAULT_MAP.put(new WrappedTypeHandler(BigDecimal.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new WrappedTypeHandler(Color.class), new ColorPickerFactory());
+        DEFAULT_MAP.put(new WrappedTypeHandler(LocalDate.class), new DatePickerFactory());
+        DEFAULT_MAP.put(new WrappedTypeHandler(String.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new WrappedTypeHandler(Boolean.class), new CheckboxFactory());
+        DEFAULT_MAP.put(new WrappedTypeHandler(Integer.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new WrappedTypeHandler(Long.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new WrappedTypeHandler(Double.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new WrappedTypeHandler(Float.class), new TextFieldFactory());
+
     }
 
     private Callback<Void, FXFormNode> getDelegate(Element element, Map<ElementHandler, Callback<Void, FXFormNode>> map) {

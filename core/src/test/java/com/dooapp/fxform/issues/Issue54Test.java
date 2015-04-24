@@ -59,9 +59,9 @@ public class Issue54Test {
         element1 = new PropertyFieldElement(MyBean.class.getDeclaredField("property1"));
         element2 = new PropertyFieldElement(MyBean.class.getDeclaredField("property2"));
         element3 = new PropertyFieldElement(MyBean.class.getDeclaredField("property3"));
-        element1.sourceProperty().set(myBean);
-        element2.sourceProperty().set(myBean);
-        element3.sourceProperty().set(myBean);
+        element1.sourceProperty().setValue(myBean);
+        element2.sourceProperty().setValue(myBean);
+        element3.sourceProperty().setValue(myBean);
     }
 
     @Test

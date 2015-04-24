@@ -19,7 +19,9 @@ import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -27,11 +29,29 @@ import java.util.List;
  * Time: 16:57
  */
 public class UtilTest {
+
+    private static class BeanWithMapProperty {
+
+        public Map<String, String> stringMap;
+
+        public Map<String, Boolean> booleanMap;
+
+    }
+
     @Test
     public void testGetObjectPropertyGeneric() throws Exception {
         List<Element> fields = TestUtils.getTestFields();
         Element objectPropertyField = fields.get(4);
         Class clazz = ReflectionUtils.getObjectPropertyGeneric(null, ((ReadOnlyPropertyFieldElement) objectPropertyField).getField());
         Assert.assertEquals(TestEnum.class, clazz);
+    }
+
+    @Test
+    public void tesGetMapPropertyValueType() throws NoSuchFieldException {
+        Field stringMapField = BeanWithMapProperty.class.getField("stringMap");
+        Assert.assertEquals(String.class, ReflectionUtils.getMapPropertyValueType(stringMapField));
+        Field booleanMapField = BeanWithMapProperty.class.getField("booleanMap");
+        Assert.assertEquals(Boolean.class, ReflectionUtils.getMapPropertyValueType(booleanMapField));
+
     }
 }

@@ -20,8 +20,8 @@ import com.dooapp.fxform.validation.Warning;
 import com.dooapp.fxform.view.factory.impl.PasswordFieldFactory;
 import com.dooapp.fxform.view.factory.impl.TextAreaFactory;
 import javafx.beans.property.*;
-import javafx.scene.paint.Color;
 import javafx.collections.FXCollections;
+import javafx.scene.paint.Color;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.Max;
@@ -74,6 +74,8 @@ public class MyBean {
 
     private final ListProperty<TableBean> list = new SimpleListProperty<TableBean>(FXCollections.<TableBean>observableArrayList());
 
+    private final MapProperty<String, String> map = new SimpleMapProperty(FXCollections.observableHashMap());
+
     protected MyBean(String name, String email, String message, boolean subscribe, Subject subject) {
         this.name.set(name);
         this.email.set(email);
@@ -81,6 +83,8 @@ public class MyBean {
         this.subscribe.set(subscribe);
         this.subject.set(subject);
         this.list.addAll(new TableBean("Name 1", 99), new TableBean("Name 2", 98));
+        this.map.put("a", "1");
+        this.map.put("b", "2");
         ((StringProperty) welcome).bind(this.name.concat(", welcome!"));
         ((BooleanProperty) unsubscribe).bind(this.subscribe.not());
     }

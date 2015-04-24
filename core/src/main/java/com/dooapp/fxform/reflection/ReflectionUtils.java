@@ -193,7 +193,22 @@ public class ReflectionUtils {
      * @return
      */
     public static Method getPropertyGetter(Field field) throws NoSuchMethodException {
-         return field.getDeclaringClass().getMethod(field.getName() + PROPERTY_GETTER);
+        return field.getDeclaringClass().getMethod(field.getName() + PROPERTY_GETTER);
+    }
+
+    /**
+     * Try to extract the value type of a MapProperty field.s
+     *
+     * @param field
+     * @return
+     */
+    public static Class getMapPropertyValueType(Field field) {
+        Type type = field.getGenericType();
+        if (type instanceof ParameterizedType) {
+            return (Class) ((ParameterizedType) type).getActualTypeArguments()[1];
+        } else {
+            return null;
+        }
     }
 
 }

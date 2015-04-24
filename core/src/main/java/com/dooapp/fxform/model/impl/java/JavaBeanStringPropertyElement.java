@@ -33,7 +33,7 @@ public class JavaBeanStringPropertyElement extends AbstractJavaBeanElement<Strin
     protected JavaBeanProperty<String> buildJavaBeanProperty() throws NoSuchMethodException {
         return JavaBeanStringPropertyBuilder
                 .create()
-                .bean(sourceProperty().get())
+                .bean(sourceProperty().getValue())
                 .name(field.getName())
                 .build();
     }

@@ -37,8 +37,8 @@ public abstract class AbstractNameFilter implements ElementListFilter {
 	protected Element getFieldByName(List<Element> elements, String name) throws FilterException {
 		for (Element field : elements) {
 			String fullName = field.getDeclaringClass().getName() + "-" + field.getName();
-			if (field.sourceProperty().get() != null) {
-				fullName = field.sourceProperty().get().getClass().getName() + "-" + field.getName();
+			if (field.sourceProperty().getValue() != null) {
+				fullName = field.sourceProperty().getValue().getClass().getName() + "-" + field.getName();
 			}
 			if (name.equals(fullName) || name.equals(field.getName())) {
 				return field;

@@ -13,7 +13,6 @@
 package com.dooapp.fxform.model.impl.java;
 
 import com.dooapp.fxform.model.FormException;
-import com.dooapp.fxform.model.impl.java.AbstractJavaBeanElement;
 import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder;
 import javafx.beans.property.adapter.JavaBeanProperty;
 
@@ -35,7 +34,7 @@ public class JavaBeanObjectPropertyElement extends AbstractJavaBeanElement<Objec
     protected JavaBeanProperty<Object> buildJavaBeanProperty() throws NoSuchMethodException {
         return JavaBeanObjectPropertyBuilder
                 .create()
-                .bean(sourceProperty().get())
+                .bean(sourceProperty().getValue())
                 .name(field.getName())
                 .build();
     }

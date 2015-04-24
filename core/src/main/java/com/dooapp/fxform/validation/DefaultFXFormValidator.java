@@ -63,7 +63,7 @@ public class DefaultFXFormValidator implements FXFormValidator {
 	public List<ConstraintViolation> validate(Element element, Object newValue, Class... groups) {
 		final List<ConstraintViolation> list = new LinkedList<ConstraintViolation>();
 		if (validator != null) {
-			list.addAll(validator.validateValue((Class<Object>) (element.sourceProperty().get().getClass()),
+			list.addAll(validator.validateValue((Class<Object>) (element.sourceProperty().getValue().getClass()),
 					element.getName(),
 					newValue, groups));
 		}

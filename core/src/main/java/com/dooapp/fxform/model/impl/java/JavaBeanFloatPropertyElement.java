@@ -33,7 +33,7 @@ public class JavaBeanFloatPropertyElement extends AbstractJavaBeanElement<Number
     protected JavaBeanProperty<Number> buildJavaBeanProperty() throws NoSuchMethodException {
         return JavaBeanFloatPropertyBuilder
                 .create()
-                .bean(sourceProperty().get())
+                .bean(sourceProperty().getValue())
                 .name(field.getName())
                 .build();
     }

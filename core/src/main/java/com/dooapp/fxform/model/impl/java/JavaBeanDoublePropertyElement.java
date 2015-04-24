@@ -33,7 +33,7 @@ public class JavaBeanDoublePropertyElement extends AbstractJavaBeanElement<Numbe
     protected JavaBeanProperty<Number> buildJavaBeanProperty() throws NoSuchMethodException {
         return JavaBeanDoublePropertyBuilder
                 .create()
-                .bean(sourceProperty().get())
+                .bean(sourceProperty().getValue())
                 .name(field.getName())
                 .build();
     }

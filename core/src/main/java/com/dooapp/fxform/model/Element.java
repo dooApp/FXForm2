@@ -12,7 +12,7 @@
 package com.dooapp.fxform.model;
 
 import com.dooapp.fxform.utils.Disposable;
-import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyProperty;
 
 import java.lang.annotation.Annotation;
@@ -44,7 +44,7 @@ public interface Element<WrappedType> extends ReadOnlyProperty<WrappedType>, Dis
      *
      * @return
      */
-    public ObjectProperty sourceProperty();
+    public Property sourceProperty();
 
     /**
      * Similar to Field#getAnnotation

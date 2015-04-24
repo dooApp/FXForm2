@@ -33,7 +33,7 @@ public class JavaBeanLongPropertyElement extends AbstractJavaBeanElement<Number>
     protected JavaBeanProperty<Number> buildJavaBeanProperty() throws NoSuchMethodException {
         return JavaBeanLongPropertyBuilder
                 .create()
-                .bean(sourceProperty().get())
+                .bean(sourceProperty().getValue())
                 .name(field.getName())
                 .build();
     }

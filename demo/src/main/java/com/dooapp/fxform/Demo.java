@@ -13,14 +13,10 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.builder.FXFormBuilder;
-import com.dooapp.fxform.handler.TypeFieldHandler;
-import com.dooapp.fxform.map.MapPropertyFactory;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.FXFormSkinFactory;
-import com.dooapp.fxform.view.factory.DefaultFactoryProvider;
 import com.dooapp.fxform.view.skin.FXMLSkin;
 import javafx.application.Application;
-import javafx.beans.property.MapProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -55,8 +51,6 @@ public class Demo extends Application {
     protected void setup() {
         MyBean joe = new MyBean("Joe", "contact@", "How does this crazy form works?", true, MyBean.Subject.QUESTION);
         new ObjectPropertyObserver(joe);
-        // register a factory for the userMap field that is not handled by default
-        DefaultFactoryProvider.addGlobalFactory(new TypeFieldHandler(MapProperty.class), new MapPropertyFactory());
         fxForm = new FXFormBuilder()
                 .source(joe)
                 .categorize("-USER-", "name", "welcome", "email", "-DATA-", "subject", "message")

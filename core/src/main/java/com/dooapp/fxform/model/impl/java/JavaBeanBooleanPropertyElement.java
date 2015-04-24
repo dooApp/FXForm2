@@ -33,7 +33,7 @@ public class JavaBeanBooleanPropertyElement extends AbstractJavaBeanElement<Bool
     protected JavaBeanProperty<Boolean> buildJavaBeanProperty() throws NoSuchMethodException {
         return JavaBeanBooleanPropertyBuilder.create()
                 .name(field.getName())
-                .bean(sourceProperty().get())
+                .bean(sourceProperty().getValue())
                 .build();
     }
 

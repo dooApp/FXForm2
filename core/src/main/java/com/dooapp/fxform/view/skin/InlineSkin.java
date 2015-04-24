@@ -12,14 +12,12 @@
 
 package com.dooapp.fxform.view.skin;
 
-import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeCreationException;
-import com.dooapp.fxform.view.NodeType;
 import com.dooapp.fxform.view.control.AutoHidableLabel;
-import com.dooapp.fxform.view.control.ConstraintLabel;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -42,7 +40,7 @@ import java.util.Map;
  */
 public class InlineSkin extends FXFormSkin {
 
-    public InlineSkin(FXForm fxForm) {
+    public InlineSkin(AbstractFXForm fxForm) {
         super(fxForm);
     }
 

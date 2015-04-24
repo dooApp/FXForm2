@@ -33,7 +33,7 @@ public class JavaBeanIntegerPropertyElement extends AbstractJavaBeanElement<Numb
     protected JavaBeanProperty<Number> buildJavaBeanProperty() throws NoSuchMethodException {
         return JavaBeanIntegerPropertyBuilder
                 .create()
-                .bean(sourceProperty().get())
+                .bean(sourceProperty().getValue())
                 .name(field.getName())
                 .build();
     }
