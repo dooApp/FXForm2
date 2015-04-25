@@ -13,108 +13,110 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset='utf-8'>
+    <meta charset='utf-8'>
 
-  <title>dooapp/FXForm2 @ GitHub</title>
+    <title>dooapp/FXForm2 @ GitHub</title>
 
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #fefefe;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #000000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: rgba(96, 167, 208,0.5); margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; color: rgba(96, 167, 208, 0.5) }
-    h1 a { text-decoration: none; color: rgba(96, 167, 208, 1.0) }
-    h2 { font-size: 1.5em; color: rgba(96, 167, 208, 1.0); }
-    h3 { text-align: center; color: rgba(96, 167, 208, 1.0); }
-    a { color: rgba(96, 167, 208, 1.0); }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
-  <link rel="stylesheet" type="text/css" href="style.css" />	
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css"/>
+
 </head>
 
 <body>
-  <a href="http://github.com/dooapp/FXForm2"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+<a href="http://github.com/dooapp/FXForm2"><img style="position: absolute; top: 0; right: 0; border: 0;"
+                                                src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"
+                                                alt="Fork me on GitHub"/></a>
 
-  <div id="container">
+<div class="container">
+    <div class="row">
+        <div class="jumbotron">
+            <div class="page-header">
+                <h1><a href="http://github.com/dooapp/FXForm2" class="fxform2-logo">FXForm2 |</a>
+                    <small>by dooApp</small>
+                </h1>
+                <p>Stop coding forms: FXForm2 can do it for you!</p>
+            </div>
+            <p><a class="btn btn-primary btn-lg" href="#" role="button">See on GitHub</a></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
 
-    <div class="download">
-      <a href="http://github.com/dooapp/FXForm2/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/dooapp/FXForm2/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+            <h2>Automatic JavaFX form generation</h2>
+
+            <p>FXForm2 is a library providing automatic JavaFX form generation.</p>
+
+            <p>How does it work?</p>
+
+            <div id="works">
+
+                <div class="work">
+                    <div id="bean">1</div>
+                    <hr/>
+                    <img src="write.png" alt="write"/>
+                    <h4>Write your model bean</h4>
+
+                    <p>The model bean that should be edited in your interface</p>
+                </div>
+                <div class="work">
+                    <div id="form_raw">2</div>
+                    <hr/>
+                    <img src="generate.png" alt="write"/>
+                    <h4>Generate Form</h4>
+
+                    <p>Let FXForm do the hard work for you!</p>
+                </div>
+                <div class="work">
+                    <div id="form_style">3</div>
+                    <hr/>
+                    <img src="style.png" alt="write"/>
+                    <h4>Style it!</h4>
+
+                    <p>Using CSS and resource bundles</p>
+
+                </div>
+            </div>
+            <hr style="visibility:hidden;clear:both">
+            <h3>Features</h3>
+
+            <p>Main features include:</p>
+            <ul>
+                <li>Automatic form generation and binding to bean properties</li>
+                <li>CSS support</li>
+                <li>Bean Validation handling (JSR 303)</li>
+                <li>Fields reordering and filtering</li>
+                <li>Tooltips</li>
+                <li>Localization</li>
+            </ul>
+
+            <h3>Download</h3>
+
+            <p>
+                See <a href="http://github.com/dooapp/FXForm2/">GitHub repository</a>.
+            </p>
+
+            <h3>Documentation</h3>
+
+            <p>See <a href="https://github.com/dooapp/FXForm2/wiki">wiki</a>.</p>
+
+            <h3>License</h3>
+
+            <p>FXForm2 is licensed under the <a href=http://www.opensource.org/licenses/lgpl-3.0.html>Lesser GPL</a>
+                license.</p>
+
+            <div class="footer">
+                get the source code on GitHub : <a href="http://github.com/dooapp/FXForm2">dooapp/FXForm2</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <img src="fxform.png"
+                 alt="FXForm preview"
+                 class="thumbnail"/>
+        </div>
     </div>
 
-    <h1><a href="http://github.com/dooapp/FXForm2">FXForm2</a>
-      <span class="small">by dooApp</span></h1>
+</div>
 
-    <div class="description">
-      Stop coding forms: FXForm2 can do it for you!
-    </div>
 
-    <p>FXForm2 is a library providing automatic JavaFX form generation.</p>
-    <p>How does it work?</p>
-    <div id="works">
-	
-		<div class="work">
-			<div id="bean">1</div>
-			<hr />
-			<img src="write.png" alt="write" />
-			<h4>Write your model bean</h4>
-			<p>The model bean that should be edited in your interface</p>
-		</div>
-		<div class="work">
-			<div id="form_raw">2</div>
-			<hr />
-			<img src="generate.png" alt="write" />
-			<h4>Generate Form</h4>
-			<p>Let FXForm do the hard work for you!</p>
-		</div>
-		<div class="work">
-			<div id="form_style">3</div>
-			<hr />
-			<img src="style.png" alt="write" />
-			<h4>Style it!</h4>
-			<p>Using CSS and resource bundles</p>
-			
-		</div>
-	</div>  
-	<hr style="visibility:hidden;clear:both" />  
-	  
-    <p>Main features include:</p>
-    <ul>
-        <li>Automatic form generation and binding to bean properties</li>
-        <li>CSS support</li>
-        <li>Bean Validation handling (JSR 303)</li>
-        <li>Fields reordering and filtering</li>
-        <li>Tooltips</li>
-        <li>Localization</li>
-    </ul>
-
-    <h2>Download</h2>
-    <p>
-      See <a href="http://github.com/dooapp/FXForm2/">GitHub repository</a>.
-    </p>
-    <h2>Documentation</h2>
-    <p>See <a href="https://github.com/dooapp/FXForm2/wiki">wiki</a>.</p>
-    <h2>License</h2>
-        <p>FXForm2 is licensed under the <a href=http://www.opensource.org/licenses/lgpl-3.0.html>Lesser GPL</a> license.</p>
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/dooapp/FXForm2">dooapp/FXForm2</a>
-    </div>
-
-  </div>
-
-  
 </body>
 </html>
