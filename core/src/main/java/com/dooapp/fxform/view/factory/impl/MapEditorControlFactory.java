@@ -54,7 +54,7 @@ public class MapEditorControlFactory implements Callback<Void, FXFormNode> {
 
             @Override
             public void dispose() {
-
+                mapEditorControl.dispose();
             }
         };
     }

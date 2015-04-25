@@ -3,7 +3,10 @@ package com.dooapp.fxform.view.control.map;
 import com.dooapp.fxform.model.Element;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.property.*;
+import javafx.beans.property.MapProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.MapChangeListener;
 
@@ -29,16 +32,6 @@ public class MapEntryElement<K, V> implements Element<V> {
         }
     }
 
-    protected class EntryMapInvalidationListener implements InvalidationListener {
-
-        @Override
-        public void invalidated(Observable observable) {
-            for (InvalidationListener invalidationListener : invalidationListeners) {
-                invalidationListener.invalidated(MapEntryElement.this);
-            }
-        }
-    }
-
     protected final MapProperty<K, V> map;
 
     protected final K key;
@@ -51,18 +44,53 @@ public class MapEntryElement<K, V> implements Element<V> {
 
     private final List<InvalidationListener> invalidationListeners = new ArrayList<>();
 
-    private final EntryMapChangeListener changeListener;
+    private final MapChangeListener<K, V> changeListener = new MapChangeListener<K, V>() {
+        @Override
+        public void onChanged(Change<? extends K, ? extends V> change) {
+            if (key.equals(change.getKey())) {
+                for (ChangeListener changeListener : changeListeners) {
+                    changeListener.changed(MapEntryElement.this, null, map.get(key));
+                }
+            }
+        }
+    };
 
-    private final EntryMapInvalidationListener invalidationListener;
+    private final InvalidationListener invalidationListener = new InvalidationListener() {
+
+        @Override
+        public void invalidated(Observable observable) {
+            for (InvalidationListener invalidationListener : invalidationListeners) {
+                invalidationListener.invalidated(MapEntryElement.this);
+            }
+        }
+    };
 
     public MapEntryElement(MapProperty<K, V> map, K key, Class<V> valueType) {
         this.map = map;
         this.key = key;
         this.valueType = valueType;
-        changeListener = new EntryMapChangeListener();
-        map.addListener(changeListener);
-        invalidationListener = new EntryMapInvalidationListener();
-        map.addListener(invalidationListener);
+        map.addListener(new MapChangeListener<K, V>() {
+            @Override
+            public void onChanged(Change<? extends K, ? extends V> change) {
+                if (key.equals(change.getKey())) {
+                    for (ChangeListener changeListener : changeListeners) {
+                        changeListener.changed(MapEntryElement.this, null, map.get(key));
+                    }
+                }
+            }
+        });
+        map.addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                for (InvalidationListener invalidationListener : invalidationListeners) {
+                    invalidationListener.invalidated(MapEntryElement.this);
+                }
+            }
+        });
+    }
+
+    public K getKey() {
+        return key;
     }
 
     @Override
@@ -103,7 +131,7 @@ public class MapEntryElement<K, V> implements Element<V> {
     @Override
     public void dispose() {
         map.removeListener(changeListener);
-        map.removeListener(invalidationListener);
+        //map.removeListener(invalidationListener);
     }
 
     @Override

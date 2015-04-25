@@ -13,8 +13,12 @@
 package com.dooapp.fxform;
 
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.MapProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.MapChangeListener;
 
 import java.lang.reflect.Field;
 
@@ -25,23 +29,39 @@ import java.lang.reflect.Field;
  */
 public class ObjectPropertyObserver implements ChangeListener {
 
-    private final Object source;
-
     public ObjectPropertyObserver(Object source) {
-        this.source = source;
         for (Field field : new ReflectionFieldProvider().getProperties(source)) {
-            if (ObservableValue.class.isAssignableFrom(field.getType())) {
-                try {
-                    field.setAccessible(true);
-                    ((ObservableValue) field.get(source)).addListener(this);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+            if (MapProperty.class.isAssignableFrom(field.getType())) {
+                ((MapProperty) get(field, source)).addListener(new MapChangeListener() {
+                    @Override
+                    public void onChanged(Change change) {
+                        System.out.println(change.toString());
+                    }
+                });
+            } else if (ListProperty.class.isAssignableFrom(field.getType())) {
+                ((ListProperty) get(field, source)).addListener(new ListChangeListener() {
+                    @Override
+                    public void onChanged(Change c) {
+                        System.out.println(c.toString());
+                    }
+                });
+            } else if (ObservableValue.class.isAssignableFrom(field.getType())) {
+                ((ObservableValue) get(field, source)).addListener(this);
             }
         }
     }
 
+    private Object get(Field field, Object source) {
+        field.setAccessible(true);
+        try {
+            return field.get(source);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void changed(ObservableValue observableValue, Object o, Object o1) {
-        System.out.println(this + ": " + source + ": "  + o + "->" + o1);
+        System.out.println(this + ": " + observableValue + ": " + o + "->" + o1);
     }
 }

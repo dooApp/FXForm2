@@ -82,9 +82,18 @@ public class MyBean {
         this.message.set(message);
         this.subscribe.set(subscribe);
         this.subject.set(subject);
-        this.list.addAll(new TableBean("Name 1", 99), new TableBean("Name 2", 98));
-        this.map.put("a", "1");
-        this.map.put("b", "2");
+        this.list.addAll(new TableBean("Name 1", 99),
+                new TableBean("Name 2", 98),
+                new TableBean("Name 3", 97));
+        this.map.put("John", "john@fxform2.com");
+        this.map.put("Jane", "jane@fxform2.com");
+        this.map.put("Janis", "janis@fxform2.com");
+        /**this.map.addListener(new MapChangeListener<String, String>() {
+            @Override
+            public void onChanged(Change<? extends String, ? extends String> change) {
+                System.out.println(change.toString());
+            }
+        }); */
         ((StringProperty) welcome).bind(this.name.concat(", welcome!"));
         ((BooleanProperty) unsubscribe).bind(this.subscribe.not());
     }

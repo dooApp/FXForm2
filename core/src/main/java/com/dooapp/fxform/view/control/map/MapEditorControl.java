@@ -6,6 +6,7 @@ import com.dooapp.fxform.validation.FXFormValidator;
 import com.dooapp.fxform.view.skin.InlineSkin;
 import javafx.beans.property.MapProperty;
 import javafx.beans.property.SimpleMapProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 
 import javax.validation.ConstraintViolation;
@@ -19,6 +20,8 @@ import java.util.List;
  * Time: 14:48
  */
 public class MapEditorControl<T> extends AbstractFXForm {
+
+    private MapElementProvider mapElementProvider;
 
     public MapEditorControl() {
         super();
@@ -43,10 +46,11 @@ public class MapEditorControl<T> extends AbstractFXForm {
         setSkin(new InlineSkin(this));
     }
 
-    private final MapProperty<String, T> map = new SimpleMapProperty<>();
+    private final MapProperty<String, T> map = new SimpleMapProperty<>(FXCollections.observableHashMap());
 
     public void setValueType(Class<T> valueType) {
-        elementsProperty().bind(new MapElementBinding(map, valueType));
+        mapElementProvider = new MapElementProvider(map, valueType);
+        elementsProperty().bind(mapElementProvider.elementsProperty());
     }
 
     public ObservableMap<String, T> getMap() {
@@ -59,5 +63,11 @@ public class MapEditorControl<T> extends AbstractFXForm {
 
     public void setMap(ObservableMap<String, T> map) {
         this.map.set(map);
+    }
+
+    public void dispose() {
+        elementsProperty().unbind();
+        elementsProperty().clear();
+        mapElementProvider.dispose();
     }
 }
