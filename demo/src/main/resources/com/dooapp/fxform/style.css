@@ -26,7 +26,10 @@
 
 .form-tooltip {
     -fx-font-size: 11;
-    -fx-text-fill: gray;
+}
+
+.form-tooltip Text {
+    -fx-fill: gray;
 }
 
 .form-content-box {

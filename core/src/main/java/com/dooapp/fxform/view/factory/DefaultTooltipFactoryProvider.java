@@ -14,7 +14,7 @@ package com.dooapp.fxform.view.factory;
 
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
-import com.dooapp.fxform.view.factory.impl.AutoHidableLabelFactory;
+import com.dooapp.fxform.view.factory.impl.TextFactory;
 import javafx.util.Callback;
 
 /**
@@ -25,7 +25,7 @@ import javafx.util.Callback;
 public class DefaultTooltipFactoryProvider implements FactoryProvider {
 
     public Callback<Void, FXFormNode> getFactory(Element element) {
-        return new AutoHidableLabelFactory();
+        return new TextFactory();
     }
 
 }
