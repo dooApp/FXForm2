@@ -6,7 +6,7 @@ FXForm 2
 About
 -----
 
-FXForm2 is a library providing automatic JavaFX 2.0 form generation.
+FXForm2 is a library providing automatic JavaFX form generation.
 
 How does it work?
 -----------------
