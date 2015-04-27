@@ -19,19 +19,25 @@ import com.dooapp.fxform.view.skin.FXMLSkin;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SceneBuilder;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.log4j.BasicConfigurator;
 
+import javax.imageio.ImageIO;
 import javax.validation.ConstraintViolation;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ResourceBundle;
 
 /**
@@ -62,8 +68,23 @@ public class Demo extends Application {
 
     private Node createNode() {
         VBox vBox = new VBox();
-        vBox.getChildren().addAll(createSkinSelector(), createCSSNode(), fxForm, createConstraintNode());
+        vBox.getChildren().addAll(createSkinSelector(), createCSSNode(), createSnapshotButton(), fxForm, createConstraintNode());
         return ScrollPaneBuilder.create().content(vBox).fitToWidth(true).build();
+    }
+
+    private Button createSnapshotButton() {
+        Button button = new Button("Snapshot");
+        button.setOnAction(event -> {
+            WritableImage writableImage = new WritableImage((int) fxForm.getWidth(), (int) fxForm.getHeight());
+            fxForm.snapshot(null, writableImage);
+            BufferedImage bImage = SwingFXUtils.fromFXImage(writableImage, null);
+            try {
+                ImageIO.write(bImage, "png", new File("fxform.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        return button;
     }
 
     private Node createConstraintNode() {
