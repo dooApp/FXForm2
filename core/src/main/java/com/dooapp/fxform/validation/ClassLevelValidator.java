@@ -77,6 +77,9 @@ public class ClassLevelValidator {
 
     private PropertyElementValidator getElementValidator(Element element, AbstractFXForm abstractFXForm) {
         ElementController elementController = abstractFXForm.getController(element);
+        if (elementController == null) {
+            return null;
+        }
         NodeController nodeController = elementController.getEditorController();
         if (PropertyEditorController.class.isAssignableFrom(nodeController.getClass())) {
             return ((PropertyEditorController) nodeController).getPropertyElementValidator();
