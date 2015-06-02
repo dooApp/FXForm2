@@ -13,7 +13,6 @@
 package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.AbstractFXForm;
-import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.adapter.AnnotationAdapterProvider;
@@ -60,9 +59,9 @@ public class ReadOnlyPropertyEditorController extends NodeController {
 
     private void updateView(FXFormNode fxFormNode) {
         try {
-            Adapter adapter = annotationAdapterProvider.getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode());
+            Adapter adapter = annotationAdapterProvider.getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
             if (adapter == null) {
-                adapter = getFxForm().getAdapterProvider().getAdapter(getElement().getWrappedType(), getNode().getProperty().getClass(), getElement(), getNode());
+                adapter = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
             }
             fxFormNode.getProperty().setValue(adapter.adaptTo(getElement().getValue()));
         } catch (AdapterException e) {
