@@ -28,6 +28,12 @@ public class ListChoiceBoxFactory<T> implements Callback<Void, FXFormNode> {
             }
 
             @Override
+            public void dispose() {
+                choiceBox.itemsProperty().unbind();
+                super.dispose();
+            }
+
+            @Override
             public boolean isEditable() {
                 return true;
             }
