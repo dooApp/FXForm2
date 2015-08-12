@@ -12,10 +12,7 @@
 
 package com.dooapp.fxform.view.factory;
 
-import com.dooapp.fxform.handler.ElementHandler;
-import com.dooapp.fxform.handler.EnumHandler;
-import com.dooapp.fxform.handler.TypeFieldHandler;
-import com.dooapp.fxform.handler.WrappedTypeHandler;
+import com.dooapp.fxform.handler.*;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.NodeCreationException;
@@ -34,7 +31,7 @@ import java.util.Map;
  * User: Antoine Mischler <antoine@dooapp.com>
  * Date: 11/04/11
  * Time: 22:59
- * <p/>
+ * <p>
  * Factory implementation based on delegates mapped by FieldHandler.
  */
 public class DefaultFactoryProvider implements FactoryProvider {
@@ -74,6 +71,8 @@ public class DefaultFactoryProvider implements FactoryProvider {
         DEFAULT_MAP.put(new WrappedTypeHandler(Long.class), new TextFieldFactory());
         DEFAULT_MAP.put(new WrappedTypeHandler(Double.class), new TextFieldFactory());
         DEFAULT_MAP.put(new WrappedTypeHandler(Float.class), new TextFieldFactory());
+        DEFAULT_MAP.put(new AbstractWrappedTypeHandler(), new SubClassFactory(this));
+        DEFAULT_MAP.put(new InterfaceWrappedTypeHandler(), new SubClassFactory(this));
 
     }
 
