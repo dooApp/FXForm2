@@ -36,7 +36,7 @@ import java.util.Map;
  */
 public class DefaultFactoryProvider implements FactoryProvider {
 
-    private final static Map<ElementHandler, Callback<Void, FXFormNode>> DEFAULT_MAP = new LinkedHashMap<ElementHandler, Callback<Void, FXFormNode>>();
+    private final Map<ElementHandler, Callback<Void, FXFormNode>> DEFAULT_MAP = new LinkedHashMap<ElementHandler, Callback<Void, FXFormNode>>();
 
     private final static Map<ElementHandler, Callback<Void, FXFormNode>> GLOBAL_MAP = new LinkedHashMap<ElementHandler, Callback<Void, FXFormNode>>();
 

@@ -24,25 +24,9 @@ import org.junit.Test;
 /**
  * Created by KEVIN on 12/08/2015.
  */
-public class IssueDefaultFactoryProviderNotCalled extends Application {
+public class Issue112Test extends Application {
     @Rule
     public JavaFXRule javaFXRule = new JavaFXRule();
-
-    @Test
-    public void testUsingFormProvider() {
-        FXForm form = new FXFormBuilder<>().build();
-
-        DefaultFactoryProvider factoryProvider = (DefaultFactoryProvider) form.getEditorFactoryProvider();
-        factoryProvider.addFactory(element -> SpecificationB.class.equals(element.getWrappedType()), new SpecificationBFactory());
-
-        form.setEditorFactoryProvider(factoryProvider);
-
-        Bean source = new Bean();
-        source.setSpecification(new SpecificationB());
-
-        form.setSource(source);
-        Assert.assertNotNull(((Node) form.lookup("#specification-form-editor")).lookup("#test"));
-    }
 
     @Test
     // should pass!
