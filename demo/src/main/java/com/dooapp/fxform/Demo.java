@@ -54,6 +54,8 @@ public class Demo extends Application {
 
     private final String css = Demo.class.getResource("style.css").toExternalForm();
 
+    private final String material = Demo.class.getResource("material-fx-v0.3.css").toExternalForm();
+
     protected void setup() {
         MyBean joe = new MyBean("Joe", "contact@", "How does this crazy form works?", true, MyBean.Subject.QUESTION);
         new ObjectPropertyObserver(joe);
@@ -126,8 +128,10 @@ public class Demo extends Application {
             public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean1) {
                 if (aBoolean1) {
                     root.getScene().getStylesheets().add(css);
+                    root.getScene().getStylesheets().add(material);
                 } else {
                     root.getScene().getStylesheets().remove(css);
+                    root.getScene().getStylesheets().remove(material);
                 }
             }
         });
