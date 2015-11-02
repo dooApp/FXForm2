@@ -17,7 +17,7 @@ import java.lang.annotation.Annotation;
 
 /**
  * A factory that call the default factory provider depending on wrapped type at runtime.
- * <p>
+ * <p/>
  * User: Kevin Senechal <kevin.senechal@dooapp.com>
  * Date: 12/08/2015
  * Time: 11:00
@@ -81,9 +81,13 @@ public class SubClassFactory implements Callback<Void, FXFormNode> {
                 element.removeListener(elementChangeListener);
                 elementChangeListener = null;
                 element = null;
-                node.getProperty().setValue(null);
-                node.dispose();
-                node = null;
+                if (node != null) {
+                    if (node.getProperty() != null) {
+                        node.getProperty().setValue(null);
+                    }
+                    node.dispose();
+                    node = null;
+                }
                 super.dispose();
             }
         };
