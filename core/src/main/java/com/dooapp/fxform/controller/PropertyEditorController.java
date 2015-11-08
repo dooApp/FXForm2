@@ -18,6 +18,7 @@ import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.adapter.AnnotationAdapterProvider;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
+import com.dooapp.fxform.model.impl.PropertyFieldElement;
 import com.dooapp.fxform.validation.PropertyElementValidator;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.value.ChangeListener;
@@ -41,6 +42,10 @@ public class PropertyEditorController extends NodeController {
 
     private ChangeListener viewChangeListener;
     private ChangeListener modelChangeListener;
+    
+    private Object newViewValue;
+    private Object newModelValue;
+    private FXFormNode fxFormNode;
 
     private final AnnotationAdapterProvider annotationAdapterProvider = new AnnotationAdapterProvider();
 
@@ -51,19 +56,15 @@ public class PropertyEditorController extends NodeController {
 
     }
 
-    @Override
-    protected void bind(final FXFormNode fxFormNode) {
-        viewChangeListener = new ChangeListener() {
-            public void changed(ObservableValue observableValue, Object o, Object o1) {
-                if ((o == null && o1 == null) || (o != null && o.equals(o1))) {
-                    return;
-                }
-                try {
+    public void persistToModel(){
+//        System.out.println("in persist to model");
+        
+        try {  
                     Adapter adapter = annotationAdapterProvider.getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
                     if (adapter == null) {
                         adapter = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
                     }
-                    Object newValue = propertyElementValidator.adapt(o1, adapter);
+                    Object newValue = propertyElementValidator.adapt(fxFormNode.getProperty().getValue(), adapter);
                     propertyElementValidator.validate(newValue);
                     if (!propertyElementValidator.isInvalid()) {
                         if (!((PropertyElement) getElement()).isBound()) {
@@ -74,27 +75,50 @@ public class PropertyEditorController extends NodeController {
                     // The input value can not be adapted as model value
                     // Nothing to do, a constraint violation should have been reported by the PropertyElementValidator
                 }
+    }
+    public void persistToView(){
+        updateView();
+                // The element value was updated, so request a class level check again
+        getFxForm().getClassLevelValidator().validate();
+    }
+    
+    @Override
+    protected void bind(final FXFormNode fxFormNode) {
+        
+       
+        this.fxFormNode = fxFormNode;
+        getFxForm().getPropertyEditorControllerList().add(this);
+        viewChangeListener = new ChangeListener() {
+            public void changed(ObservableValue observableValue, Object o, Object o1) { 
+                newViewValue = o1;
+                if(getFxForm().getAutoPersistToModel()){
+                    persistToModel();
+                }                  
             }
         };
         fxFormNode.getProperty().addListener(viewChangeListener);
         modelChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                updateView(o1, fxFormNode);
-                // The element value was updated, so request a class level check again
-                getFxForm().getClassLevelValidator().validate();
+                newModelValue = o1;
+                if(getFxForm().getAutoPersistToView()){ 
+                    persistToView();
+                }      
+                   
             }
         };
         getElement().addListener(modelChangeListener);
-        updateView(getElement().getValue(), getNode());
+        updateView();
+        
+        
     }
 
-    private void updateView(Object o1, FXFormNode fxFormNode) {
+    private void updateView() {
         try {
             Adapter adapter = annotationAdapterProvider.getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
             if (adapter == null) {
                 adapter = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
             }
-            Object newValue = adapter.adaptTo(o1);
+            Object newValue = adapter.adaptTo(getElement().getValue());
             fxFormNode.getProperty().setValue(newValue);
             if (!fxFormNode.getNode().disableProperty().isBound()) {
                 fxFormNode.getNode().setDisable((((PropertyElement) getElement()).isBound()));
@@ -111,6 +135,9 @@ public class PropertyEditorController extends NodeController {
 
     @Override
     protected void unbind(FXFormNode fxFormNode) {
+       
+        
+        getFxForm().getPropertyEditorControllerList().remove(this);
         fxFormNode.getProperty().removeListener(viewChangeListener);
         getElement().removeListener(modelChangeListener);
     }
