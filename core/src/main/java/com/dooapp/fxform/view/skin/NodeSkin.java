@@ -31,8 +31,6 @@ public class NodeSkin extends FXFormSkin {
 
     private final Logger logger = Logger.getLogger(NodeSkin.class.getName());
 
-    private Node node;
-
     private Callable<Node> onCreateNode;
 
     protected NodeSkin(FXForm fxForm) {
@@ -42,6 +40,14 @@ public class NodeSkin extends FXFormSkin {
     public NodeSkin(FXForm fxForm, Callable<Node> onCreateNode) {
         super(fxForm);
         setOnCreateNode(onCreateNode);
+        buildNode();
+    }
+
+    @Override
+    protected void buildNode() {
+        if (onCreateNode != null) {
+            super.buildNode();
+        }
     }
 
     public void setOnCreateNode(Callable<Node> onCreateNode) {
@@ -50,14 +56,11 @@ public class NodeSkin extends FXFormSkin {
 
     @Override
     protected Node createRootNode() throws NodeCreationException {
-        if (node == null) {
-            try {
-                node = onCreateNode.call();
-            } catch (Exception e) {
-                throw new NodeCreationException(e);
-            }
+        try {
+            return onCreateNode.call();
+        } catch (Exception e) {
+            throw new NodeCreationException(e);
         }
-        return node;
     }
 
     @Override

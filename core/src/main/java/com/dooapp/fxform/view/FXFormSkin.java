@@ -93,14 +93,19 @@ public abstract class FXFormSkin extends SkinBase<AbstractFXForm> implements Ski
 
     public FXFormSkin(AbstractFXForm fxForm) {
         super(fxForm);
-        try {
-            rootNode = createRootNode();
-            getChildren().add(rootNode);
-        } catch (NodeCreationException e) {
-            e.printStackTrace();
-        }
+        buildNode();
     }
 
+    protected void buildNode() {
+        try {
+            rootNode = createRootNode();
+            if (rootNode != null) {
+                getChildren().add(rootNode);
+            }
+        } catch (NodeCreationException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+    }
 
     protected abstract Node createRootNode() throws NodeCreationException;
 

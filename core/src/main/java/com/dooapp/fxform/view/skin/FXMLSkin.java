@@ -52,8 +52,8 @@ public class FXMLSkin extends NodeSkin {
                 return loadFxml();
             }
         });
+        buildNode();
     }
-
 
     protected Node loadFxml() throws NodeCreationException {
         fxmlLoader = new FXMLLoader();
