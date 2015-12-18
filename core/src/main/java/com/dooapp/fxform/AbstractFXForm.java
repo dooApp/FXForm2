@@ -40,6 +40,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Orientation;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.util.Callback;
@@ -420,6 +421,17 @@ public class AbstractFXForm extends Control {
 
     public ElementController getController(Element element) {
         return controllers.get(element);
+    }
+
+    /**
+     * Fix for : Form min height is not respected when the width of the parent causes the tooltips to be wrapped
+     * on multiple line #115
+     * <p/>
+     * Can be removed when https://bugs.openjdk.java.net/browse/JDK-8144128 is resolved
+     */
+    @Override
+    public Orientation getContentBias() {
+        return Orientation.HORIZONTAL;
     }
 
 }

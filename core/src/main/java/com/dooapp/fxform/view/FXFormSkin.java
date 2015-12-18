@@ -20,6 +20,7 @@ import com.dooapp.fxform.view.factory.FactoryProvider;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Skin;
+import javafx.scene.control.SkinBase;
 import javafx.util.Callback;
 
 import java.util.HashMap;
@@ -36,11 +37,9 @@ import java.util.logging.Logger;
  * Time: 21:36
  * Skin of the FXForm control.
  */
-public abstract class FXFormSkin implements Skin<AbstractFXForm> {
+public abstract class FXFormSkin extends SkinBase<AbstractFXForm> implements Skin<AbstractFXForm> {
 
     private final static Logger logger = Logger.getLogger(FXFormSkin.class.getName());
-
-    protected AbstractFXForm fxForm;
 
     private Node rootNode;
 
@@ -93,51 +92,47 @@ public abstract class FXFormSkin implements Skin<AbstractFXForm> {
 
 
     public FXFormSkin(AbstractFXForm fxForm) {
-        this.fxForm = fxForm;
+        super(fxForm);
+        try {
+            rootNode = createRootNode();
+            getChildren().add(rootNode);
+        } catch (NodeCreationException e) {
+            e.printStackTrace();
+        }
     }
+
 
     protected abstract Node createRootNode() throws NodeCreationException;
 
-    public Node getNode() {
-        if (rootNode == null) {
-            try {
-                rootNode = createRootNode();
-            } catch (NodeCreationException e) {
-                e.printStackTrace();
-            }
-        }
-        return rootNode;
-    }
-
     public FXFormNode getLabel(Element element) {
         initElementNodes(element);
-        return ((ElementNodes) getNode().getProperties().get(element)).getLabel();
+        return ((ElementNodes) rootNode.getProperties().get(element)).getLabel();
     }
 
     public FXFormNode getTooltip(Element element) {
         initElementNodes(element);
-        return ((ElementNodes) getNode().getProperties().get(element)).getTooltip();
+        return ((ElementNodes) rootNode.getProperties().get(element)).getTooltip();
     }
 
     public FXFormNode getEditor(Element element) {
         initElementNodes(element);
-        return ((ElementNodes) getNode().getProperties().get(element)).getEditor();
+        return ((ElementNodes) rootNode.getProperties().get(element)).getEditor();
     }
 
     public FXFormNode getConstraint(Element element) {
         initElementNodes(element);
-        return ((ElementNodes) getNode().getProperties().get(element)).getConstraint();
+        return ((ElementNodes) rootNode.getProperties().get(element)).getConstraint();
     }
 
     private void initElementNodes(Element element) {
-        if (!getNode().getProperties().containsKey(element)) {
+        if (!rootNode.getProperties().containsKey(element)) {
             if (!categoryMap.containsKey(element.getCategory())) {
                 categoryMap.put(element.getCategory(), new LinkedList<Element>());
                 addCategory(element.getCategory());
             }
             categoryMap.get(element.getCategory()).add(element);
             ElementNodes elementNodes = createElementNodes(element);
-            getNode().getProperties().put(element, elementNodes);
+            rootNode.getProperties().put(element, elementNodes);
         }
     }
 
@@ -154,7 +149,7 @@ public abstract class FXFormSkin implements Skin<AbstractFXForm> {
     }
 
     protected FXFormNode createLabel(Element element) {
-        return createFXFormNode(element, fxForm.getLabelFactoryProvider(), NodeType.LABEL.getIdSuffix());
+        return createFXFormNode(element, getSkinnable().getLabelFactoryProvider(), NodeType.LABEL.getIdSuffix());
     }
 
     protected FXFormNode createEditor(Element element) {
@@ -166,28 +161,38 @@ public abstract class FXFormSkin implements Skin<AbstractFXForm> {
             }
             return fxFormNode;
         } else {
-            return createFXFormNode(element, fxForm.getEditorFactoryProvider(), NodeType.EDITOR.getIdSuffix());
+            return createFXFormNode(element, getSkinnable().getEditorFactoryProvider(), NodeType.EDITOR.getIdSuffix());
         }
     }
 
     protected FXFormNode createTooltip(Element element) {
-        return createFXFormNode(element, fxForm.getTooltipFactoryProvider(), NodeType.TOOLTIP.getIdSuffix());
+        return createFXFormNode(element, getSkinnable().getTooltipFactoryProvider(), NodeType.TOOLTIP.getIdSuffix());
     }
 
     protected FXFormNode createConstraint(Element element) {
-        return createFXFormNode(element, fxForm.getConstraintFactoryProvider(), NodeType.CONSTRAINT.getIdSuffix());
+        return createFXFormNode(element, getSkinnable().getConstraintFactoryProvider(), NodeType.CONSTRAINT.getIdSuffix());
     }
 
+    @Override
     public void dispose() {
-        fxForm = null;
+        getChildren().remove(rootNode);
+        removeAllElements();
+        rootNode = null;
+        super.dispose();
     }
 
-    public AbstractFXForm getSkinnable() {
-        return fxForm;
+    protected void removeAllElements() {
+        List<Object> keys = new LinkedList<>(rootNode.getProperties().keySet());
+        keys.stream()
+                .forEach(key -> {
+                    if (key instanceof Element) {
+                        removeElement((Element) key);
+                    }
+                });
     }
 
     public void removeElement(Element element) {
-        ElementNodes elementNodes = (ElementNodes) getNode().getProperties().get(element);
+        ElementNodes elementNodes = (ElementNodes) rootNode.getProperties().get(element);
         categoryMap.get(element.getCategory()).remove(element);
         if (categoryMap.get(element.getCategory()).size() == 0) {
             categoryMap.remove(element.getCategory());
@@ -196,7 +201,7 @@ public abstract class FXFormSkin implements Skin<AbstractFXForm> {
         if (elementNodes != null) {
             deleteElementNodes(elementNodes);
         }
-        getNode().getProperties().remove(element);
+        rootNode.getProperties().remove(element);
     }
 
     protected abstract ElementNodes createElementNodes(Element element);
@@ -222,8 +227,37 @@ public abstract class FXFormSkin implements Skin<AbstractFXForm> {
     protected Node createClassLevelConstraintNode() {
         ConstraintLabel constraintLabel = new ConstraintLabel();
         constraintLabel.getStyleClass().add(NodeType.CONSTRAINT.getStyle());
-        constraintLabel.constraintProperty().bind(fxForm.getClassLevelValidator().constraintViolationsProperty());
+        constraintLabel.constraintProperty().bind(getSkinnable().getClassLevelValidator().constraintViolationsProperty());
         return constraintLabel;
+    }
+
+    /**
+     * Fix for : Form min height is not respected when the width of the parent causes the tooltips to be wrapped
+     * on multiple line #115
+     * <p/>
+     * Can be removed when https://bugs.openjdk.java.net/browse/JDK-8144128 is resolved
+     */
+    @Override
+    protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+        double minY = 0;
+        double maxY = 0;
+        boolean firstManagedChild = true;
+        for (int i = 0; i < getChildren().size(); i++) {
+            Node node = getChildren().get(i);
+            if (node.isManaged()) {
+                final double y = node.getLayoutBounds().getMinY() + node.getLayoutY();
+                if (!firstManagedChild) {
+                    minY = Math.min(minY, y);
+                    maxY = Math.max(maxY, y + node.minHeight(width));
+                } else {
+                    minY = y;
+                    maxY = y + node.minHeight(width);
+                    firstManagedChild = false;
+                }
+            }
+        }
+        double minHeight = maxY - minY;
+        return topInset + minHeight + bottomInset;
     }
 
 }

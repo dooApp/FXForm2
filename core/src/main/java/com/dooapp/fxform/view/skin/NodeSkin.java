@@ -77,7 +77,7 @@ public class NodeSkin extends FXFormSkin {
     private FXFormNode lookupNode(Element element, String suffix) {
         Node node = getNode().lookup("#" + element.getName() + suffix);
         if (node != null) {
-            Property property = fxForm.getPropertyProvider().getProperty(node);
+            Property property = getSkinnable().getPropertyProvider().getProperty(node);
             if (property != null) {
                 return new FXFormNodeWrapper(node, property);
             } else {

@@ -13,7 +13,6 @@
 package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.AbstractFXForm;
-import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeType;
@@ -50,7 +49,6 @@ public class ElementController<WrappedType> {
         editorController = createEditorController(fxForm, element);
         changeListener = new ChangeListener<Skin<?>>() {
             public void changed(ObservableValue<? extends Skin<?>> observableValue, Skin<?> skin, Skin<?> skin1) {
-                ((FXFormSkin) skin).removeElement(getElement());
                 updateSkin((FXFormSkin) skin1);
             }
         };
