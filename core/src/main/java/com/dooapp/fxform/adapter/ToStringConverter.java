@@ -29,8 +29,8 @@ public class ToStringConverter implements Adapter<Object, String> {
     }
 
     @Override
-    public Object adaptFrom(String to) {
-        throw new UnsupportedOperationException("This converter should not be used to convert a String back to an Object," +
+    public Object adaptFrom(String to) throws AdapterException {
+        throw new AdapterException("This converter should not be used to convert a String back to an Object," +
                 "if you need to do this, register your own Adapter.");
     }
 

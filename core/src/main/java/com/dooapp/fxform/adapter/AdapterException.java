@@ -22,4 +22,9 @@ public class AdapterException extends Exception {
     public AdapterException(Throwable cause) {
         super(cause);
     }
+
+    public AdapterException(String message) {
+        super(message);
+    }
+
 }

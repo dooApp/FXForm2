@@ -63,7 +63,7 @@ public class MyBean {
     private final IntegerProperty year = new SimpleIntegerProperty();
 
     @FormAdapter(BigDecimalAdapter.class)
-    private final ObjectProperty<BigDecimal> bigDecimalProperty = new SimpleObjectProperty<BigDecimal>();
+    private final ObjectProperty<BigDecimal> bigDecimalProperty = new SimpleObjectProperty<BigDecimal>(new BigDecimal("1.23456"));
 
     @FormFactory(TextAreaFactory.class)
     private final StringProperty message = new SimpleStringProperty();

@@ -20,6 +20,7 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.validation.PropertyElementValidator;
 import com.dooapp.fxform.view.FXFormNode;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -94,8 +95,14 @@ public class PropertyEditorController extends NodeController {
             if (adapter == null) {
                 adapter = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
             }
-            Object newValue = adapter.adaptTo(o1);
-            fxFormNode.getProperty().setValue(newValue);
+            Object currentViewValue = adapter.adaptFrom(fxFormNode.getProperty().getValue());
+            // Make sure that the value represented by the view differ from the new model value
+            if ((currentViewValue != null && !currentViewValue.equals(o1))
+                    || (currentViewValue == null && o1 != null)) {
+                Object newValue = adapter.adaptTo(o1);
+                // Update the view later in the JavaFX Thread
+                Platform.runLater(() -> fxFormNode.getProperty().setValue(newValue));
+            }
             if (!fxFormNode.getNode().disableProperty().isBound()) {
                 fxFormNode.getNode().setDisable((((PropertyElement) getElement()).isBound()));
             }

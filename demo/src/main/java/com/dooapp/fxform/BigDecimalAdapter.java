@@ -44,6 +44,12 @@ public class BigDecimalAdapter implements Adapter<BigDecimal, String> {
 
     @Override
     public BigDecimal adaptFrom(String to) throws AdapterException {
+        if (to == null) {
+            return null;
+        }
+        if (to.trim().length() <= 0) {
+            return null;
+        }
         try {
             return new BigDecimal(decimalFormat.parse(to).doubleValue());
         } catch (ParseException e) {
