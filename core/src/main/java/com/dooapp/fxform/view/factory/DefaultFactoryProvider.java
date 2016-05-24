@@ -23,6 +23,7 @@ import javafx.util.Callback;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class DefaultFactoryProvider implements FactoryProvider {
 
     private final Map<ElementHandler, Callback<Void, FXFormNode>> DEFAULT_MAP = new LinkedHashMap<ElementHandler, Callback<Void, FXFormNode>>();
 
-    private final static Map<ElementHandler, Callback<Void, FXFormNode>> GLOBAL_MAP = new LinkedHashMap<ElementHandler, Callback<Void, FXFormNode>>();
+    private final static Map<ElementHandler, Callback<Void, FXFormNode>> GLOBAL_MAP = Collections.synchronizedMap(new LinkedHashMap<ElementHandler, Callback<Void, FXFormNode>>());
 
     private final Map<ElementHandler, Callback<Void, FXFormNode>> USER_MAP = new LinkedHashMap<ElementHandler, Callback<Void, FXFormNode>>();
 

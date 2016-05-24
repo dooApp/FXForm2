@@ -18,6 +18,7 @@ import javafx.beans.property.*;
 import javafx.util.converter.*;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -33,7 +34,7 @@ public class DefaultAdapterProvider implements AdapterProvider {
 
     private final static Map<AdapterMatcher, Adapter> DEFAULT_MAP = new LinkedHashMap();
 
-    private final static Map<AdapterMatcher, Adapter> GLOBAL_MAP = new LinkedHashMap();
+    private final static Map<AdapterMatcher, Adapter> GLOBAL_MAP = Collections.synchronizedMap(new LinkedHashMap());
 
     private final Map<AdapterMatcher, Adapter> USER_MAP = new LinkedHashMap();
 
