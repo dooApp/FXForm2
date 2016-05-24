@@ -38,7 +38,7 @@ public class DefaultAdapterProvider implements AdapterProvider {
 
     private final Map<AdapterMatcher, Adapter> USER_MAP = new LinkedHashMap();
 
-    public DefaultAdapterProvider() {
+    {
         DEFAULT_MAP.put(new AdapterMatcher() {
             @Override
             public boolean matches(Class fromClass, Class toClass, Element element, FXFormNode fxFormNode) {

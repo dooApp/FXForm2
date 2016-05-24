@@ -43,7 +43,7 @@ public class DefaultFactoryProvider implements FactoryProvider {
 
     private final Map<ElementHandler, Callback<Void, FXFormNode>> USER_MAP = new LinkedHashMap<ElementHandler, Callback<Void, FXFormNode>>();
 
-    public DefaultFactoryProvider() {
+    {
         // register default delegates
         DEFAULT_MAP.put(new EnumHandler(), new EnumChoiceBoxFactory());
 
@@ -74,7 +74,6 @@ public class DefaultFactoryProvider implements FactoryProvider {
         DEFAULT_MAP.put(new WrappedTypeHandler(Float.class), new TextFieldFactory());
         DEFAULT_MAP.put(new AbstractWrappedTypeHandler(), new SubClassFactory(this));
         DEFAULT_MAP.put(new InterfaceWrappedTypeHandler(), new SubClassFactory(this));
-
     }
 
     private Callback<Void, FXFormNode> getDelegate(Element element, Map<ElementHandler, Callback<Void, FXFormNode>> map) {
