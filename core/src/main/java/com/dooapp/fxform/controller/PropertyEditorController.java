@@ -56,9 +56,6 @@ public class PropertyEditorController extends NodeController {
     protected void bind(final FXFormNode fxFormNode) {
         viewChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                if ((o == null && o1 == null) || (o != null && o.equals(o1))) {
-                    return;
-                }
                 try {
                     Adapter adapter = annotationAdapterProvider.getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
                     if (adapter == null) {
