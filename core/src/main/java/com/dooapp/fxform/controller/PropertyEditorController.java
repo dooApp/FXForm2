@@ -65,10 +65,16 @@ public class PropertyEditorController extends NodeController {
                         adapter = getFxForm().getAdapterProvider().getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
                     }
                     Object newValue = propertyElementValidator.adapt(o1, adapter);
-                    propertyElementValidator.validate(newValue);
-                    if (!propertyElementValidator.isInvalid()) {
-                        if (!((PropertyElement) getElement()).isBound()) {
-                            ((PropertyElement) getElement()).setValue(newValue);
+                    // check whether the value represented in the view is different from the current model value
+                    if ((newValue != null && !newValue.equals(getElement().getValue())
+                            || newValue == null && getElement().getValue() != null)) {
+                        // yes, so validate this new value
+                        propertyElementValidator.validate(newValue);
+                        if (!propertyElementValidator.isInvalid()) {
+                            if (!((PropertyElement) getElement()).isBound()) {
+                                // and update the model if no constraint prevent from it
+                                ((PropertyElement) getElement()).setValue(newValue);
+                            }
                         }
                     }
                 } catch (AdapterException e) {
