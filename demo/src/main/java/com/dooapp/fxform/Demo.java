@@ -65,6 +65,14 @@ public class Demo extends Application {
                 .resourceBundle(ResourceBundle.getBundle("com.dooapp.fxform.Demo"))
                 .build();
         fxForm.setTitle("Dude, where is my form?");
+        FXForm form2 = new FXFormBuilder<>().source(joe)
+                .categorizeAndInclude("-USER-", "name", "welcome", "email", "-DATA-", "subject", "message")
+                .resourceBundle(ResourceBundle.getBundle("com.dooapp.fxform.Demo"))
+                .build();
+        Scene scene = new Scene(form2);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.show();
         root.getChildren().add(createNode());
     }
 

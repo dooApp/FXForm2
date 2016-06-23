@@ -24,6 +24,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,6 +46,8 @@ public class PropertyEditorController extends NodeController {
 
     private final AnnotationAdapterProvider annotationAdapterProvider = new AnnotationAdapterProvider();
 
+    private AtomicBoolean lock = new AtomicBoolean();
+
     public PropertyEditorController(AbstractFXForm fxForm, Element element) {
         super(fxForm, element);
         propertyElementValidator = new PropertyElementValidator((PropertyElement) element);
@@ -56,6 +59,9 @@ public class PropertyEditorController extends NodeController {
     protected void bind(final FXFormNode fxFormNode) {
         viewChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
+                if (lock.getAndSet(true)) {
+                    return;
+                }
                 try {
                     Adapter adapter = annotationAdapterProvider.getAdapter(getElement().getType(), getNode().getProperty().getClass(), getElement(), getNode());
                     if (adapter == null) {
@@ -71,21 +77,30 @@ public class PropertyEditorController extends NodeController {
                             if (!((PropertyElement) getElement()).isBound()) {
                                 // and update the model if no constraint prevent from it
                                 ((PropertyElement) getElement()).setValue(newValue);
+                                // and perform a class level validation
+                                getFxForm().getClassLevelValidator().validate();
                             }
                         }
                     }
                 } catch (AdapterException e) {
                     // The input value can not be adapted as model value
                     // Nothing to do, a constraint violation should have been reported by the PropertyElementValidator
+                } finally {
+                    lock.set(false);
                 }
             }
         };
         fxFormNode.getProperty().addListener(viewChangeListener);
         modelChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
+                if (lock.getAndSet(true)) {
+                    return;
+                }
                 updateView(o1, fxFormNode);
                 // The element value was updated, so request a class level check again
+                propertyElementValidator.validate(o1);
                 getFxForm().getClassLevelValidator().validate();
+                lock.set(false);
             }
         };
         getElement().addListener(modelChangeListener);
@@ -104,7 +119,12 @@ public class PropertyEditorController extends NodeController {
                     || (currentViewValue == null && o1 != null)) {
                 Object newValue = adapter.adaptTo(o1);
                 // Update the view later in the JavaFX Thread
-                Platform.runLater(() -> fxFormNode.getProperty().setValue(newValue));
+                Platform.runLater(() -> {
+                    // make sure that this view update won't trigger a model update
+                    lock.set(true);
+                    fxFormNode.getProperty().setValue(newValue);
+                    lock.set(false);
+                });
             }
             if (!fxFormNode.getNode().disableProperty().isBound()) {
                 fxFormNode.getNode().setDisable((((PropertyElement) getElement()).isBound()));
