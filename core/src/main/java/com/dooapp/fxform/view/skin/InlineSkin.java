@@ -23,7 +23,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.GridPaneBuilder;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
@@ -66,7 +65,9 @@ public class InlineSkin extends FXFormSkin {
         contentBox.getStyleClass().add("form-content-box");
         titleBox.getChildren().add(contentBox);
         contentBox.setSpacing(5.0);
-        gridPane = GridPaneBuilder.create().hgap(5.0).vgap(5.0).build();
+        gridPane = new GridPane();
+        gridPane.setHgap(5.0);
+        gridPane.setVgap(5.0);
         contentBox.getChildren().addAll(createClassLevelConstraintNode(), gridPane);
         return titleBox;
     }
