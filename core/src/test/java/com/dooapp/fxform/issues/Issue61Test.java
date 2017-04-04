@@ -12,6 +12,7 @@
 package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.JavaFXRule;
 import com.dooapp.fxform.filter.ExcludeFilter;
 import com.dooapp.fxform.filter.IncludeFilter;
 import com.dooapp.fxform.model.Element;
@@ -22,6 +23,7 @@ import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import junit.framework.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -35,6 +37,8 @@ import java.util.List;
  */
 public class Issue61Test {
 
+    @Rule
+    public JavaFXRule javaFXRule = new JavaFXRule();
 
     public static class Bean1 {
 

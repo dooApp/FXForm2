@@ -13,8 +13,10 @@
 package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.JavaFXRule;
 import com.dooapp.fxform.ReadOnlyFXForm;
 import com.dooapp.fxform.TestBean;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -25,6 +27,9 @@ import org.junit.Test;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class Issue6Test {
+
+    @Rule
+    public JavaFXRule javaFXRule = new JavaFXRule();
 
     @Test
     public void testIssue6() {

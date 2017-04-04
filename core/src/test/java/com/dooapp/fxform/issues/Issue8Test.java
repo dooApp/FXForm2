@@ -13,9 +13,11 @@
 package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.JavaFXRule;
 import com.dooapp.fxform.TestBean;
 import com.dooapp.fxform.filter.ExcludeFilter;
 import com.dooapp.fxform.view.FXFormSkinFactory;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -26,6 +28,9 @@ import org.junit.Test;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class Issue8Test {
+
+    @Rule
+    public JavaFXRule javaFXRule = new JavaFXRule();
 
     @Test
     public void testIssue8() {

@@ -1,7 +1,9 @@
 package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.JavaFXRule;
 import junit.framework.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -10,6 +12,9 @@ import org.junit.Test;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class Issue23Test {
+
+    @Rule
+    public JavaFXRule javaFXRule = new JavaFXRule();
 
     public static class Bean {
 
