@@ -1,8 +1,9 @@
 package com.dooapp.fxform.model.impl;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import org.junit.Test;
 
-import javax.validation.constraints.Size;
 import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
@@ -16,15 +17,13 @@ public class BufferedPropertyElementTest {
 
     public static class TestBean {
 
-        @Size(min = 1, max = 5, message = "name must not be longer than 5 characters")
-        private String name;
+        private StringProperty name;
 
-        public String getName() {
+        public StringProperty nameProperty() {
+            if (name == null) {
+                name = new SimpleStringProperty("1");
+            }
             return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
         }
 
     }
@@ -41,14 +40,14 @@ public class BufferedPropertyElementTest {
 
         // set buffered value, but don't commit value -> bean value must not change
         tested.setValue("2");
-        assertEquals("1", testBean.getName());
+        assertEquals("1", testBean.name.get());
 
         // commit value to bean -> bean value must change
         tested.commit();
-        assertEquals("2", testBean.getName());
+        assertEquals("2", testBean.name.get());
 
         // change bean value -> buffered value must not change
-        testBean.setName("3");
+        testBean.name.set("3");
         assertEquals("2", tested.getValue());
 
         // refresh buffered value -> value must change

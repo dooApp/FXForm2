@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import javax.validation.constraints.Size;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -19,7 +21,22 @@ import static org.junit.Assert.assertFalse;
  */
 public class BufferedElementFactoryTest {
 
-    private BufferedPropertyElementTest.TestBean bean;
+    public static class TestBean {
+
+        @Size(min = 1, max = 5, message = "name must not be longer than 5 characters")
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+    }
+
+    private TestBean bean;
     private FXForm form;
 
     @Rule
@@ -27,7 +44,7 @@ public class BufferedElementFactoryTest {
 
     @Before
     public void setup() {
-        bean = new BufferedPropertyElementTest.TestBean();
+        bean = new TestBean();
         bean.setName("1");
 
         form = new FXFormBuilder()
