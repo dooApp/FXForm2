@@ -19,7 +19,12 @@ import com.dooapp.fxform.filter.ReorderFilter;
 import com.dooapp.fxform.filter.field.ExcludeFieldFilter;
 import com.dooapp.fxform.filter.field.FieldFilter;
 import com.dooapp.fxform.filter.field.PrivateFinalStaticFilter;
+import com.dooapp.fxform.model.BufferedElementFactory;
+import com.dooapp.fxform.model.DefaultElementFactory;
 import com.dooapp.fxform.model.DefaultElementProvider;
+import com.dooapp.fxform.model.ElementFactory;
+import com.dooapp.fxform.reflection.FieldProvider;
+import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import com.dooapp.fxform.view.skin.FXMLSkin;
 import com.dooapp.fxform.view.skin.InlineSkin;
 import javafx.scene.control.Skin;
@@ -57,13 +62,23 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
 
     private boolean readOnly;
 
+    private boolean buffered;
+
     public FXForm build() {
         FXForm res;
         DefaultElementProvider elementProvider;
+
+        FieldProvider fieldProvider = new ReflectionFieldProvider();
+        ElementFactory elementFactory = new DefaultElementFactory();
+
+        if (buffered) {
+            elementFactory = new BufferedElementFactory(elementFactory);
+        }
+
         if (includeFilters != null) {
-            elementProvider = new DefaultElementProvider(includeFilters);
+            elementProvider = new DefaultElementProvider(elementFactory, fieldProvider, includeFilters);
         } else {
-            elementProvider = new DefaultElementProvider();
+            elementProvider = new DefaultElementProvider(elementFactory, fieldProvider);
         }
         if (fieldFilters != null) {
             for (FieldFilter fieldFilter : fieldFilters) {
@@ -72,7 +87,7 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
         } else {
             elementProvider.getFilters().addAll(handleDefaultFieldFilters());
         }
-        if (readOnly == true) {
+        if (readOnly) {
             res = new ReadOnlyFXForm();
         } else {
             res = new FXForm();
@@ -183,6 +198,11 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
             }
         }
         this.includeFilters = includes.toArray(new String[includes.size()]);
+        return (BUILDER) this;
+    }
+
+    public BUILDER buffered(boolean buffered) {
+        this.buffered = buffered;
         return (BUILDER) this;
     }
 
