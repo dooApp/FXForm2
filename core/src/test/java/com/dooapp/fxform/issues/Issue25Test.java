@@ -1,9 +1,11 @@
 package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.JavaFXRule;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -12,6 +14,9 @@ import org.junit.Test;
  * @author Antoine Mischler <antoine@dooapp.com>
  */
 public class Issue25Test {
+
+    @Rule
+    public JavaFXRule javaFXRule = new JavaFXRule();
 
     public static class Content {
 
