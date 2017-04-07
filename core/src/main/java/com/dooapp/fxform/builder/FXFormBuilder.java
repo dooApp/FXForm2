@@ -62,7 +62,8 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
 
     private boolean readOnly;
 
-    private boolean buffered;
+    private boolean bufferUserInput;
+    private boolean bufferBeanChanges;
 
     public FXForm build() {
         FXForm res;
@@ -71,8 +72,8 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
         FieldProvider fieldProvider = new ReflectionFieldProvider();
         ElementFactory elementFactory = new DefaultElementFactory();
 
-        if (buffered) {
-            elementFactory = new BufferedElementFactory(elementFactory);
+        if (bufferUserInput || bufferBeanChanges) {
+            elementFactory = new BufferedElementFactory(elementFactory, bufferUserInput, bufferBeanChanges);
         }
 
         if (includeFilters != null) {
@@ -201,8 +202,17 @@ public class FXFormBuilder<BUILDER extends FXFormBuilder<?>> {
         return (BUILDER) this;
     }
 
-    public BUILDER buffered(boolean buffered) {
-        this.buffered = buffered;
+    /**
+     * Specifies whether the user input and/or bean value changes shall be buffered until commit() or reload() are called.
+     * Without buffering the user input is immediately written to the bean and bean value changes immediately appear in the form.
+     *
+     * @param userInput        set to true if you want the user input to be buffered instead of writing it immediately to the bean
+     * @param beanChanges set to true if you want to avoid that form fields are automatically updated on bean property changes
+     * @return this builder
+     */
+    public BUILDER buffered(boolean userInput, boolean beanChanges) {
+        this.bufferUserInput = userInput;
+        this.bufferBeanChanges = beanChanges;
         return (BUILDER) this;
     }
 

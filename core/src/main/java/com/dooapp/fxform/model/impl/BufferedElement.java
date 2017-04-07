@@ -27,12 +27,17 @@ public class BufferedElement<WrappedType> implements Element<WrappedType> {
      * Wraps the given element to create a buffered version of it.
      *
      * @param element element to buffer
+     * @param bufferBeanChanges if true changes in the bean property are only applied to the buffered value when {@link #reload()} is called
      */
-    public BufferedElement(Element<WrappedType> element) {
+    public BufferedElement(Element<WrappedType> element, boolean bufferBeanChanges) {
         this.element = element;
         reload();
 
         sourceProperty().addListener((observable, oldValue, newValue) -> reload());
+
+        if (!bufferBeanChanges) {
+            element.addListener((observable, oldValue, newValue) -> bufferedValue.setValue(newValue));
+        }
     }
 
 

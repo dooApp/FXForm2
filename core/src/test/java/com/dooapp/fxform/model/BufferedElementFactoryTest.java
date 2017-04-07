@@ -3,7 +3,6 @@ package com.dooapp.fxform.model;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.JavaFXRule;
 import com.dooapp.fxform.builder.FXFormBuilder;
-import com.dooapp.fxform.model.impl.BufferedPropertyElementTest;
 import javafx.scene.control.TextField;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,7 +47,7 @@ public class BufferedElementFactoryTest {
         bean.setName("1");
 
         form = new FXFormBuilder()
-                .buffered(true)
+                .buffered(true, true)
                 .build();
     }
 

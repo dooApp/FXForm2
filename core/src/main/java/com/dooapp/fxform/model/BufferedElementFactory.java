@@ -12,10 +12,18 @@ import java.lang.reflect.Field;
  */
 public class BufferedElementFactory implements ElementFactory {
 
-    final ElementFactory elementFactory;
+    protected final ElementFactory elementFactory;
+    protected final boolean bufferUserInput;
+    protected final boolean bufferBeanChanges;
 
     public BufferedElementFactory(ElementFactory elementFactory) {
+        this(elementFactory, true, true);
+    }
+
+    public BufferedElementFactory(ElementFactory elementFactory, boolean bufferUserInput, boolean bufferBeanChanges) {
         this.elementFactory = elementFactory;
+        this.bufferUserInput = bufferUserInput;
+        this.bufferBeanChanges = bufferBeanChanges;
     }
 
     @Override
@@ -23,9 +31,9 @@ public class BufferedElementFactory implements ElementFactory {
         Element element = elementFactory.create(field);
 
         if (element instanceof PropertyElement) {
-            return new BufferedPropertyElement((PropertyElement) element);
+            return new BufferedPropertyElement((PropertyElement) element, bufferUserInput, bufferBeanChanges);
         } else {
-            return new BufferedElement(element);
+            return new BufferedElement(element, bufferBeanChanges);
         }
     }
 
