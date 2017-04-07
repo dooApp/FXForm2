@@ -30,32 +30,37 @@ import java.util.List;
  */
 public abstract class AbstractSourceElement<SourceType, WrappedType> implements Element<WrappedType> {
 
-    private final ObjectProperty<SourceType> source = new SimpleObjectProperty<SourceType>();
+    private final ObjectProperty<SourceType> source = new SimpleObjectProperty<>();
 
-    protected List<ChangeListener> changeListeners = new LinkedList<ChangeListener>();
+    protected List<ChangeListener<? super WrappedType>> changeListeners = new LinkedList<>();
 
-    protected List<InvalidationListener> invalidationListeners = new LinkedList<InvalidationListener>();
+    protected List<InvalidationListener> invalidationListeners = new LinkedList<>();
 
     private ObjectBinding<ObservableValue<WrappedType>> value;
 
     private StringProperty category;
 
     protected AbstractSourceElement() {
-        wrappedProperty().addListener(new ChangeListener<ObservableValue<WrappedType>>() {
-            public void changed(ObservableValue<? extends ObservableValue<WrappedType>> observableValue, ObservableValue<WrappedType> wrappedTypeObservableValue, ObservableValue<WrappedType> wrappedTypeObservableValue1) {
-                for (InvalidationListener invalidationListener : invalidationListeners) {
-                    wrappedTypeObservableValue.removeListener(invalidationListener);
-                    if (wrappedTypeObservableValue1 != null) {
-                        wrappedTypeObservableValue1.addListener(invalidationListener);
-                    }
-                    invalidationListener.invalidated(observableValue);
+        wrappedProperty().addListener((observableValue, oldValue, newValue) -> {
+            for (InvalidationListener invalidationListener : invalidationListeners) {
+                if (oldValue != null) {
+                    oldValue.removeListener(invalidationListener);
                 }
-                for (ChangeListener changeListener : changeListeners) {
-                    wrappedTypeObservableValue.removeListener(changeListener);
-                    if (wrappedTypeObservableValue1 != null) {
-                        wrappedTypeObservableValue1.addListener(changeListener);
-                        changeListener.changed(observableValue, wrappedTypeObservableValue.getValue(), wrappedTypeObservableValue1.getValue());
-                    }
+                if (newValue != null) {
+                    newValue.addListener(invalidationListener);
+                }
+                invalidationListener.invalidated(observableValue);
+            }
+            for (ChangeListener<? super WrappedType> changeListener : changeListeners) {
+                if (oldValue != null) {
+                    oldValue.removeListener(changeListener);
+                }
+                if (newValue != null) {
+                    newValue.addListener(changeListener);
+                    changeListener.changed(
+                            observableValue.getValue(),
+                            oldValue != null ? oldValue.getValue() : null,
+                            newValue.getValue());
                 }
             }
         });
@@ -73,12 +78,14 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
         return source;
     }
 
-    public void addListener(ChangeListener changeListener) {
+    public void addListener(ChangeListener<? super WrappedType> changeListener) {
         changeListeners.add(changeListener);
-        wrappedProperty().getValue().addListener(changeListener);
+        if (wrappedProperty().getValue() != null) {
+            wrappedProperty().getValue().addListener(changeListener);
+        }
     }
 
-    public void removeListener(ChangeListener changeListener) {
+    public void removeListener(ChangeListener<? super WrappedType> changeListener) {
         changeListeners.remove(changeListener);
         if (wrappedProperty().getValue() != null) {
             wrappedProperty().getValue().removeListener(changeListener);
@@ -87,7 +94,9 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
 
     public void addListener(InvalidationListener invalidationListener) {
         invalidationListeners.add(invalidationListener);
-        wrappedProperty().addListener(invalidationListener);
+        if (wrappedProperty().getValue() != null) {
+            wrappedProperty().addListener(invalidationListener);
+        }
     }
 
     public void removeListener(InvalidationListener invalidationListener) {

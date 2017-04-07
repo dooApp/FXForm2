@@ -12,9 +12,11 @@
 
 package com.dooapp.fxform;
 
-import com.dooapp.fxform.filter.ElementListFilter;
 import com.dooapp.fxform.model.DefaultElementProvider;
+import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.ElementProvider;
+import com.dooapp.fxform.model.impl.BufferedElement;
+import com.dooapp.fxform.model.impl.BufferedPropertyElement;
 import com.dooapp.fxform.view.factory.DefaultFactoryProvider;
 import com.dooapp.fxform.view.factory.DefaultLabelFactoryProvider;
 import com.dooapp.fxform.view.factory.DefaultTooltipFactoryProvider;
@@ -24,7 +26,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 
 import java.net.URL;
@@ -154,4 +155,44 @@ public class FXForm<T> extends AbstractFXForm {
     public void setElementProvider(ElementProvider elementProvider) {
         this.elementProvider.set(elementProvider);
     }
+
+    /**
+     * Returns true if all from values are valid.
+     *
+     * @return true if all from values are valid
+     */
+    public boolean isValid() {
+        return getConstraintViolations().isEmpty();
+    }
+
+    /**
+     * Commits the form content to the Java bean if the form is buffered.
+     *
+     * @return true if the form values could be committed or false if one of the form values is invalid
+     */
+    public boolean commit() {
+        if (isValid()) {
+            for (Element element : getElements()) {
+                if (element instanceof BufferedPropertyElement) {
+                    ((BufferedPropertyElement) element).commit();
+                }
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Reloads the form content from the Java bean if the form is buffered.
+     */
+    public void reload() {
+        for (Element element : getElements()) {
+            if (element instanceof BufferedElement) {
+                ((BufferedElement) element).reload();
+            }
+        }
+    }
+
 }
