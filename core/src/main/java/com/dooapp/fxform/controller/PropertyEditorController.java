@@ -93,14 +93,10 @@ public class PropertyEditorController extends NodeController {
         fxFormNode.getProperty().addListener(viewChangeListener);
         modelChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                if (lock.getAndSet(true)) {
-                    return;
-                }
                 updateView(o1, fxFormNode);
                 // The element value was updated, so request a class level check again
                 propertyElementValidator.validate(o1);
                 getFxForm().getClassLevelValidator().validate();
-                lock.set(false);
             }
         };
         getElement().addListener(modelChangeListener);
