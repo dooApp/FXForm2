@@ -42,8 +42,6 @@ public class Issue135Test {
         TestBean testBean2 = new TestBean();
         testBean1.setName("a");
         testBean2.setName("b");
-        Assert.assertEquals("a", testBean1.getName());
-        Assert.assertEquals("b", testBean2.getName());
         FXForm fxForm = new FXForm();
         for (int i = 0; i < 10000; i++) {
             fxForm.setSource(i % 2 == 0 ? testBean1 : testBean2);
