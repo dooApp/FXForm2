@@ -16,11 +16,15 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
+import javafx.application.Platform;
 import org.junit.Ignore;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -54,7 +58,7 @@ public class TestUtils {
     public static List<Element> getTestFields() {
         List<Field> fields = new ReflectionFieldProvider().getProperties(new TestBean());
         List<Element> elements = new LinkedList<Element>();
-        for (Field field: fields) {
+        for (Field field : fields) {
             try {
                 elements.add(new ReadOnlyPropertyFieldElement(field));
             } catch (FormException e) {
@@ -62,6 +66,29 @@ public class TestUtils {
             }
         }
         return elements;
+    }
+
+    /**
+     * Executes a {@link Callable} in the JavaFX Thread and block until the execution is completed.
+     *
+     * @param callable
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public static <T> T runInJavaFXThreadAndWait(Callable<T> callable) throws ExecutionException, InterruptedException {
+        FutureTask<T> future = new FutureTask<T>(callable);
+        Platform.runLater(future);
+        return future.get();
+    }
+
+    /**
+     * Wait for the JavaFX Thread to execute all current tasks.
+     *
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public static void syncJavaFXThread() throws ExecutionException, InterruptedException {
+        runInJavaFXThreadAndWait(() -> null);
     }
 
 }

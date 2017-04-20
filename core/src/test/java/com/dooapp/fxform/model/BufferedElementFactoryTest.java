@@ -2,6 +2,7 @@ package com.dooapp.fxform.model;
 
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.JavaFXRule;
+import com.dooapp.fxform.TestUtils;
 import com.dooapp.fxform.builder.FXFormBuilder;
 import javafx.scene.control.TextField;
 import org.junit.Before;
@@ -9,6 +10,8 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import javax.validation.constraints.Size;
+
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -52,11 +55,12 @@ public class BufferedElementFactoryTest {
     }
 
     @Test
-    public void testForm() throws InterruptedException {
+    public void testForm() throws InterruptedException, ExecutionException {
         // assign bean -> buffered value has to get updated
         form.sourceProperty().setValue(bean);
         TextField nameField = ((TextField) form.lookup("#name-form-editor"));
         assertEquals("1", bean.getName());
+        TestUtils.syncJavaFXThread();
         assertEquals("1", nameField.getText());
 
         // set buffered value, but don't commit value -> bean value must not change
@@ -69,10 +73,12 @@ public class BufferedElementFactoryTest {
 
         // change bean value -> buffered value must not change
         bean.setName("3");
+        TestUtils.syncJavaFXThread();
         assertEquals("2", nameField.getText());
 
         // refresh buffered value -> value must change
         form.reload();
+        TestUtils.syncJavaFXThread();
         assertEquals("3", nameField.getText());
 
         // set an invalid value -> commit has to fail and bean must not get updated
