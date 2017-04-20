@@ -77,13 +77,13 @@ public class AbstractFXForm extends Control {
 
     private ClassLevelValidator classLevelValidator = null;
 
-    private final ResourceProvider resourceProvider = new DefaultResourceProvider();
-
     private final ListProperty<ElementListFilter> filters = new SimpleListProperty<ElementListFilter>(FXCollections.<ElementListFilter>observableArrayList());
 
     private final ListProperty<Element> filteredElements = new SimpleListProperty<Element>(FXCollections.<Element>observableArrayList());
 
     private StringProperty title = new SimpleStringProperty();
+
+    private ObjectProperty<ResourceProvider> resourceProvider = new SimpleObjectProperty<>(new DefaultResourceProvider());
 
     private ObjectProperty<FactoryProvider> editorFactoryProvider;
 
@@ -100,7 +100,14 @@ public class AbstractFXForm extends Control {
     private ObjectProperty<FXFormValidator> fxFormValidator;
 
     public AbstractFXForm() {
-        resourceProvider.resourceBundleProperty().bind(resourceBundleProperty());
+        resourceProvider.addListener((observable, oldValue, newValue) -> {
+            if (oldValue != null) {
+                oldValue.resourceBundleProperty().unbind();
+            }
+            if (newValue != null) {
+                newValue.resourceBundleProperty().bind(resourceBundleProperty());
+            }
+        });
         filters.addListener(new ChangeListener<ObservableList<ElementListFilter>>() {
             @Override
             public void changed(ObservableValue<? extends ObservableList<ElementListFilter>> observableValue, ObservableList<ElementListFilter> elementListFilters, ObservableList<ElementListFilter> elementListFilters2) {
@@ -198,6 +205,18 @@ public class AbstractFXForm extends Control {
      */
     public void setResourceBundle(ResourceBundle resourceBundle) {
         this.resourceBundle.set(resourceBundle);
+    }
+
+    public ResourceProvider getResourceProvider() {
+        return resourceProviderProperty().get();
+    }
+
+    public void setResourceProvider(ResourceProvider resourceProvider) {
+        resourceProviderProperty().set(resourceProvider);
+    }
+
+    public ObjectProperty<ResourceProvider> resourceProviderProperty() {
+        return resourceProvider;
     }
 
     public FactoryProvider getEditorFactoryProvider() {
@@ -363,10 +382,6 @@ public class AbstractFXForm extends Control {
      */
     public ObservableList<ConstraintViolation> getConstraintViolations() {
         return constraintViolationsList;
-    }
-
-    public ResourceProvider getResourceProvider() {
-        return resourceProvider;
     }
 
     public ObservableList<Element> getElements() {
