@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import com.dooapp.fxform.issues.issue142.Issue142CustomControl?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<VBox fx:id="vBox" prefHeight="-1.0" prefWidth="-1.0" xmlns:fx="http://javafx.com/fxml">
+    <children>
+        <Label text="Label"/>
+        <Issue142CustomControl id="values-form-editor" fx:id="customControl"/>
+    </children>
+    <padding>
+        <Insets left="10.0"/>
+    </padding>
+</VBox>

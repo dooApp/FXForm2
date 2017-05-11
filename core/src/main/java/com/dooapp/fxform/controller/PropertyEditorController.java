@@ -47,6 +47,7 @@ public class PropertyEditorController extends NodeController {
     private final AnnotationAdapterProvider annotationAdapterProvider = new AnnotationAdapterProvider();
 
     private AtomicBoolean lock = new AtomicBoolean();
+    private boolean disposed = false;
 
     public PropertyEditorController(AbstractFXForm fxForm, Element element) {
         super(fxForm, element);
@@ -116,10 +117,14 @@ public class PropertyEditorController extends NodeController {
                 Object newValue = adapter.adaptTo(o1);
                 // Update the view later in the JavaFX Thread
                 Platform.runLater(() -> {
-                    // make sure that this view update won't trigger a model update
-                    lock.set(true);
-                    fxFormNode.getProperty().setValue(newValue);
-                    lock.set(false);
+                    // make sure not to update the view if the current controller has been disposed
+                    // between the trigger and the execution time of this Platform.runLater.
+                    if (!isDisposed()) {
+                        // make sure that this view update won't trigger a model update
+                        lock.set(true);
+                        fxFormNode.getProperty().setValue(newValue);
+                        lock.set(false);
+                    }
                 });
             }
             if (!fxFormNode.getNode().disableProperty().isBound()) {
@@ -140,5 +145,4 @@ public class PropertyEditorController extends NodeController {
         fxFormNode.getProperty().removeListener(viewChangeListener);
         getElement().removeListener(modelChangeListener);
     }
-
 }
