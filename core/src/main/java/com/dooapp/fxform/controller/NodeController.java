@@ -13,7 +13,6 @@
 package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.AbstractFXForm;
-import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.utils.Disposable;
 import com.dooapp.fxform.view.FXFormNode;
@@ -33,6 +32,7 @@ public abstract class NodeController implements Disposable {
     private final ChangeListener<FXFormNode> changeListener;
     private final Element element;
     private final AbstractFXForm fxForm;
+    private boolean disposed = false;
 
     public NodeController(AbstractFXForm fxForm, Element element) {
         this.element = element;
@@ -61,6 +61,11 @@ public abstract class NodeController implements Disposable {
     public void dispose() {
         setNode(null);
         node.removeListener(changeListener);
+        disposed = true;
+    }
+
+    public boolean isDisposed() {
+        return disposed;
     }
 
     public FXFormNode getNode() {
