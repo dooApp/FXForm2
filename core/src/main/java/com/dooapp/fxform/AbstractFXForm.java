@@ -100,6 +100,7 @@ public class AbstractFXForm extends Control {
     private ObjectProperty<FXFormValidator> fxFormValidator;
 
     public AbstractFXForm() {
+        getResourceProvider().resourceBundleProperty().bind(resourceBundleProperty());
         resourceProvider.addListener((observable, oldValue, newValue) -> {
             if (oldValue != null) {
                 oldValue.resourceBundleProperty().unbind();
