@@ -13,8 +13,7 @@
 package com.dooapp.fxform.model.impl.java;
 
 import com.dooapp.fxform.model.FormException;
-import javafx.beans.property.adapter.JavaBeanFloatPropertyBuilder;
-import javafx.beans.property.adapter.JavaBeanProperty;
+import javafx.beans.property.FloatProperty;
 
 import java.lang.reflect.Field;
 
@@ -30,12 +29,8 @@ public class JavaBeanFloatPropertyElement extends AbstractJavaBeanElement<Number
     }
 
     @Override
-    protected JavaBeanProperty<Number> buildJavaBeanProperty() throws NoSuchMethodException {
-        return JavaBeanFloatPropertyBuilder
-                .create()
-                .bean(sourceProperty().getValue())
-                .name(field.getName())
-                .build();
+    public Class<?> getType() {
+        return FloatProperty.class;
     }
 
 }

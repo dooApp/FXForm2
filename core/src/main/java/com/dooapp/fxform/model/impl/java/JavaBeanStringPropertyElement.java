@@ -13,8 +13,7 @@
 package com.dooapp.fxform.model.impl.java;
 
 import com.dooapp.fxform.model.FormException;
-import javafx.beans.property.adapter.JavaBeanProperty;
-import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder;
+import javafx.beans.property.StringProperty;
 
 import java.lang.reflect.Field;
 
@@ -30,12 +29,8 @@ public class JavaBeanStringPropertyElement extends AbstractJavaBeanElement<Strin
     }
 
     @Override
-    protected JavaBeanProperty<String> buildJavaBeanProperty() throws NoSuchMethodException {
-        return JavaBeanStringPropertyBuilder
-                .create()
-                .bean(sourceProperty().getValue())
-                .name(field.getName())
-                .build();
+    public Class<?> getType() {
+        return StringProperty.class;
     }
 
 }

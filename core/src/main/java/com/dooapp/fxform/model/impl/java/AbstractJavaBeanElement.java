@@ -16,6 +16,7 @@ import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.model.impl.AbstractFieldElement;
 import javafx.beans.property.Property;
+import javafx.beans.property.adapter.JavaBeanObjectPropertyBuilder;
 import javafx.beans.property.adapter.JavaBeanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WritableValue;
@@ -38,7 +39,13 @@ public abstract class AbstractJavaBeanElement<WrappedType> extends AbstractField
         super(field);
     }
 
-    protected abstract JavaBeanProperty<WrappedType> buildJavaBeanProperty() throws NoSuchMethodException;
+    protected JavaBeanProperty<WrappedType> buildJavaBeanProperty() throws NoSuchMethodException {
+        return JavaBeanObjectPropertyBuilder
+                .create()
+                .bean(sourceProperty().getValue())
+                .name(field.getName())
+                .build();
+    }
 
     @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {

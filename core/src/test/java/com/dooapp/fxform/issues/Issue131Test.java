@@ -2,6 +2,9 @@ package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.JavaFXRule;
+import com.dooapp.fxform.model.FormException;
+import com.dooapp.fxform.model.impl.java.JavaBeanIntegerPropertyElement;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -16,7 +19,7 @@ public class Issue131Test {
     public JavaFXRule javaFXRule = new JavaFXRule();
 
     public static class TestBean {
-        Integer age;
+        public Integer age;
 
         public Integer getAge() {
             return age;
@@ -30,6 +33,16 @@ public class Issue131Test {
     @Test
     public void test() {
         new FXForm<>(new TestBean());
+    }
+
+    @Test
+    public void testJavaBeanIntegerPropertyElement() throws NoSuchFieldException, FormException {
+        TestBean testBean = new TestBean();
+        JavaBeanIntegerPropertyElement element = new JavaBeanIntegerPropertyElement(TestBean.class.getField("age"));
+        element.setSource(testBean);
+        Assert.assertNull(element.getValue());
+        testBean.setAge(42);
+        Assert.assertEquals(42, element.getValue());
     }
 
 }

@@ -13,8 +13,7 @@
 package com.dooapp.fxform.model.impl.java;
 
 import com.dooapp.fxform.model.FormException;
-import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder;
-import javafx.beans.property.adapter.JavaBeanProperty;
+import javafx.beans.property.BooleanProperty;
 
 import java.lang.reflect.Field;
 
@@ -30,11 +29,8 @@ public class JavaBeanBooleanPropertyElement extends AbstractJavaBeanElement<Bool
     }
 
     @Override
-    protected JavaBeanProperty<Boolean> buildJavaBeanProperty() throws NoSuchMethodException {
-        return JavaBeanBooleanPropertyBuilder.create()
-                .name(field.getName())
-                .bean(sourceProperty().getValue())
-                .build();
+    public Class<?> getType() {
+        return BooleanProperty.class;
     }
 
 }
