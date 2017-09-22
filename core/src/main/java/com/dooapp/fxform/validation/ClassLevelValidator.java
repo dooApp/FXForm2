@@ -38,7 +38,7 @@ public class ClassLevelValidator {
 
     private final ObjectProperty<FXFormValidator> validator = new SimpleObjectProperty<FXFormValidator>();
 
-    private final ListProperty<ConstraintViolation> constraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.<ConstraintViolation>observableArrayList());
+    private final ListProperty<ConstraintViolation> constraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.synchronizedObservableList(FXCollections.<ConstraintViolation>observableArrayList()));
 
     private AbstractFXForm abstractFXForm;
 

@@ -36,9 +36,9 @@ public class PropertyElementValidator {
 
     private final ObjectProperty<FXFormValidator> validator = new SimpleObjectProperty<FXFormValidator>();
 
-    private final ListProperty<ConstraintViolation> constraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.<ConstraintViolation>observableArrayList());
+    private final ListProperty<ConstraintViolation> constraintViolations = new SimpleListProperty<>(FXCollections.synchronizedObservableList(FXCollections.<ConstraintViolation>observableArrayList()));
 
-    private final ListProperty<ConstraintViolation> classLevelConstraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.<ConstraintViolation>observableArrayList());
+    private final ListProperty<ConstraintViolation> classLevelConstraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.synchronizedObservableList(FXCollections.<ConstraintViolation>observableArrayList()));
 
     private final BooleanProperty invalid = new SimpleBooleanProperty(false);
 
