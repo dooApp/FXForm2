@@ -1,6 +1,7 @@
 package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.FailOnUncaughtExceptionRule;
 import com.dooapp.fxform.JavaFXRule;
 import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.FormAdapter;
@@ -8,7 +9,6 @@ import com.dooapp.fxform.annotation.FormFactory;
 import com.dooapp.fxform.view.factory.impl.DatePickerFactory;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import junit.framework.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -25,6 +25,9 @@ import java.util.GregorianCalendar;
  * Time: 15:47
  */
 public class Issue101Test {
+
+    @Rule
+    public FailOnUncaughtExceptionRule failOnUncaughtExceptionRule = new FailOnUncaughtExceptionRule();
 
     private class TestBean {
 
@@ -64,7 +67,6 @@ public class Issue101Test {
 
     @Test
     public void test() {
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> Assert.fail());
         FXForm fxForm = new FXForm();
         fxForm.setSource(new TestBean());
 

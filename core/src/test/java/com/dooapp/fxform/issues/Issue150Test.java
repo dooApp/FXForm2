@@ -1,12 +1,12 @@
 package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.FailOnUncaughtExceptionRule;
 import com.dooapp.fxform.JavaFXRule;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import junit.framework.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -29,6 +29,9 @@ public class Issue150Test {
 
     @Rule
     public JavaFXRule javaFXRule = new JavaFXRule();
+
+    @Rule
+    public FailOnUncaughtExceptionRule failOnUncaughtExceptionRule = new FailOnUncaughtExceptionRule();
 
     @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
     @Retention(RetentionPolicy.RUNTIME)
@@ -91,11 +94,6 @@ public class Issue150Test {
 
     @Test
     public void test150() throws ExecutionException, InterruptedException {
-        final boolean[] failed = {false};
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            e.printStackTrace();
-            failed[0] = true;
-        });
         TestBean testBean = new TestBean();
         FXForm fxForm = new FXForm(testBean);
         Thread thread1 = new Thread(() -> {
@@ -105,7 +103,6 @@ public class Issue150Test {
                     Thread.sleep(10);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    failed[0] = true;
                 }
             }
         }, "Thread 1");
@@ -116,14 +113,12 @@ public class Issue150Test {
                     Thread.sleep(10);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    failed[0] = true;
                 }
             }
         }, "Thread 2");
         thread1.start();
         thread2.start();
         Thread.sleep(1000);
-        Assert.assertFalse(failed[0]);
     }
 
 
