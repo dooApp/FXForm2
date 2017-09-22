@@ -32,7 +32,6 @@ public class JavaFXRule extends Application implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                System.out.println("Initialized : " + initialized);
                 if (!initialized) {
                     Thread t = new Thread("JavaFX Init Thread") {
                         public void run() {
