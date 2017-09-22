@@ -25,18 +25,24 @@ import org.junit.runners.model.Statement;
  */
 public class JavaFXRule extends Application implements TestRule {
 
+    static boolean initialized = false;
+
     @Override
     public Statement apply(final Statement statement, Description description) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                Thread t = new Thread("JavaFX Init Thread") {
-                    public void run() {
-                        Application.launch(JavaFXRule.class, new String[0]);
-                    }
-                };
-                t.setDaemon(true);
-                t.start();
+                System.out.println("Initialized : " + initialized);
+                if (!initialized) {
+                    Thread t = new Thread("JavaFX Init Thread") {
+                        public void run() {
+                            Application.launch(JavaFXRule.class, new String[0]);
+                        }
+                    };
+                    t.setDaemon(true);
+                    t.start();
+                    initialized = true;
+                }
                 statement.evaluate();
             }
         };
