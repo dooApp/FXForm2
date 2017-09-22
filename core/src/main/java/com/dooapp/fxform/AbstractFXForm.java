@@ -79,7 +79,7 @@ public class AbstractFXForm extends Control {
 
     private final ListProperty<ElementListFilter> filters = new SimpleListProperty<ElementListFilter>(FXCollections.<ElementListFilter>observableArrayList());
 
-    private final ListProperty<Element> filteredElements = new SimpleListProperty<Element>(FXCollections.<Element>observableArrayList());
+    private final ListProperty<Element> filteredElements = new SimpleListProperty<Element>(FXCollections.synchronizedObservableList(FXCollections.<Element>observableArrayList()));
 
     private StringProperty title = new SimpleStringProperty();
 
