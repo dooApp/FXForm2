@@ -16,6 +16,7 @@ import javax.validation.ConstraintTarget;
 import javax.validation.ConstraintValidator;
 import javax.validation.Payload;
 import javax.validation.metadata.ConstraintDescriptor;
+import javax.validation.metadata.ValidateUnwrappedValue;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
@@ -73,4 +74,15 @@ public class NotAdaptableConstraintDescriptor implements ConstraintDescriptor {
     public boolean isReportAsSingleViolation() {
         return false;
     }
+
+    @Override
+    public ValidateUnwrappedValue getValueUnwrapping() {
+        return null;
+    }
+
+    @Override
+    public Object unwrap(Class aClass) {
+        return null;
+    }
+    
 }

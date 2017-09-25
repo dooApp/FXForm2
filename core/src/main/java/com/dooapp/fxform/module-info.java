@@ -3,7 +3,7 @@ module com.dooapp.fxform {
     requires javafx.graphics;
     requires javafx.controls;
     requires javafx.fxml;
-    requires validation.api;
+    requires java.validation;
     exports com.dooapp.fxform;
     exports com.dooapp.fxform.builder;
     exports com.dooapp.fxform.reflection;
