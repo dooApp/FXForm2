@@ -13,7 +13,6 @@
 package com.dooapp.fxform.controller;
 
 import com.dooapp.fxform.AbstractFXForm;
-import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.model.Element;
@@ -22,8 +21,6 @@ import com.dooapp.fxform.view.NodeType;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.StringProperty;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created at 27/09/12 15:45.<br>
@@ -32,7 +29,7 @@ import java.util.logging.Logger;
  */
 public class LabelController extends NodeController {
 
-    public final static Logger logger = Logger.getLogger(LabelController.class.getName());
+    public final static System.Logger logger = System.getLogger(LabelController.class.getName());
 
     private final NodeType nodeType;
 
@@ -55,7 +52,7 @@ public class LabelController extends NodeController {
                 try {
                     return adapter.adaptTo(value.get());
                 } catch (AdapterException e) {
-                    logger.log(Level.WARNING, e.getMessage(), e);
+                    logger.log(System.Logger.Level.WARNING, e.getMessage(), e);
                 }
                 return null;
             }

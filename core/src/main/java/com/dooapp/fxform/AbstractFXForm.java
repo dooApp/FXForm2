@@ -49,8 +49,6 @@ import javax.validation.ConstraintViolation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This control can be used to show a form to the user. The form handle a collection a Element.
@@ -65,7 +63,7 @@ public class AbstractFXForm extends Control {
 
     public static final String WARNING_STYLE = "-warning";
 
-    private final static Logger logger = Logger.getLogger(FXForm.class.getName());
+    private final static System.Logger logger = System.getLogger(FXForm.class.getName());
 
     protected final ObservableList<ConstraintViolation> constraintViolationsList = FXCollections.<ConstraintViolation>observableArrayList();
 
@@ -156,7 +154,7 @@ public class AbstractFXForm extends Control {
             try {
                 filteredList = elementListFilter.filter(filteredList);
             } catch (FilterException e) {
-                logger.log(Level.WARNING, e.getMessage(), e);
+                logger.log(System.Logger.Level.WARNING, e.getMessage(), e);
             }
         }
         return filteredList;

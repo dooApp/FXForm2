@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -39,7 +37,7 @@ import java.util.logging.Logger;
  */
 public abstract class FXFormSkin extends SkinBase<AbstractFXForm> implements Skin<AbstractFXForm> {
 
-    private final static Logger logger = Logger.getLogger(FXFormSkin.class.getName());
+    private final static System.Logger logger = System.getLogger(FXFormSkin.class.getName());
 
     private Node rootNode;
 
@@ -103,7 +101,7 @@ public abstract class FXFormSkin extends SkinBase<AbstractFXForm> implements Ski
                 getChildren().add(rootNode);
             }
         } catch (NodeCreationException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.log(System.Logger.Level.ERROR, e.getMessage(), e);
         }
     }
 
@@ -148,7 +146,7 @@ public abstract class FXFormSkin extends SkinBase<AbstractFXForm> implements Ski
     protected FXFormNode createFXFormNode(Element element, FactoryProvider factoryProvider, String suffixId) {
         Callback<Void, FXFormNode> factory = factoryProvider.getFactory(element);
         if (factory == null) {
-            logger.log(Level.WARNING, "No factory found for " + element + ", using " + factoryProvider + "\nCheck your factory provider.");
+            logger.log(System.Logger.Level.WARNING, "No factory found for " + element + ", using " + factoryProvider + "\nCheck your factory provider.");
             Label label = new Label();
             return new FXFormNodeWrapper(label, label.textProperty());
         }

@@ -1,4 +1,4 @@
-package com.dooapp.fxform;
+package com.dooapp.fxform.sampler;
 
 import java.util.ResourceBundle;
 

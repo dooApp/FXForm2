@@ -1,11 +1,11 @@
-package com.dooapp.fxform.samples;
+package com.dooapp.fxform.sampler.samples;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.FXFormSample;
-import com.dooapp.fxform.Utils;
+import com.dooapp.fxform.sampler.FXFormSample;
+import com.dooapp.fxform.sampler.Utils;
 import com.dooapp.fxform.annotation.Accessor;
 import com.dooapp.fxform.builder.FXFormBuilder;
-import com.dooapp.fxform.model.Movies;
+import com.dooapp.fxform.sampler.model.Movies;
 import com.dooapp.fxform.view.skin.DefaultSkin;
 import com.dooapp.fxform.view.skin.InlineSkin;
 import javafx.beans.property.*;
@@ -16,7 +16,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -64,6 +63,11 @@ public class DifferentSkinForm extends FXFormSample {
         bp.setCenter(box);
         choiceBox.getSelectionModel().selectFirst();
         return bp;
+    }
+
+    @Override
+    public String getControlStylesheetURL() {
+        return null;
     }
 
     @Accessor(value = Accessor.AccessType.FIELD)

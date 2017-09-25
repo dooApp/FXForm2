@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Default implementation used to create elements for a bean.
@@ -40,7 +38,7 @@ import java.util.logging.Logger;
  */
 public class DefaultElementProvider implements ElementProvider {
 
-    private final static Logger logger = Logger.getLogger(DefaultElementProvider.class.getName());
+    private final static System.Logger logger = System.getLogger(DefaultElementProvider.class.getName());
 
     FieldProvider fieldProvider = new ReflectionFieldProvider();
 
@@ -100,7 +98,7 @@ public class DefaultElementProvider implements ElementProvider {
                     elements.add(element);
                 }
             } catch (FormException e) {
-                logger.log(Level.WARNING, e.getMessage(), e);
+                logger.log(System.Logger.Level.WARNING, e.getMessage(), e);
             }
         }
         return elements;

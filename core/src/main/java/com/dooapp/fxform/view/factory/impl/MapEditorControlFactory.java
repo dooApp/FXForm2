@@ -11,8 +11,6 @@ import javafx.scene.Node;
 import javafx.util.Callback;
 
 import java.lang.reflect.Field;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -21,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class MapEditorControlFactory implements Callback<Void, FXFormNode> {
 
-    public final static Logger logger = Logger.getLogger(MapEditorControlFactory.class.getName());
+    public final static System.Logger logger = System.getLogger(MapEditorControlFactory.class.getName());
 
     @Override
     public FXFormNode call(Void param) {
@@ -39,7 +37,7 @@ public class MapEditorControlFactory implements Callback<Void, FXFormNode> {
                     Class<?> mapValueType = ReflectionUtils.getMapPropertyValueType(field);
                     mapEditorControl.setValueType(mapValueType);
                 } else {
-                    logger.log(Level.WARNING, "Unable to extract MapProperty value type which is required by the MapEditorControlFactory for this element: " + element);
+                    logger.log(System.Logger.Level.WARNING, "Unable to extract MapProperty value type which is required by the MapEditorControlFactory for this element: " + element);
                 }
             }
 

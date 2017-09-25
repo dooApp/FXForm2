@@ -19,8 +19,6 @@ import javafx.collections.FXCollections;
 import javafx.util.Callback;
 
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -29,7 +27,7 @@ import java.util.logging.Logger;
  */
 public class EnumChoiceBoxFactory implements Callback<Void, FXFormNode> {
 
-    private final static Logger logger = Logger.getLogger(EnumChoiceBoxFactory.class.getName());
+    private final static System.Logger logger = System.getLogger(EnumChoiceBoxFactory.class.getName());
 
     public FXFormNode call(Void aVoid) {
 
@@ -40,7 +38,7 @@ public class EnumChoiceBoxFactory implements Callback<Void, FXFormNode> {
                 try {
                     constants = (Enum[]) element.getWrappedType().getEnumConstants();
                 } catch (Exception e) {
-                    logger.log(Level.WARNING, "Could not retrieve enum constants from element " + element, e);
+                    logger.log(System.Logger.Level.WARNING, "Could not retrieve enum constants from element " + element, e);
                 }
                 choiceBox.setItems(FXCollections.observableList(Arrays.asList(constants)));
                 choiceBox.getSelectionModel().select(element.getValue());

@@ -20,8 +20,6 @@ import javafx.beans.property.Property;
 import javafx.scene.Node;
 
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -30,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class NodeSkin extends FXFormSkin {
 
-    private final Logger logger = Logger.getLogger(NodeSkin.class.getName());
+    private final System.Logger logger = System.getLogger(NodeSkin.class.getName());
 
     private Callable<Node> onCreateNode;
 
@@ -94,7 +92,7 @@ public class NodeSkin extends FXFormSkin {
             if (property != null) {
                 return new FXFormNodeWrapper(node, property);
             } else {
-                logger.log(Level.WARNING, "Unable to find the property to bind for " + node + "\n" +
+                logger.log(System.Logger.Level.WARNING, "Unable to find the property to bind for " + node + "\n" +
                         "Check that you configured the PropertyProvider correctly. See FXForm#setPropertyProvider");
                 return null;
             }

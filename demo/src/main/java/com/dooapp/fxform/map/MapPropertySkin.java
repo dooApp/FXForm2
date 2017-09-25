@@ -19,12 +19,13 @@ import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Skin;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBoxBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javafx.scene.layout.HBox;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -42,7 +43,7 @@ public class MapPropertySkin implements Skin<MapPropertyControl> {
     /**
      * The logger
      */
-    private static final Logger logger = LoggerFactory.getLogger(MapPropertySkin.class);
+    private static final System.Logger logger = System.getLogger(MapPropertySkin.class.getName());
 
     private final MapPropertyControl control;
 
@@ -85,13 +86,15 @@ public class MapPropertySkin implements Skin<MapPropertyControl> {
         final TextField valueTextField = new TextField();
         gridPane.setHgap(10);
         root.setCenter(gridPane);
-        root.setBottom(HBoxBuilder.create().children(keyTextField, valueTextField,
-                ButtonBuilder.create().text("Add").onAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        MapPropertySkin.this.control.getMap().put(keyTextField.getText(), valueTextField.getText());
-                    }
-                }).build()).build());
+        Button button = new Button("Add");
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                MapPropertySkin.this.control.getMap().put(keyTextField.getText(), valueTextField.getText());
+            }
+        });
+        HBox hBox = new HBox(keyTextField, valueTextField, button);
+        root.setBottom(hBox);
     }
 
     private void configure(ObservableMap<String, String> stringStringObservableMap2) {
