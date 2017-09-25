@@ -22,8 +22,6 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created at 27/09/12 17:15.<br>
@@ -32,7 +30,7 @@ import java.util.logging.Logger;
  */
 public class ReadOnlyPropertyEditorController extends NodeController {
 
-    public final static Logger logger = Logger.getLogger(ReadOnlyPropertyEditorController.class.getName());
+    public final static System.Logger logger = System.getLogger(ReadOnlyPropertyEditorController.class.getName());
 
     private ChangeListener changeListener;
 
@@ -75,7 +73,7 @@ public class ReadOnlyPropertyEditorController extends NodeController {
             }
             fxFormNode.getProperty().setValue(adapter.adaptTo(getElement().getValue()));
         } catch (AdapterException e) {
-            logger.log(Level.FINE, e.getMessage(), e);
+            logger.log(System.Logger.Level.TRACE, e.getMessage(), e);
         }
     }
 

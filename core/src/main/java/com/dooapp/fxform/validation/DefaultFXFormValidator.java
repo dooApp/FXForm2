@@ -23,8 +23,6 @@ import java.lang.annotation.ElementType;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -33,7 +31,7 @@ import java.util.logging.Logger;
  */
 public class DefaultFXFormValidator implements FXFormValidator {
 
-    private final Logger logger = Logger.getLogger(DefaultFXFormValidator.class.getName());
+    private final System.Logger logger = System.getLogger(DefaultFXFormValidator.class.getName());
 
     static ValidatorFactory factory;
 
@@ -53,7 +51,7 @@ public class DefaultFXFormValidator implements FXFormValidator {
             messageInterpolator = factory.getMessageInterpolator();
         } catch (ValidationException e) {
             // validation is not activated, since no implementation has been provided
-            logger.log(Level.INFO, "Validation disabled", e);
+            logger.log(System.Logger.Level.INFO, "Validation disabled", e);
         }
     }
 

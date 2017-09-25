@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -30,7 +29,7 @@ import java.util.logging.Logger;
  */
 public class DefaultAdapterProvider implements AdapterProvider {
 
-    private final static Logger logger = Logger.getLogger(DefaultAdapterProvider.class.getName());
+    private final static System.Logger logger = System.getLogger(DefaultAdapterProvider.class.getName());
 
     private final static Map<AdapterMatcher, Adapter> DEFAULT_MAP = new LinkedHashMap();
 
@@ -90,7 +89,7 @@ public class DefaultAdapterProvider implements AdapterProvider {
                 adapter = new ToStringConverter();
             } else {
                 adapter = new DefaultAdapter();
-                logger.log(java.util.logging.Level.WARNING, "No adapter between types " + fromClass + " and " + toClass + " was found (to adapt " + element + " and " + fxFormNode + ")" +
+                logger.log(System.Logger.Level.WARNING, "No adapter between types " + fromClass + " and " + toClass + " was found (to adapt " + element + " and " + fxFormNode + ")" +
                         "\nMake sure to register the required adapter in DefaultAdapterProvider either in the global or in the user map. See FXForm#setAdapterProvider");
 
             }

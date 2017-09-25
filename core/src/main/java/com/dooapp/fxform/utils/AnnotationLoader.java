@@ -16,8 +16,6 @@ import com.dooapp.fxform.model.Element;
 import javafx.beans.property.ObjectProperty;
 
 import java.lang.annotation.Annotation;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -26,7 +24,7 @@ import java.util.logging.Logger;
  */
 public abstract class AnnotationLoader<A extends Annotation, T> {
 
-    private final static Logger logger = Logger.getLogger(AnnotationLoader.class.getName());
+    private final static System.Logger logger = System.getLogger(AnnotationLoader.class.getName());
 
     protected T load(Class<? extends Annotation> annotation, Element element) {
         // check field annotation
@@ -35,7 +33,7 @@ public abstract class AnnotationLoader<A extends Annotation, T> {
             try {
                 return instantiate((A) element.getAnnotation(annotation));
             } catch (Exception e) {
-                logger.log(Level.WARNING, "Unable to get new instance for " + element.getAnnotation(annotation), e);
+                logger.log(System.Logger.Level.WARNING, "Unable to get new instance for " + element.getAnnotation(annotation), e);
             }
         }
         // check annotation on wrapped type

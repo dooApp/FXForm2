@@ -31,7 +31,6 @@ import javafx.scene.Scene;
 import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -41,7 +40,7 @@ import java.util.logging.Logger;
  */
 public class FXForm<T> extends AbstractFXForm {
 
-    private final static Logger logger = Logger.getLogger(FXForm.class.getName());
+    private final static System.Logger logger = System.getLogger(FXForm.class.getName());
 
     private final ObjectProperty<T> source = new SimpleObjectProperty<T>();
 

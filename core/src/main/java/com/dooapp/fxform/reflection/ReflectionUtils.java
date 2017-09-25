@@ -15,7 +15,6 @@ package com.dooapp.fxform.reflection;
 import java.lang.reflect.*;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * This class contains reflection utilities to automatically extract fields and generic types.
@@ -26,7 +25,7 @@ import java.util.logging.Logger;
  */
 public class ReflectionUtils {
 
-    private final static Logger logger = Logger.getLogger(ReflectionUtils.class.getName());
+    private final static System.Logger logger = System.getLogger(ReflectionUtils.class.getName());
 
     public final static String PROPERTY_GETTER = "Property";
 

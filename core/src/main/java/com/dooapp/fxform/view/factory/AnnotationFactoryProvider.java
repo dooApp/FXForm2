@@ -18,7 +18,6 @@ import com.dooapp.fxform.utils.AnnotationLoader;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.util.Callback;
 
-import java.util.logging.Logger;
 
 /**
  * Factory provider based on the @FormFactory annotation.
@@ -29,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class AnnotationFactoryProvider extends AnnotationLoader<FormFactory, Callback<Void, FXFormNode>> implements FactoryProvider {
 
-    private final static Logger logger = Logger.getLogger(AnnotationFactoryProvider.class.getName());
+    private final static System.Logger logger = System.getLogger(AnnotationFactoryProvider.class.getName());
 
     /**
      * Might return null if no FormFactory annotation if defined neither on the field nor on the field type.

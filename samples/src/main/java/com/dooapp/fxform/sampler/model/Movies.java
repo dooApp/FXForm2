@@ -1,6 +1,6 @@
-package com.dooapp.fxform.model;
+package com.dooapp.fxform.sampler.model;
 
-import com.dooapp.fxform.Utils;
+import com.dooapp.fxform.sampler.Utils;
 
 import java.util.ResourceBundle;
 

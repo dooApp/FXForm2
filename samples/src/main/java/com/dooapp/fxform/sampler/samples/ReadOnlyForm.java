@@ -1,31 +1,20 @@
-package com.dooapp.fxform.samples;
+package com.dooapp.fxform.sampler.samples;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.FXFormSample;
-import com.dooapp.fxform.Utils;
+import com.dooapp.fxform.sampler.FXFormSample;
+import com.dooapp.fxform.sampler.Utils;
 import com.dooapp.fxform.annotation.Accessor;
 import com.dooapp.fxform.builder.FXFormBuilder;
-import com.dooapp.fxform.model.Movies;
-import com.dooapp.fxform.reflection.MultipleBeanSource;
+import com.dooapp.fxform.sampler.model.Movies;
 import javafx.beans.property.*;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
- * TODO write documentation<br>
- *<br>
- * Created at 25/09/2014 10:03.<br>
- *
  * @author Bastien
- *
  */
-public class CategorizedForm extends FXFormSample {
-
-    @Override
-    public String getSampleName() {
-        return "Categorized form";
-    }
+public class ReadOnlyForm extends FXFormSample {
 
     @Accessor(value = Accessor.AccessType.FIELD)
     public class User {
@@ -35,34 +24,40 @@ public class CategorizedForm extends FXFormSample {
         public IntegerProperty age = new SimpleIntegerProperty(10);
         public ObjectProperty<Movies> favoriteMovie = new SimpleObjectProperty<>();
         public BooleanProperty coolDeveloper = new SimpleBooleanProperty();
-        public ObjectProperty<Address> address = new SimpleObjectProperty<>(new Address());
     }
 
-    @Accessor(value = Accessor.AccessType.FIELD)
-    public class Address {
-
-        public StringProperty street = new SimpleStringProperty();
-        public StringProperty city = new SimpleStringProperty();
-        public StringProperty zip = new SimpleStringProperty();
+    @Override
+    public String getSampleName() {
+        return "Read only form";
     }
 
     @Override
     public Node getPanel(Stage stage) {
         Pane root = new Pane();
-
         FXForm form = new FXFormBuilder<>()
-                .categorizeAndInclude("firstName", "lastName", "age", "favoriteMovie", "coolDeveloper", "-Where ?", "street", "city", "zip")
+                .includeAndReorder("firstName", "lastName", "age", "favoriteMovie")
                 .resourceBundle(Utils.SAMPLE)
+                .readOnly(true)
                 .build();
 
         User user = new User();
-        form.setSource(new MultipleBeanSource(user, user.address.get()));
+        user.firstName.set("Robert");
+        user.lastName.set("Shepard");
+        user.age.setValue(42);
+        user.favoriteMovie.setValue(Movies.LOTR);
+        form.setSource(user);
 
         root.getChildren().add(form);
         return root;
     }
+
+    @Override
+    public String getControlStylesheetURL() {
+        return null;
+    }
+
     @Override
     public String getSampleDescription() {
-        return "This is an example of how to split your form in different parts";
+        return "This is how you can do a read only form";
     }
 }

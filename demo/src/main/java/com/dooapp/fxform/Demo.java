@@ -24,14 +24,12 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.SceneBuilder;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.apache.log4j.BasicConfigurator;
 
 import javax.imageio.ImageIO;
 import javax.validation.ConstraintViolation;
@@ -79,7 +77,10 @@ public class Demo extends Application {
     private Node createNode() {
         VBox vBox = new VBox();
         vBox.getChildren().addAll(createSkinSelector(), createCSSNode(), createSnapshotButton(), fxForm, createConstraintNode());
-        return ScrollPaneBuilder.create().content(vBox).fitToWidth(true).build();
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(vBox);
+        scrollPane.setFitToWidth(true);
+        return scrollPane;
     }
 
     private Button createSnapshotButton() {
@@ -98,36 +99,37 @@ public class Demo extends Application {
     }
 
     private Node createConstraintNode() {
-        return ButtonBuilder.create().text("Validate")
-                .defaultButton(true)
-                .onAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        ListView<ConstraintViolation> listView = new ListView<ConstraintViolation>();
-                        listView.setCellFactory(new Callback<ListView<ConstraintViolation>, ListCell<ConstraintViolation>>() {
+        Button button = new Button("Validate");
+        button.setDefaultButton(true);
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                ListView<ConstraintViolation> listView = new ListView<ConstraintViolation>();
+                listView.setCellFactory(new Callback<ListView<ConstraintViolation>, ListCell<ConstraintViolation>>() {
 
+                    @Override
+                    public ListCell<ConstraintViolation> call(ListView<ConstraintViolation> constraintViolation) {
+                        return new ListCell<ConstraintViolation>() {
                             @Override
-                            public ListCell<ConstraintViolation> call(ListView<ConstraintViolation> constraintViolation) {
-                                return new ListCell<ConstraintViolation>() {
-                                    @Override
-                                    protected void updateItem(ConstraintViolation constraintViolation, boolean b) {
-                                        super.updateItem(constraintViolation, b);
-                                        if (constraintViolation != null) {
-                                            setText(constraintViolation.getPropertyPath().toString() + " - " + constraintViolation.getMessage());
-                                        } else {
-                                            setText("");
-                                        }
-                                    }
-                                };
+                            protected void updateItem(ConstraintViolation constraintViolation, boolean b) {
+                                super.updateItem(constraintViolation, b);
+                                if (constraintViolation != null) {
+                                    setText(constraintViolation.getPropertyPath().toString() + " - " + constraintViolation.getMessage());
+                                } else {
+                                    setText("");
+                                }
                             }
-                        });
-                        listView.getItems().setAll(fxForm.getConstraintViolations());
-                        Scene scene = new Scene(listView);
-                        Stage stage = new Stage();
-                        stage.setScene(scene);
-                        stage.show();
+                        };
                     }
-                }).build();
+                });
+                listView.getItems().setAll(fxForm.getConstraintViolations());
+                Scene scene = new Scene(listView);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.show();
+            }
+        });
+        return button;
     }
 
     private Node createCSSNode() {
@@ -175,14 +177,14 @@ public class Demo extends Application {
     }
 
     public static void main(String[] args) {
-        BasicConfigurator.configure();
         Application.launch(Demo.class, args);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("FXForm Demo");
-        stage.setScene(SceneBuilder.create().root(root).build());
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
         stage.setHeight(600);
         stage.setWidth(490);
         setup();

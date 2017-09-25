@@ -1,11 +1,11 @@
-package com.dooapp.fxform.samples;
+package com.dooapp.fxform.sampler.samples;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.FXFormSample;
-import com.dooapp.fxform.Utils;
+import com.dooapp.fxform.sampler.FXFormSample;
+import com.dooapp.fxform.sampler.Utils;
 import com.dooapp.fxform.annotation.Accessor;
 import com.dooapp.fxform.builder.FXFormBuilder;
-import com.dooapp.fxform.model.Movies;
+import com.dooapp.fxform.sampler.model.Movies;
 import javafx.beans.property.*;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -14,7 +14,12 @@ import javafx.stage.Stage;
 /**
  * @author Bastien
  */
-public class ReadOnlyForm extends FXFormSample {
+public class FXMLSkin extends FXFormSample {
+
+    @Override
+    public String getSampleName() {
+        return "FXML Skin";
+    }
 
     @Accessor(value = Accessor.AccessType.FIELD)
     public class User {
@@ -27,32 +32,24 @@ public class ReadOnlyForm extends FXFormSample {
     }
 
     @Override
-    public String getSampleName() {
-        return "Read only form";
-    }
-
-    @Override
     public Node getPanel(Stage stage) {
         Pane root = new Pane();
-        FXForm form = new FXFormBuilder<>()
-                .includeAndReorder("firstName", "lastName", "age", "favoriteMovie")
-                .resourceBundle(Utils.SAMPLE)
-                .readOnly(true)
-                .build();
 
+        FXForm form = new FXFormBuilder<>().include("lastName", "firstName", "age").resourceBundle(Utils.SAMPLE).build();
+        form.setSkin(new com.dooapp.fxform.view.skin.FXMLSkin(form, getClass().getResource("/fxmlSkin.fxml")));
         User user = new User();
-        user.firstName.set("Robert");
-        user.lastName.set("Shepard");
-        user.age.setValue(42);
-        user.favoriteMovie.setValue(Movies.LOTR);
         form.setSource(user);
-
         root.getChildren().add(form);
         return root;
     }
 
     @Override
+    public String getControlStylesheetURL() {
+        return null;
+    }
+
+    @Override
     public String getSampleDescription() {
-        return "This is how you can do a read only form";
+        return "This is an example of how to use FXForm with FXML";
     }
 }

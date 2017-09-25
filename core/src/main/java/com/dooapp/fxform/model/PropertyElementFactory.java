@@ -23,8 +23,6 @@ import javafx.beans.property.ReadOnlyProperty;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -33,7 +31,7 @@ import java.util.logging.Logger;
  */
 public class PropertyElementFactory implements ElementFactory {
 
-    private final Logger logger = Logger.getLogger(PropertyElementFactory.class.getName());
+    private final System.Logger logger = System.getLogger(PropertyElementFactory.class.getName());
 
     @Override
     public Element create(Field field) throws FormException {
@@ -49,7 +47,7 @@ public class PropertyElementFactory implements ElementFactory {
                     element = new ReadOnlyPropertyMethodElement(field);
                 }
             } catch (NoSuchMethodException e) {
-                logger.log(Level.INFO, "No property getter found for " + field);
+                logger.log(System.Logger.Level.INFO, "No property getter found for " + field);
                 throw new FormException(e);
             }
         } else {
