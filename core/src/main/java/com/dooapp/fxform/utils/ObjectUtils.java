@@ -6,15 +6,18 @@ import java.util.Map;
 public class ObjectUtils {
 
     /**
-     * Determine the equality between two objects in term of "model object"
+     * Check whether two objects are the same, i.e. they are representing the same model object
      *
-     * Two objects are identical if they are equals.
-     * Special cases are applied on List and Map that are saw as container, so if two different instances of list
-     * contain both the same elements (or if they are both empty) it will be see as different
+     * By default, we use the equals implementation of the given objects to compare them.
+     *
+     * Special cases are applied on List and Map. In there basic equals implementation List and Map are considered equals
+     * if they have the same content. In our implementation we want List and Map to be considered as different if their
+     * instances are different whatever their content.
+     * See {@link java.util.List#equals(Object)} and {@link java.util.Map#equals(Object)} for more details.
      *
      * @param o1 the first object to compare
      * @param o2 the second object to compare
-     * @return true if o1 is equals to o2 in term of "model object", false otherwise
+     * @return true if o1 and o2 represent the same model object, false otherwise
      */
     public static boolean areSame(Object o1, Object o2) {
         if (o1 == null && o2 != null) return false;
