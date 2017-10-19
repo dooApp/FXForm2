@@ -28,6 +28,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.dooapp.fxform.utils.ObjectUtils.areSame;
+
 /**
  * Created at 27/09/12 17:32.<br>
  *
@@ -70,8 +72,7 @@ public class PropertyEditorController extends NodeController {
                     }
                     Object newValue = propertyElementValidator.adapt(o1, adapter);
                     // check whether the value represented in the view is different from the current model value
-                    if ((newValue != null && !newValue.equals(getElement().getValue())
-                            || newValue == null && getElement().getValue() != null)) {
+                    if (!areSame(getElement().getValue(), newValue)) {
                         // yes, so validate this new value
                         propertyElementValidator.validate(newValue);
                         if (!propertyElementValidator.isInvalid()) {
@@ -112,8 +113,7 @@ public class PropertyEditorController extends NodeController {
             }
             Object currentViewValue = adapter.adaptFrom(fxFormNode.getProperty().getValue());
             // Make sure that the value represented by the view differ from the new model value
-            if ((currentViewValue != null && !currentViewValue.equals(o1))
-                    || (currentViewValue == null && o1 != null)) {
+            if (!areSame(o1, currentViewValue)) {
                 Object newValue = adapter.adaptTo(o1);
                 // Update the view later in the JavaFX Thread
                 Platform.runLater(() -> {

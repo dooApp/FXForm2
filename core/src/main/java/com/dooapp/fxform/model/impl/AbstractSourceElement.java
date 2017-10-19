@@ -15,7 +15,7 @@ package com.dooapp.fxform.model.impl;
 import com.dooapp.fxform.model.Category;
 import com.dooapp.fxform.model.Element;
 import javafx.beans.InvalidationListener;
-import javafx.beans.binding.ObjectBinding;
+import javafx.beans.binding.Binding;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -36,11 +36,14 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
 
     protected List<InvalidationListener> invalidationListeners = new LinkedList<>();
 
-    private ObjectBinding<ObservableValue<WrappedType>> value;
+    private Binding<ObservableValue<WrappedType>> value;
 
     private StringProperty category;
 
     protected AbstractSourceElement() {
+    }
+
+    private void listenWrappedProperty() {
         wrappedProperty().addListener((observableValue, oldValue, newValue) -> {
             for (InvalidationListener invalidationListener : invalidationListeners) {
                 if (oldValue != null) {
@@ -126,32 +129,12 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
     public ObservableValue<ObservableValue<WrappedType>> wrappedProperty() {
         if (value == null) {
             value = createValue();
+            listenWrappedProperty();
         }
         return value;
     }
 
-    private ObjectBinding<ObservableValue<WrappedType>> createValue() {
-        return new ObjectBinding<ObservableValue<WrappedType>>() {
-
-            {
-                super.bind(sourceProperty());
-            }
-
-            @Override
-            protected ObservableValue<WrappedType> computeValue() {
-                if (getSource() == null) {
-                    return null;
-                }
-                return AbstractSourceElement.this.computeValue();
-            }
-
-            @Override
-            public void dispose() {
-                super.dispose();
-                unbind(sourceProperty());
-            }
-        };
-    }
+    protected abstract Binding<ObservableValue<WrappedType>> createValue();
 
     protected abstract ObservableValue<WrappedType> computeValue();
 
