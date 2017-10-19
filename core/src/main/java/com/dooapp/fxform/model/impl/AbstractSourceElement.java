@@ -43,6 +43,32 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
     protected AbstractSourceElement() {
     }
 
+    private void listenWrappedProperty() {
+        wrappedProperty().addListener((observableValue, oldValue, newValue) -> {
+            for (InvalidationListener invalidationListener : invalidationListeners) {
+                if (oldValue != null) {
+                    oldValue.removeListener(invalidationListener);
+                }
+                if (newValue != null) {
+                    newValue.addListener(invalidationListener);
+                }
+                invalidationListener.invalidated(observableValue);
+            }
+            for (ChangeListener<? super WrappedType> changeListener : changeListeners) {
+                if (oldValue != null) {
+                    oldValue.removeListener(changeListener);
+                }
+                if (newValue != null) {
+                    newValue.addListener(changeListener);
+                    changeListener.changed(
+                            observableValue.getValue(),
+                            oldValue != null ? oldValue.getValue() : null,
+                            newValue.getValue());
+                }
+            }
+        });
+    }
+
     public SourceType getSource() {
         return source.get();
     }
@@ -103,6 +129,7 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
     public ObservableValue<ObservableValue<WrappedType>> wrappedProperty() {
         if (value == null) {
             value = createValue();
+            listenWrappedProperty();
         }
         return value;
     }
