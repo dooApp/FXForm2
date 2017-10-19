@@ -15,13 +15,16 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.FormException;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.ListBinding;
+import javafx.beans.binding.MapBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Element based on a Field.
@@ -71,6 +74,26 @@ public abstract class AbstractFieldElement<SourceType, WrappedType> extends Abst
 						return null;
 					}
 					return (ObservableList) AbstractFieldElement.this.computeValue();
+				}
+
+				@Override
+				public void dispose() {
+					super.dispose();
+					unbind(sourceProperty());
+				}
+			};
+		} else if (Map.class.isAssignableFrom(getType())) {
+			return new MapBinding() {
+				{
+					super.bind(sourceProperty());
+				}
+
+				@Override
+				protected ObservableMap computeValue() {
+					if (getSource() == null) {
+						return null;
+					}
+					return (ObservableMap) AbstractFieldElement.this.computeValue();
 				}
 
 				@Override

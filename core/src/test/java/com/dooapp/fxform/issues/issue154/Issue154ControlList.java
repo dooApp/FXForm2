@@ -6,7 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Control;
 
-public class Issue154CustomControl extends Control {
+public class Issue154ControlList extends Control {
     private ListProperty<Object> items = new SimpleListProperty(FXCollections.observableArrayList());
 
     public ObservableList<Object> getItems() {
