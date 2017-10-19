@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.model.impl;
 
+import com.dooapp.fxform.model.FormException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import junit.framework.Assert;
@@ -40,7 +41,7 @@ public class PropertyMethodElementTest {
     }
 
     @Test
-    public void test() throws NoSuchFieldException, NoSuchMethodException {
+    public void test() throws NoSuchFieldException, NoSuchMethodException, FormException {
         TestBean testBean = new TestBean();
         Field field = TestBean.class.getDeclaredField("name");
         PropertyMethodElement tested = new PropertyMethodElement(field);

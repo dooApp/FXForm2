@@ -1,5 +1,6 @@
 package com.dooapp.fxform.model.impl;
 
+import com.dooapp.fxform.model.FormException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class BufferedPropertyElementTest {
     }
 
     @Test
-    public void testBufferingOfUserInputOnly() throws NoSuchFieldException, NoSuchMethodException {
+    public void testBufferingOfUserInputOnly() throws NoSuchFieldException, NoSuchMethodException, FormException {
         TestBean testBean = new TestBean();
         Field field = TestBean.class.getDeclaredField("name");
         BufferedPropertyElement<String> tested = new BufferedPropertyElement<>(new PropertyMethodElement<String,String>(field), true, false);
@@ -56,7 +57,7 @@ public class BufferedPropertyElementTest {
     }
 
     @Test
-    public void testBufferingOfBeanChangeOnly() throws NoSuchFieldException, NoSuchMethodException {
+    public void testBufferingOfBeanChangeOnly() throws NoSuchFieldException, NoSuchMethodException, FormException {
         TestBean testBean = new TestBean();
         Field field = TestBean.class.getDeclaredField("name");
         BufferedPropertyElement<String> tested = new BufferedPropertyElement<>(new PropertyMethodElement<String,String>(field), false, true);
@@ -83,7 +84,7 @@ public class BufferedPropertyElementTest {
     }
 
     @Test
-    public void testBufferingOfUserInputAndBeanChange() throws NoSuchFieldException, NoSuchMethodException {
+    public void testBufferingOfUserInputAndBeanChange() throws NoSuchFieldException, NoSuchMethodException, FormException {
         TestBean testBean = new TestBean();
         Field field = TestBean.class.getDeclaredField("name");
         BufferedPropertyElement<String> tested = new BufferedPropertyElement<>(new PropertyMethodElement<String,String>(field), true, true);

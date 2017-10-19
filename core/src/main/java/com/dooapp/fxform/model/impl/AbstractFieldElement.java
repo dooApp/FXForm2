@@ -13,9 +13,17 @@ package com.dooapp.fxform.model.impl;
 
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.FormException;
+import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.ListBinding;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * Element based on a Field.
@@ -31,6 +39,33 @@ public abstract class AbstractFieldElement<SourceType, WrappedType> extends Abst
 	public AbstractFieldElement(Field field) throws FormException {
 		super();
 		this.field = field;
+		init();
+	}
+
+	protected void init() {
+		wrappedProperty().addListener((observableValue, oldValue, newValue) -> {
+			for (InvalidationListener invalidationListener : invalidationListeners) {
+				if (oldValue != null) {
+					oldValue.removeListener(invalidationListener);
+				}
+				if (newValue != null) {
+					newValue.addListener(invalidationListener);
+				}
+				invalidationListener.invalidated(observableValue);
+			}
+			for (ChangeListener<? super WrappedType> changeListener : changeListeners) {
+				if (oldValue != null) {
+					oldValue.removeListener(changeListener);
+				}
+				if (newValue != null) {
+					newValue.addListener(changeListener);
+					changeListener.changed(
+							observableValue.getValue(),
+							oldValue != null ? oldValue.getValue() : null,
+							newValue.getValue());
+				}
+			}
+		});
 	}
 
 	public Field getField() {
@@ -49,5 +84,49 @@ public abstract class AbstractFieldElement<SourceType, WrappedType> extends Abst
 	@Override
 	public Class getDeclaringClass() {
 		return field.getDeclaringClass();
+	}
+
+	@Override
+	protected Binding<ObservableValue<WrappedType>> createValue() {
+		if (List.class.isAssignableFrom(getType())) {
+			return new ListBinding() {
+				{
+					super.bind(sourceProperty());
+				}
+
+				@Override
+				protected ObservableList computeValue() {
+					if (getSource() == null) {
+						return null;
+					}
+					return (ObservableList) AbstractFieldElement.this.computeValue();
+				}
+
+				@Override
+				public void dispose() {
+					super.dispose();
+					unbind(sourceProperty());
+				}
+			};
+		}
+		return new ObjectBinding<ObservableValue<WrappedType>>() {
+			{
+				super.bind(sourceProperty());
+			}
+
+			@Override
+			protected ObservableValue<WrappedType> computeValue() {
+				if (getSource() == null) {
+					return null;
+				}
+				return AbstractFieldElement.this.computeValue();
+			}
+
+			@Override
+			public void dispose() {
+				super.dispose();
+				unbind(sourceProperty());
+			}
+		};
 	}
 }

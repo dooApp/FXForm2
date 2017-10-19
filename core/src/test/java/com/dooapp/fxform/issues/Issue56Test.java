@@ -14,6 +14,7 @@ package com.dooapp.fxform.issues;
 
 import com.dooapp.fxform.annotation.Accessor;
 import com.dooapp.fxform.annotation.NonVisual;
+import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.impl.PropertyMethodElement;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -64,13 +65,13 @@ public class Issue56Test {
     }
 
     @Test
-    public void testGetAnnotationFormMethod() throws NoSuchFieldException, NoSuchMethodException {
+    public void testGetAnnotationFormMethod() throws NoSuchFieldException, NoSuchMethodException, FormException {
         PropertyMethodElement propertyMethodElement = new PropertyMethodElement(TestBean.class.getDeclaredField("test"));
         Assert.assertNotNull(propertyMethodElement.getAnnotation(NonVisual.class));
     }
 
     @Test
-    public void testFallbackOnField() throws NoSuchFieldException, NoSuchMethodException {
+    public void testFallbackOnField() throws NoSuchFieldException, NoSuchMethodException, FormException {
         PropertyMethodElement propertyMethodElement = new PropertyMethodElement(TestBean2.class.getDeclaredField("test"));
         Assert.assertNotNull(propertyMethodElement.getAnnotation(NonVisual.class));
     }

@@ -15,7 +15,7 @@ package com.dooapp.fxform.model.impl;
 import com.dooapp.fxform.model.Category;
 import com.dooapp.fxform.model.Element;
 import javafx.beans.InvalidationListener;
-import javafx.beans.binding.ObjectBinding;
+import javafx.beans.binding.Binding;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -36,34 +36,11 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
 
     protected List<InvalidationListener> invalidationListeners = new LinkedList<>();
 
-    private ObjectBinding<ObservableValue<WrappedType>> value;
+    private Binding<ObservableValue<WrappedType>> value;
 
     private StringProperty category;
 
     protected AbstractSourceElement() {
-        wrappedProperty().addListener((observableValue, oldValue, newValue) -> {
-            for (InvalidationListener invalidationListener : invalidationListeners) {
-                if (oldValue != null) {
-                    oldValue.removeListener(invalidationListener);
-                }
-                if (newValue != null) {
-                    newValue.addListener(invalidationListener);
-                }
-                invalidationListener.invalidated(observableValue);
-            }
-            for (ChangeListener<? super WrappedType> changeListener : changeListeners) {
-                if (oldValue != null) {
-                    oldValue.removeListener(changeListener);
-                }
-                if (newValue != null) {
-                    newValue.addListener(changeListener);
-                    changeListener.changed(
-                            observableValue.getValue(),
-                            oldValue != null ? oldValue.getValue() : null,
-                            newValue.getValue());
-                }
-            }
-        });
     }
 
     public SourceType getSource() {
@@ -130,28 +107,7 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
         return value;
     }
 
-    private ObjectBinding<ObservableValue<WrappedType>> createValue() {
-        return new ObjectBinding<ObservableValue<WrappedType>>() {
-
-            {
-                super.bind(sourceProperty());
-            }
-
-            @Override
-            protected ObservableValue<WrappedType> computeValue() {
-                if (getSource() == null) {
-                    return null;
-                }
-                return AbstractSourceElement.this.computeValue();
-            }
-
-            @Override
-            public void dispose() {
-                super.dispose();
-                unbind(sourceProperty());
-            }
-        };
-    }
+    protected abstract Binding<ObservableValue<WrappedType>> createValue();
 
     protected abstract ObservableValue<WrappedType> computeValue();
 

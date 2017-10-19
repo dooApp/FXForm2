@@ -45,7 +45,7 @@ public class Issue154Test {
     }
 
     @Test
-    public void test() throws InterruptedException, ExecutionException {
+    public void testToSetTheSourceWithBeansContainingListProperty() throws InterruptedException, ExecutionException {
         DefaultPropertyProvider.addGlobalProvider(Issue154CustomControl.class, new PropertyProvider<Issue154CustomControl>() {
             @Override
             public Property getProperty(Issue154CustomControl control) {
@@ -79,7 +79,7 @@ public class Issue154Test {
         Assert.assertEquals(0, picturedDiagnosis2.getItems().size());
 
         Assert.assertEquals(1, picturedDiagnosis3.getItems().size());
-        Assert.assertEquals(20d, picturedDiagnosis3.getItems().get(1).doubleValue(), 0.01);
+        Assert.assertEquals(20d, picturedDiagnosis3.getItems().get(0).doubleValue(), 0.01);
     }
 }
 

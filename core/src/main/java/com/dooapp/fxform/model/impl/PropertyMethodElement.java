@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.model.impl;
 
+import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.model.PropertyElement;
 import javafx.beans.property.Property;
 import javafx.beans.value.ObservableValue;
@@ -25,7 +26,7 @@ import java.lang.reflect.Field;
  */
 public class PropertyMethodElement<SourceType, WrappedType> extends ReadOnlyPropertyMethodElement<SourceType, WrappedType> implements PropertyElement<WrappedType> {
 
-    public PropertyMethodElement(Field field) throws NoSuchMethodException {
+    public PropertyMethodElement(Field field) throws NoSuchMethodException, FormException {
         super(field);
     }
 

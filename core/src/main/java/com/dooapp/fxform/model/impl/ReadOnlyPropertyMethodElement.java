@@ -12,6 +12,7 @@
 package com.dooapp.fxform.model.impl;
 
 import com.dooapp.fxform.model.Element;
+import com.dooapp.fxform.model.FormException;
 import com.dooapp.fxform.reflection.ReflectionUtils;
 import javafx.beans.value.ObservableValue;
 
@@ -28,23 +29,31 @@ import java.util.logging.Logger;
  * Date: 16/10/13
  * Time: 14:33
  */
-public class ReadOnlyPropertyMethodElement<SourceType, WrappedType> extends AbstractSourceElement<SourceType, WrappedType> implements Element<WrappedType> {
+public class ReadOnlyPropertyMethodElement<SourceType, WrappedType> extends AbstractFieldElement<SourceType, WrappedType> implements Element<WrappedType> {
 
     private final static Logger logger = Logger.getLogger(ReadOnlyPropertyMethodElement.class.getName());
 
-    protected final Field field;
-
     private Method method;
 
-    public ReadOnlyPropertyMethodElement(Field field) throws NoSuchMethodException {
-        this.field = field;
-        initMethod();
+    public ReadOnlyPropertyMethodElement(Field field) throws NoSuchMethodException, FormException {
+        super(field);
+    }
+
+    protected final Method getMethod() {
+        if (method == null) {
+            try {
+                method = ReflectionUtils.getPropertyGetter(field);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+        return method;
     }
 
     @Override
     protected ObservableValue<WrappedType> computeValue() {
         try {
-            return (ObservableValue<WrappedType>) method.invoke(getSource());
+            return (ObservableValue<WrappedType>) getMethod().invoke(getSource());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
@@ -55,34 +64,20 @@ public class ReadOnlyPropertyMethodElement<SourceType, WrappedType> extends Abst
 
     @Override
     public Class<?> getType() {
-        return method.getReturnType();
+        return getMethod().getReturnType();
     }
 
     @Override
     public Class<WrappedType> getWrappedType() {
-        return ReflectionUtils.getMethodReturnTypeGeneric(getSource(), method);
+        return ReflectionUtils.getMethodReturnTypeGeneric(getSource(), getMethod());
     }
 
     @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-        T annotation = method.getAnnotation(annotationClass);
+        T annotation = getMethod().getAnnotation(annotationClass);
         if (annotation == null) {
-            annotation = field.getAnnotation(annotationClass);
+            annotation = super.getAnnotation(annotationClass);
         }
         return annotation;
-    }
-
-    @Override
-    public String getName() {
-        return field.getName();
-    }
-
-    private void initMethod() throws NoSuchMethodException {
-        method = ReflectionUtils.getPropertyGetter(field);
-    }
-
-    @Override
-    public Class getDeclaringClass() {
-        return field.getDeclaringClass();
     }
 }
