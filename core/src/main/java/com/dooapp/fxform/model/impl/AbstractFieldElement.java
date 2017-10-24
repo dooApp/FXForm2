@@ -62,7 +62,7 @@ public abstract class AbstractFieldElement<SourceType, WrappedType> extends Abst
 
 	@Override
 	protected Binding<ObservableValue<WrappedType>> createValue() {
-		if (List.class.isAssignableFrom(getType())) {
+		if (List.class.isAssignableFrom(field.getType())) {
 			return new ListBinding() {
 				{
 					super.bind(sourceProperty());
@@ -82,7 +82,7 @@ public abstract class AbstractFieldElement<SourceType, WrappedType> extends Abst
 					unbind(sourceProperty());
 				}
 			};
-		} else if (Map.class.isAssignableFrom(getType())) {
+		} else if (Map.class.isAssignableFrom(field.getType())) {
 			return new MapBinding() {
 				{
 					super.bind(sourceProperty());
