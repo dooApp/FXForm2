@@ -5,7 +5,7 @@ import com.dooapp.fxform.JavaFXRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class Issue155Test {
+public class Issue156Test {
 
     @Rule
     public JavaFXRule javaFXRule = new JavaFXRule();
@@ -23,7 +23,7 @@ public class Issue155Test {
     }
 
     @Test
-    public void testIssue155() {
+    public void testIssue156() {
         TestBean testBean = new TestBean();
         FXForm form = new FXForm(testBean);
     }
