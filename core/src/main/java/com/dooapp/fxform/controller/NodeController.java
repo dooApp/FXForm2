@@ -44,7 +44,7 @@ public abstract class NodeController implements Disposable {
                     fxFormNode.dispose();
                 }
                 if (fxFormNode1 != null) {
-                    fxFormNode1.init(NodeController.this.element);
+                    fxFormNode1.init(NodeController.this.element, NodeController.this.fxForm);
                     bind(fxFormNode1);
                 }
             }

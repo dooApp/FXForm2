@@ -1,5 +1,6 @@
 package com.dooapp.fxform.view.factory.impl;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.impl.ReadOnlyPropertyFieldElement;
 import com.dooapp.fxform.reflection.ReflectionUtils;
@@ -32,7 +33,7 @@ public class MapEditorControlFactory implements Callback<Void, FXFormNode> {
             }
 
             @Override
-            public void init(Element element) {
+            public void init(Element element, AbstractFXForm fxForm) {
                 if (element instanceof ReadOnlyPropertyFieldElement) {
                     Field field = ((ReadOnlyPropertyFieldElement) element).getField();
                     Class<?> mapValueType = ReflectionUtils.getMapPropertyValueType(field);

@@ -19,6 +19,9 @@ import com.dooapp.fxform.validation.PasswordMatch;
 import com.dooapp.fxform.validation.Warning;
 import com.dooapp.fxform.view.factory.impl.PasswordFieldFactory;
 import com.dooapp.fxform.view.factory.impl.TextAreaFactory;
+import com.dooapp.fxform2.extensions.AddressFactory;
+import com.dooapp.fxform2.extensions.AddressField;
+import com.dooapp.fxform2.extensions.AutoCompleteAddress;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.paint.Color;
@@ -47,6 +50,16 @@ public class MyBean {
     private final ReadOnlyStringProperty welcome = new SimpleStringProperty();
 
     private final StringProperty email = new SimpleStringProperty();
+
+    @FormFactory(AddressFactory.class)
+    @AutoCompleteAddress(AddressField.STREET)
+    private final StringProperty street = new SimpleStringProperty();
+
+    @AutoCompleteAddress(AddressField.CITY)
+    private final StringProperty city = new SimpleStringProperty();
+
+    @AutoCompleteAddress(AddressField.POSTCODE)
+    private final StringProperty postcode = new SimpleStringProperty();
 
     @FormFactory(PasswordFieldFactory.class)
     private final StringProperty password = new SimpleStringProperty();
@@ -89,10 +102,9 @@ public class MyBean {
         this.map.put("Jane", "jane@fxform2.com");
         this.map.put("Janis", "janis@fxform2.com");
         /**this.map.addListener(new MapChangeListener<String, String>() {
-            @Override
-            public void onChanged(Change<? extends String, ? extends String> change) {
-                System.out.println(change.toString());
-            }
+        @Override public void onChanged(Change<? extends String, ? extends String> change) {
+        System.out.println(change.toString());
+        }
         }); */
         ((StringProperty) welcome).bind(this.name.concat(", welcome!"));
         ((BooleanProperty) unsubscribe).bind(this.subscribe.not());
@@ -152,4 +164,29 @@ public class MyBean {
     public ObjectProperty<LocalDate> dateProperty() {
         return date;
     }
+
+    public String getCity() {
+        return city.get();
+    }
+
+    public StringProperty cityProperty() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city.set(city);
+    }
+
+    public String getPostcode() {
+        return postcode.get();
+    }
+
+    public StringProperty postcodeProperty() {
+        return postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode.set(postcode);
+    }
+    
 }

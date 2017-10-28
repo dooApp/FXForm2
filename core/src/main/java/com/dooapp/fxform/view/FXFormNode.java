@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.view;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.model.Element;
 import javafx.beans.property.Property;
 import javafx.scene.Node;
@@ -37,7 +38,7 @@ public interface FXFormNode<N extends Node> extends DisposableNode<N> {
      *
      * @param element
      */
-    public void init(Element element);
+    public void init(Element element, AbstractFXForm fxForm);
 
     /**
      * This boolean indicate whether this node allow the user to input values.

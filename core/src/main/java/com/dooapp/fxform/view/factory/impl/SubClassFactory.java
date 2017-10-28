@@ -1,5 +1,6 @@
 package com.dooapp.fxform.view.factory.impl;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormNodeWrapper;
@@ -40,8 +41,8 @@ public class SubClassFactory implements Callback<Void, FXFormNode> {
             private FXFormNode node;
 
             @Override
-            public void init(Element element) {
-                super.init(element);
+            public void init(Element element, AbstractFXForm fxForm) {
+                super.init(element, fxForm);
                 this.element = element;
                 elementChangeListener = (observable, oldValue, newValue) -> {
                     stackPane.getChildren().clear();
@@ -54,7 +55,7 @@ public class SubClassFactory implements Callback<Void, FXFormNode> {
                         Callback<Void, FXFormNode> factory = factoryProvider.getFactory(new ClassElement(newValue.getClass()));
                         if (factory != null) {
                             node = factory.call(null);
-                            node.init(element);
+                            node.init(element, fxForm);
                             node.getProperty().setValue(newValue);
                             stackPane.getChildren().add(node.getNode());
                         } else {
@@ -67,7 +68,7 @@ public class SubClassFactory implements Callback<Void, FXFormNode> {
                     Callback<Void, FXFormNode> factory = factoryProvider.getFactory(new ClassElement(element.getValue().getClass()));
                     if (factory != null) {
                         node = factory.call(null);
-                        node.init(element);
+                        node.init(element, fxForm);
                         node.getProperty().setValue(element.getValue());
                         stackPane.getChildren().add(node.getNode());
                     } else {

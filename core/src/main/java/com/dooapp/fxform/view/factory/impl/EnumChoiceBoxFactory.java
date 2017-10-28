@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.view.factory.impl;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.collections.FXCollections;
@@ -34,7 +35,7 @@ public class EnumChoiceBoxFactory implements Callback<Void, FXFormNode> {
 
         return new FXFormChoiceBoxNode() {
             @Override
-            public void init(Element element) {
+            public void init(Element element, AbstractFXForm fxForm) {
                 Enum[] constants = new Enum[0];
                 try {
                     constants = (Enum[]) element.getWrappedType().getEnumConstants();

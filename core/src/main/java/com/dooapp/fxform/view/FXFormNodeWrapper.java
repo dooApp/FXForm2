@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.view;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.model.Element;
 import javafx.beans.property.Property;
 import javafx.scene.Node;
@@ -76,6 +77,10 @@ public class FXFormNodeWrapper implements FXFormNode {
 
 
     public void init(Element element) {
+    }
+
+    @Override
+    public void init(Element element, AbstractFXForm fxForm) {
     }
 
     @Override

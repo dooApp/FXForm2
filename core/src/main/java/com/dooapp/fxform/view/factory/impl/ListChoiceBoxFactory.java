@@ -1,5 +1,6 @@
 package com.dooapp.fxform.view.factory.impl;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.property.ListProperty;
@@ -22,7 +23,7 @@ public class ListChoiceBoxFactory<T> implements Callback<Void, FXFormNode> {
 
         return new FXFormChoiceBoxNode() {
             @Override
-            public void init(Element element) {
+            public void init(Element element, AbstractFXForm fxForm) {
                 choiceBox.itemsProperty().bind(choices);
                 choiceBox.getSelectionModel().select(element.getValue());
             }
