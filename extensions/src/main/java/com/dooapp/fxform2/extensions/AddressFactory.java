@@ -6,6 +6,7 @@ import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.view.FXFormNode;
 import com.dooapp.fxform.view.FXFormNodeWrapper;
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
@@ -26,7 +27,7 @@ public class AddressFactory implements Callback<Void, FXFormNode> {
     @Override
     public FXFormNode call(Void param) {
         final CustomTextField textField = new CustomTextField();
-        textField.setLeft(new Glyph("FontAwesome", FontAwesome.Glyph.MAP_MARKER));
+        Platform.runLater(() -> textField.setLeft(new Glyph("FontAwesome", FontAwesome.Glyph.MAP_MARKER)));
         AutoCompletionBinding<Address> autoCompletionBinding = new AutoCompletionTextFieldBinding<Address>(textField,
                 param1 -> addressSuggestionProvider.getSuggestions(param1.getUserText()),
                 new StringConverter<Address>() {
