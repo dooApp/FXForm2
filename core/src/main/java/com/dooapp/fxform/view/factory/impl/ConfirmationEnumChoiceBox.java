@@ -24,6 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Choice box implementation which ask users confirmation in some case before updating the beans property.
+ * <p>
  * User: Kevin Senechal <kevin@dooapp.com>
  * Date: 27/11/2017
  */
@@ -35,13 +37,29 @@ public class ConfirmationEnumChoiceBox<OBJECT extends Enum<OBJECT>> extends FXFo
     private ObjectProperty<OBJECT> tmp = new SimpleObjectProperty<>();
     private final ChangeListener<OBJECT> originalChangelistener;
 
+    /**
+     * Default constructor which ask confirmation each time.
+     *
+     * @param headerText
+     * @param contentText
+     */
     public ConfirmationEnumChoiceBox(String headerText, String contentText) {
         this(headerText, contentText, (oldValue, newValue) -> true);
     }
 
+    /**
+     * Second constructor used to ask confirmation when the given BiFunction call returns true.
+     * This function is called with oldValue and newValue.
+     *
+     * @param headerText
+     * @param contentText
+     * @param askConfirmation
+     */
     public ConfirmationEnumChoiceBox(String headerText, String contentText, BiFunction<OBJECT, OBJECT, Boolean> askConfirmation) {
         tmpChangeListener = (observable, oldValue, newValue) -> {
-            if (!newValue.equals(ConfirmationEnumChoiceBox.super.getProperty().getValue())) {
+            OBJECT propertyValue = (OBJECT) ConfirmationEnumChoiceBox.super.getProperty().getValue();
+            if (newValue == null && propertyValue == null) return;
+            if ((newValue == null && propertyValue != null) || (propertyValue == null && newValue != null) || !newValue.equals(propertyValue)) {
                 ConfirmationEnumChoiceBox.super.getProperty().setValue(newValue);
             }
         };
