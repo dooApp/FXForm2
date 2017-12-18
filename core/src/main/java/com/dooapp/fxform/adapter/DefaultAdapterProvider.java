@@ -39,12 +39,10 @@ public class DefaultAdapterProvider implements AdapterProvider {
     private final Map<AdapterMatcher, Adapter> USER_MAP = new ConcurrentHashMap<>();
 
     {
-        DEFAULT_MAP.put(new AdapterMatcher() {
-            @Override
-            public boolean matches(Class fromClass, Class toClass, Element element, FXFormNode fxFormNode) {
-                return fromClass.isAssignableFrom(toClass);
-            }
-        }, new DefaultAdapter());
+        // Make sure to not add a new adapter as anonymous inner class in the DEFAULT_MAP.
+        // That could cause memory leak since an inner instance keeps a reference to its outer instance.
+
+        DEFAULT_MAP.put(new DefaultAdapterMatcher(), new DefaultAdapter());
 
         DEFAULT_MAP.put(new TypeAdapterMatcher(IntegerProperty.class, StringProperty.class),
                 new ConverterWrapper(new IntegerStringConverter()));
@@ -61,40 +59,17 @@ public class DefaultAdapterProvider implements AdapterProvider {
         DEFAULT_MAP.put(new ObjectPropertyAdapterMatcher(BigDecimal.class, StringProperty.class),
                 new ConverterWrapper(new BigDecimalStringConverter()));
         DEFAULT_MAP.put(new TypeAdapterMatcher(IntegerProperty.class, DoubleProperty.class),
-                new Adapter<Integer, Double>() {
-
-                    @Override
-                    public Double adaptTo(Integer from) {
-                        return from.doubleValue();
-                    }
-
-                    @Override
-                    public Integer adaptFrom(Double to) {
-                        return to.intValue();
-                    }
-                });
+                new IntegerToDoubleAdapter());
         DEFAULT_MAP.put(new TypeAdapterMatcher(FloatProperty.class, DoubleProperty.class),
-                new Adapter<Float, Double>() {
-
-                    @Override
-                    public Double adaptTo(Float from) {
-                        return from.doubleValue();
-                    }
-
-                    @Override
-                    public Float adaptFrom(Double to) {
-                        return to.floatValue();
-                    }
-                });
+                new FloatToDoubleAdapter());
+        DEFAULT_MAP.put(new TypeAdapterMatcher(ObjectProperty.class, StringProperty.class),
+                new ToStringConverter());
 
         DEFAULT_MAP.put(new PropertyTypeMatcher(StringProperty.class), new DefaultAdapter());
         DEFAULT_MAP.put(new PropertyTypeMatcher(IntegerProperty.class), new DefaultAdapter());
         DEFAULT_MAP.put(new PropertyTypeMatcher(FloatProperty.class), new DefaultAdapter());
         DEFAULT_MAP.put(new PropertyTypeMatcher(DoubleProperty.class), new DefaultAdapter());
         DEFAULT_MAP.put(new PropertyTypeMatcher(BooleanProperty.class), new DefaultAdapter());
-
-        DEFAULT_MAP.put(new TypeAdapterMatcher(ObjectProperty.class, StringProperty.class),
-                new ToStringConverter());
     }
 
     @Override
