@@ -75,10 +75,6 @@ public class FXFormNodeWrapper implements FXFormNode {
         return property;
     }
 
-
-    public void init(Element element) {
-    }
-
     @Override
     public void init(Element element, AbstractFXForm fxForm) {
     }
