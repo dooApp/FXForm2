@@ -1,5 +1,6 @@
 package com.dooapp.fxform.samples;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.FXFormSample;
 import com.dooapp.fxform.Utils;
@@ -36,7 +37,7 @@ public class CustomFactoryForm extends FXFormSample {
         String value() default "";
     }
 
-    public class TextFieldWithPromptTextFactory implements Callback<Void, FXFormNode> {
+    public static class TextFieldWithPromptTextFactory implements Callback<Void, FXFormNode> {
 
         @Override
         public FXFormNode call(Void param) {
@@ -44,8 +45,8 @@ public class CustomFactoryForm extends FXFormSample {
             return new FXFormNodeWrapper(textField, textField.textProperty()) {
 
                 @Override
-                public void init(Element element) {
-                    super.init(element);
+                public void init(Element element, AbstractFXForm fxForm) {
+                    super.init(element, fxForm);
                     PromptText promptText = (PromptText) element.getAnnotation(PromptText.class);
                     textField.setPromptText(promptText.value());
                 }
@@ -65,7 +66,7 @@ public class CustomFactoryForm extends FXFormSample {
         public IntegerProperty age = new SimpleIntegerProperty(10);
 
         @FormFactory(TextFieldWithPromptTextFactory.class)
-        @PromptText("Please select a funny hobby")
+        @PromptText("Please write a funny hobby")
         public StringProperty hobby = new SimpleStringProperty();
 
     }
@@ -82,8 +83,10 @@ public class CustomFactoryForm extends FXFormSample {
         UserWithCustomFactory userWithCustomFactory = new UserWithCustomFactory();
         // another way to register a custom factory using the DefaultFactoryProvider
         DefaultFactoryProvider factoryProvider = new DefaultFactoryProvider();
-        factoryProvider.addFactory(element -> true,
-                new ListChoiceBoxFactory<>(new SimpleListProperty<>(FXCollections.observableArrayList("Robert", "Jon", "Catelyn"))));
+        factoryProvider.addFactory(
+                element -> element.getName().equals("firstName"),
+                new ListChoiceBoxFactory<>(new SimpleListProperty<>(FXCollections.observableArrayList("Robert", "Jon", "Catelyn")))
+        );
         form.setEditorFactoryProvider(factoryProvider);
         form.setSource(userWithCustomFactory);
         root.getChildren().add(form);

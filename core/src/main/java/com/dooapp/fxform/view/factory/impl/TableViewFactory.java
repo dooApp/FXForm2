@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.view.factory.impl;
 
+import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.reflection.ReflectionUtils;
 import com.dooapp.fxform.view.FXFormNode;
@@ -39,7 +40,7 @@ public class TableViewFactory implements Callback<Void, FXFormNode> {
 
         return new FXFormNodeWrapper(tableView, new TableViewProperty(tableView)) {
             @Override
-            public void init(Element element) {
+            public void init(Element element, AbstractFXForm fxForm) {
                 Class wrappedType = element.getWrappedType();
                 List<Field> fields = ReflectionUtils.listFields(wrappedType);
                 for (Field field : fields) {
