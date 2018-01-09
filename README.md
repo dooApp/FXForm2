@@ -22,7 +22,7 @@ Add FXForm to your project dependencies:
     <dependency>
         <groupId>com.dooapp.fxform2</groupId>
         <artifactId>core</artifactId>
-        <version>8.1.5</version> <!-- Note: For JavaFX 2.2, use 2.2.6 -->
+        <version>8.2.0</version> <!-- Note: For JavaFX 2.2, use 2.2.6 -->
     </dependency>
 
 Get your FXForm...
