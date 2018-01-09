@@ -34,6 +34,8 @@ public class ConfirmationEnumChoiceBox<OBJECT extends Enum<OBJECT>> extends FXFo
     private final static Logger logger = Logger.getLogger(ConfirmationEnumChoiceBox.class.getName());
 
     private final ChangeListener<OBJECT> tmpChangeListener;
+    private final String headerText;
+    private final String contentText;
     private ObjectProperty<OBJECT> tmp = new SimpleObjectProperty<>();
     private final ChangeListener<OBJECT> originalChangelistener;
 
@@ -56,6 +58,8 @@ public class ConfirmationEnumChoiceBox<OBJECT extends Enum<OBJECT>> extends FXFo
      * @param askConfirmation
      */
     public ConfirmationEnumChoiceBox(String headerText, String contentText, BiFunction<OBJECT, OBJECT, Boolean> askConfirmation) {
+        this.headerText = headerText;
+        this.contentText = contentText;
         tmpChangeListener = (observable, oldValue, newValue) -> {
             OBJECT propertyValue = (OBJECT) ConfirmationEnumChoiceBox.super.getProperty().getValue();
             if (newValue == null && propertyValue == null) return;
@@ -79,8 +83,8 @@ public class ConfirmationEnumChoiceBox<OBJECT extends Enum<OBJECT>> extends FXFo
 
             private void checkAndSet(OBJECT oldValue, OBJECT newValue) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setHeaderText(headerText);
-                alert.setContentText(contentText);
+                alert.setHeaderText(getHeaderText(oldValue, newValue));
+                alert.setContentText(getContentText(oldValue, newValue));
                 Optional<ButtonType> response = alert.showAndWait();
                 if (response.isPresent() && response.get() == ButtonType.OK) {
                     tmp.setValue(newValue);
@@ -111,6 +115,14 @@ public class ConfirmationEnumChoiceBox<OBJECT extends Enum<OBJECT>> extends FXFo
                 }
             }
         });
+    }
+
+    public String getHeaderText(OBJECT oldValue, OBJECT newValue) {
+        return headerText;
+    }
+
+    public String getContentText(OBJECT oldValue, OBJECT newValue) {
+        return contentText;
     }
 
     @Override
