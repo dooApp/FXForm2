@@ -15,7 +15,7 @@
     <parent>
         <artifactId>FXForm2</artifactId>
         <groupId>com.dooapp.fxform2</groupId>
-        <version>8.2.0-SNAPSHOT</version>
+        <version>8.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -39,12 +39,12 @@
         <dependency>
             <groupId>com.dooapp.fxform2</groupId>
             <artifactId>core</artifactId>
-            <version>8.2.0-SNAPSHOT</version>
+            <version>8.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.dooapp.fxform2</groupId>
             <artifactId>extensions</artifactId>
-            <version>8.2.0-SNAPSHOT</version>
+            <version>8.2.0</version>
         </dependency>
     </dependencies>
     <build>
