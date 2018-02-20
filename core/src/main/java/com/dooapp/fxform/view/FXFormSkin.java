@@ -235,7 +235,8 @@ public abstract class FXFormSkin extends SkinBase<AbstractFXForm> implements Ski
 
     protected Node createClassLevelConstraintNode() {
         ConstraintLabel constraintLabel = new ConstraintLabel();
-        constraintLabel.getStyleClass().add(NodeType.CONSTRAINT.getStyle());
+        constraintLabel.setId(NodeType.GLOBAL_CONSTRAINT.getIdSuffix());
+        constraintLabel.getStyleClass().add(NodeType.GLOBAL_CONSTRAINT.getStyle());
         constraintLabel.constraintProperty().bind(getSkinnable().getClassLevelValidator().constraintViolationsProperty());
         return constraintLabel;
     }
