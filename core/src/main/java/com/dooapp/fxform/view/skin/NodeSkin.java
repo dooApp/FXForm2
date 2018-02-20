@@ -15,6 +15,7 @@ package com.dooapp.fxform.view.skin;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.*;
+import com.dooapp.fxform.view.control.ConstraintLabel;
 import javafx.beans.property.Property;
 import javafx.scene.Node;
 
@@ -57,9 +58,18 @@ public class NodeSkin extends FXFormSkin {
     @Override
     protected Node createRootNode() throws NodeCreationException {
         try {
-            return onCreateNode.call();
+            Node rootNode = onCreateNode.call();
+            initClassLevelConstraintNode(rootNode);
+            return rootNode;
         } catch (Exception e) {
             throw new NodeCreationException(e);
+        }
+    }
+
+    protected void initClassLevelConstraintNode(Node rootNode) {
+        ConstraintLabel constraintLabel = (ConstraintLabel) rootNode.lookup("#" + NodeType.GLOBAL_CONSTRAINT.getIdSuffix());
+        if (constraintLabel != null) {
+            constraintLabel.constraintProperty().bind(getSkinnable().getClassLevelValidator().constraintViolationsProperty());
         }
     }
 

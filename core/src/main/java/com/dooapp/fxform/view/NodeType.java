@@ -24,7 +24,8 @@ public enum NodeType {
     LABEL("-form-label", "form-label"),
     EDITOR("-form-editor", "form-editor"),
     TOOLTIP("-form-tooltip", "form-tooltip"),
-    CONSTRAINT("-form-constraint", "form-constraint");
+    CONSTRAINT("-form-constraint", "form-constraint"),
+    GLOBAL_CONSTRAINT("global-form-constraint", "global-form-constraint");
 
     private NodeType(String idSuffix, String style) {
         this.idSuffix = idSuffix;
