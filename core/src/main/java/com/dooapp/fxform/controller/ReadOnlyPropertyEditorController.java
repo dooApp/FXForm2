@@ -18,6 +18,7 @@ import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.adapter.AnnotationAdapterProvider;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -49,7 +50,16 @@ public class ReadOnlyPropertyEditorController extends NodeController {
         changeListener = new ChangeListener() {
             @Override
             public void changed(ObservableValue observableValue, Object o, Object o2) {
-                updateView(fxFormNode);
+                if (Platform.isFxApplicationThread()) {
+                    updateView(fxFormNode);
+                } else {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateView(fxFormNode);
+                        }
+                    });
+                }
             }
         };
         getElement().addListener(changeListener);

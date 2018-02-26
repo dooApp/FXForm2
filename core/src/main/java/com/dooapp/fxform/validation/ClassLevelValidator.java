@@ -60,19 +60,22 @@ public class ClassLevelValidator {
 
     public void validate() {
         constraintViolations.clear();
-        List<ConstraintViolation> violationList = validator.get().validateClassConstraint(bean.getValue());
-        Set<ConstraintViolation> violationSetRelatingToElements = new HashSet<>();
-        // for each violation, check if this violation relates to some specific field, or if it should be treated as a
-        // class violation  (see #92)
-        for (Element element : abstractFXForm.getFilteredElements()) {
-            PropertyElementValidator propertyElementValidator = getElementValidator(element, abstractFXForm);
-            if (propertyElementValidator != null) {
-                List<ConstraintViolation> elementViolations = propertyElementValidator.reportClassLevelConstraintViolation(violationList);
-                violationSetRelatingToElements.addAll(elementViolations);
+        FXFormValidator validator = getValidator();
+        if (validator != null) {
+            List<ConstraintViolation> violationList = validator.validateClassConstraint(bean.getValue());
+            Set<ConstraintViolation> violationSetRelatingToElements = new HashSet<>();
+            // for each violation, check if this violation relates to some specific field, or if it should be treated as a
+            // class violation  (see #92)
+            for (Element element : abstractFXForm.getFilteredElements()) {
+                PropertyElementValidator propertyElementValidator = getElementValidator(element, abstractFXForm);
+                if (propertyElementValidator != null) {
+                    List<ConstraintViolation> elementViolations = propertyElementValidator.reportClassLevelConstraintViolation(violationList);
+                    violationSetRelatingToElements.addAll(elementViolations);
+                }
             }
+            violationList.removeAll(violationSetRelatingToElements);
+            constraintViolations.addAll(violationList);
         }
-        violationList.removeAll(violationSetRelatingToElements);
-        constraintViolations.addAll(violationList);
     }
 
     private PropertyElementValidator getElementValidator(Element element, AbstractFXForm abstractFXForm) {
