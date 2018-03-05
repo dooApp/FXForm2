@@ -12,6 +12,7 @@
 
 package com.dooapp.fxform.view.control;
 
+import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ListChangeListener;
@@ -23,6 +24,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import javax.validation.ConstraintViolation;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created at 28/09/12 17:52.<br>
@@ -33,38 +36,44 @@ public class ConstraintLabel extends VBox {
 
     private final static Image WARNING = new Image(ConstraintLabel.class.getResource("warning.png").toExternalForm());
 
-    private final ListChangeListener<ConstraintViolation> listChangeListener = new ListChangeListener<ConstraintViolation>() {
+    private ListProperty<ConstraintViolation> constraint = new SimpleListProperty<ConstraintViolation>();
 
-        @Override
-        public void onChanged(Change<? extends ConstraintViolation> change) {
-            getChildren().clear();
-            for (Object o : constraint.get()) {
-                ConstraintViolation constraintViolation = (ConstraintViolation) o;
-                Label errorLabel = new Label(constraintViolation.getMessage());
-                if (constraintViolation.getConstraintDescriptor() != null) {
-                    errorLabel.getStyleClass().add(constraintViolation.getConstraintDescriptor().getAnnotation().getClass().getName());
-                }
-                errorLabel.setWrapText(true);
-                errorLabel.setMinHeight(Region.USE_PREF_SIZE);
-                ImageView warningView = new ImageView(WARNING);
-                warningView.setFitHeight(15);
-                warningView.setPreserveRatio(true);
-                warningView.setSmooth(true);
-                errorLabel.setGraphic(warningView);
-                getChildren().add(errorLabel);
+    private final ListChangeListener<ConstraintViolation> listChangeListener = change -> {
+        while (change.next()) {
+            if (Platform.isFxApplicationThread()) {
+                updateChildren();
+            } else {
+                Platform.runLater(() -> updateChildren());
             }
         }
     };
 
-    private ListProperty<ConstraintViolation> constraint = new SimpleListProperty<ConstraintViolation>();
+    public ConstraintLabel() {
+        setAlignment(Pos.CENTER_LEFT);
+        constraint.addListener(listChangeListener);
+    }
 
     public ListProperty<ConstraintViolation> constraintProperty() {
         return constraint;
     }
 
-    public ConstraintLabel() {
-        setAlignment(Pos.CENTER_LEFT);
-        constraint.addListener(listChangeListener);
+    private void updateChildren() {
+        getChildren().clear();
+        List<ConstraintViolation> constraintViolations = new ArrayList(constraint.get());
+        for (ConstraintViolation constraintViolation : constraintViolations) {
+            Label errorLabel = new Label(constraintViolation.getMessage());
+            if (constraintViolation.getConstraintDescriptor() != null) {
+                errorLabel.getStyleClass().add(constraintViolation.getConstraintDescriptor().getAnnotation().getClass().getName());
+            }
+            errorLabel.setWrapText(true);
+            errorLabel.setMinHeight(Region.USE_PREF_SIZE);
+            ImageView warningView = new ImageView(WARNING);
+            warningView.setFitHeight(15);
+            warningView.setPreserveRatio(true);
+            warningView.setSmooth(true);
+            errorLabel.setGraphic(warningView);
+            getChildren().add(errorLabel);
+        }
     }
 
 }
