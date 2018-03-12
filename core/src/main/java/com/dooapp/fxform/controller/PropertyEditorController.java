@@ -93,7 +93,11 @@ public class PropertyEditorController extends NodeController {
         fxFormNode.getProperty().addListener(viewChangeListener);
         modelChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
-                updateView(o1, fxFormNode);
+                if (Platform.isFxApplicationThread()) {
+                    updateView(o1, fxFormNode);
+                } else {
+                    Platform.runLater(() -> updateView(o1, fxFormNode));
+                }
                 // The element value was updated, so request a class level check again
                 propertyElementValidator.validate(o1);
                 getFxForm().getClassLevelValidator().validate();
@@ -113,17 +117,14 @@ public class PropertyEditorController extends NodeController {
             // Make sure that the value represented by the view differ from the new model value
             if (!areSame(o1, currentViewValue)) {
                 Object newValue = adapter.adaptTo(o1);
-                // Update the view later in the JavaFX Thread
-                Platform.runLater(() -> {
-                    // make sure not to update the view if the current controller has been disposed
-                    // between the trigger and the execution time of this Platform.runLater.
-                    if (!isDisposed()) {
-                        // make sure that this view update won't trigger a model update
-                        lock.set(true);
-                        fxFormNode.getProperty().setValue(newValue);
-                        lock.set(false);
-                    }
-                });
+                // make sure not to update the view if the current controller has been disposed
+                // between the trigger and the execution time of this Platform.runLater.
+                if (!isDisposed()) {
+                    // make sure that this view update won't trigger a model update
+                    lock.set(true);
+                    fxFormNode.getProperty().setValue(newValue);
+                    lock.set(false);
+                }
             }
             if (!fxFormNode.getNode().disableProperty().isBound()) {
                 fxFormNode.getNode().setDisable((((PropertyElement) getElement()).isBound()));
