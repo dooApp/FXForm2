@@ -72,13 +72,16 @@ public class PropertyElementValidator {
 
     public void validate(Object newValue) {
         constraintViolations.clear();
-        // Validate strict constraints that prevent the model value from being updated
-        constraintViolations.addAll(validator.get().validate(element, newValue));
-        invalid.set(!constraintViolations.isEmpty());
-        // Validate warnings constraints
-        List<ConstraintViolation> warningList = validator.get().validate(element, newValue, Warning.class);
-        warning.set(!warningList.isEmpty());
-        constraintViolations.addAll(warningList);
+        FXFormValidator validator = getValidator();
+        if (validator != null) {
+            // Validate strict constraints that prevent the model value from being updated
+            constraintViolations.addAll(validator.validate(element, newValue));
+            invalid.set(!constraintViolations.isEmpty());
+            // Validate warnings constraints
+            List<ConstraintViolation> warningList = validator.validate(element, newValue, Warning.class);
+            warning.set(!warningList.isEmpty());
+            constraintViolations.addAll(warningList);
+        }
     }
 
     /**
@@ -141,7 +144,7 @@ public class PropertyElementValidator {
         return warning;
     }
 
-    public Object getValidator() {
+    public FXFormValidator getValidator() {
         return validator.get();
     }
 
