@@ -4,8 +4,6 @@ import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.FXFormNode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.util.Callback;
 
 /**
@@ -31,12 +29,6 @@ public class DisableFactoryProviderWrapper implements FactoryProvider {
         return param -> {
             FXFormNode fxFormNode = result.call(param);
             fxFormNode.getNode().disableProperty().bind(disableProperty);
-            disableProperty.addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                    System.out.println("Setting state of node " + fxFormNode.getNode() + " to " + newValue);
-                }
-            });
             return fxFormNode;
         };
     }
