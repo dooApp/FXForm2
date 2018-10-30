@@ -5,3 +5,5 @@ This module is a collection of various samples demonstrating the usage of FXForm
 To run the samples, just type at the root of the module :
 
     mvn exec:java
+
+![alt text](https://github.com/dooApp/FXForm2/blob/master/samples/FXForm2%20Sampler.jpg)
