@@ -33,6 +33,8 @@ Get your FXForm...
 
 See [Get started](https://github.com/dooApp/FXForm2/wiki/Get-started).
 
+For more use cases, see [samples.](https://github.com/dooApp/FXForm2/tree/master/samples)
+
 Features
 --------
 
