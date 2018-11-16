@@ -13,6 +13,7 @@
 package com.dooapp.fxform.view.skin;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.view.NodeCreationException;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,6 +21,7 @@ import javafx.scene.Node;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
@@ -66,4 +68,21 @@ public class FXMLSkin extends NodeSkin {
         }
     }
 
+    @Override
+    protected Node lookupNode(Element element, String suffix) {
+        Node result = super.lookupNode(element, suffix);
+        if (result != null) {
+            return result;
+        } else {
+            // lookup by id failed, try to get node from FXMLLoader namespace
+            Optional<String> key = fxmlLoader.getNamespace().keySet().stream().filter(k ->
+                    k.toLowerCase().equals((element.getName() + suffix)
+                            .replaceAll("-", "").toLowerCase()))
+                    .findFirst();
+            if (key.isPresent()) {
+                return (Node) fxmlLoader.getNamespace().get(key.get());
+            }
+        }
+        return null;
+    }
 }

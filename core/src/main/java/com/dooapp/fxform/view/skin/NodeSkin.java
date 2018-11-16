@@ -75,10 +75,10 @@ public class NodeSkin extends FXFormSkin {
 
     @Override
     protected ElementNodes createElementNodes(Element element) {
-        FXFormNode label = lookupNode(element, NodeType.LABEL.getIdSuffix());
-        FXFormNode editor = lookupNode(element, NodeType.EDITOR.getIdSuffix());
-        FXFormNode tooltip = lookupNode(element, NodeType.TOOLTIP.getIdSuffix());
-        FXFormNode constraint = lookupNode(element, NodeType.CONSTRAINT.getIdSuffix());
+        FXFormNode label = getFXFormNode(element, NodeType.LABEL.getIdSuffix());
+        FXFormNode editor = getFXFormNode(element, NodeType.EDITOR.getIdSuffix());
+        FXFormNode tooltip = getFXFormNode(element, NodeType.TOOLTIP.getIdSuffix());
+        FXFormNode constraint = getFXFormNode(element, NodeType.CONSTRAINT.getIdSuffix());
         return new ElementNodes(label, editor, tooltip, constraint);
 
     }
@@ -87,8 +87,8 @@ public class NodeSkin extends FXFormSkin {
     protected void deleteElementNodes(ElementNodes elementNodes) {
     }
 
-    private FXFormNode lookupNode(Element element, String suffix) {
-        Node node = getNode().lookup("#" + element.getName() + suffix);
+    private FXFormNode getFXFormNode(Element element, String suffix) {
+        Node node = lookupNode(element, suffix);
         if (node != null) {
             Property property = getSkinnable().getPropertyProvider().getProperty(node);
             if (property != null) {
@@ -100,6 +100,10 @@ public class NodeSkin extends FXFormSkin {
             }
         } else
             return null;
+    }
+
+    protected Node lookupNode(Element element, String suffix) {
+        return getNode().lookup("#" + element.getName() + suffix);
     }
 
 }
