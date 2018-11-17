@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>7</version>
+        <version>9</version>
     </parent>
     <groupId>com.dooapp.fxform2</groupId>
     <artifactId>FXForm2</artifactId>
@@ -77,7 +77,7 @@
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
-            <!--plugin>
+            <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
                 <version>0.12</version>
@@ -97,7 +97,7 @@
                         <phase>site-deploy</phase>
                     </execution>
                 </executions>
-            </plugin-->
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
