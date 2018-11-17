@@ -3,7 +3,7 @@
     <parent>
         <artifactId>FXForm2</artifactId>
         <groupId>com.dooapp.fxform2</groupId>
-        <version>8.3.0-SNAPSHOT</version>
+        <version>9.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -12,12 +12,12 @@
         <dependency>
             <groupId>com.dooapp.fxform2</groupId>
             <artifactId>core</artifactId>
-            <version>8.3.0-SNAPSHOT</version>
+            <version>9.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
-            <version>8.40.14</version>
+            <version>9.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
