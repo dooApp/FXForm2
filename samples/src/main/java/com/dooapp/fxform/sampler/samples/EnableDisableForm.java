@@ -1,11 +1,11 @@
-package com.dooapp.fxform.samples;
+package com.dooapp.fxform.sampler.samples;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.FXFormSample;
-import com.dooapp.fxform.Utils;
 import com.dooapp.fxform.annotation.Accessor;
 import com.dooapp.fxform.builder.FXFormBuilder;
-import com.dooapp.fxform.model.Movies;
+import com.dooapp.fxform.sampler.FXFormSample;
+import com.dooapp.fxform.sampler.Utils;
+import com.dooapp.fxform.sampler.model.Movies;
 import com.dooapp.fxform.view.factory.DisableFactoryProviderWrapper;
 import javafx.beans.property.*;
 import javafx.scene.Node;
@@ -56,6 +56,11 @@ public class EnableDisableForm extends FXFormSample {
                 .build();
         root.getChildren().addAll(optionForm, form);
         return root;
+    }
+
+    @Override
+    public String getControlStylesheetURL() {
+        return null;
     }
 
     @Override

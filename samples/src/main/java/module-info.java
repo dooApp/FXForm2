@@ -4,7 +4,7 @@ module com.dooapp.fxform.sampler {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
-    requires validation.api;
+    requires java.validation;
     requires com.dooapp.fxform;
     requires fxsampler;
     exports com.dooapp.fxform.sampler;

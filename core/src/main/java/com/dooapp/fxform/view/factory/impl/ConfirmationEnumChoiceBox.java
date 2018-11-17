@@ -2,7 +2,6 @@ package com.dooapp.fxform.view.factory.impl;
 
 import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.model.Element;
-import com.sun.javafx.scene.control.skin.ChoiceBoxSkin;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
@@ -14,6 +13,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.skin.ChoiceBoxSkin;
 import javafx.stage.WindowEvent;
 
 import java.lang.reflect.Field;

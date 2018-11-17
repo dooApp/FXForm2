@@ -4,6 +4,7 @@ module com.dooapp.fxform {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.validation;
+    requires java.logging;
     exports com.dooapp.fxform;
     exports com.dooapp.fxform.builder;
     exports com.dooapp.fxform.reflection;
