@@ -18,6 +18,7 @@ import javax.validation.*;
 import javax.validation.groups.Default;
 import javax.validation.metadata.BeanDescriptor;
 import javax.validation.metadata.ConstraintDescriptor;
+import javax.validation.metadata.PropertyDescriptor;
 import java.lang.annotation.ElementType;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,9 +65,16 @@ public class DefaultFXFormValidator implements FXFormValidator {
     public List<ConstraintViolation> validate(Element element, Object newValue, Class... groups) {
         final List<ConstraintViolation> list = new LinkedList<ConstraintViolation>();
         if (validator != null) {
-            list.addAll(validator.validateValue((Class<Object>) (element.sourceProperty().getValue().getClass()),
+            list.addAll(validator.validateValue(
+                    element.sourceProperty().getValue().getClass(),
                     element.getName(),
                     newValue, groups));
+            // @Valid is not honored by validateValue, so we need to perform a cascaded validation in this case
+            BeanDescriptor beanDescriptor = validator.getConstraintsForClass(element.sourceProperty().getValue().getClass());
+            PropertyDescriptor propertyDescriptor = beanDescriptor.getConstraintsForProperty(element.getName());
+            if (propertyDescriptor != null && propertyDescriptor.isCascaded()) {
+                list.addAll(validator.validate(newValue, groups));
+            }
         }
         return list;
     }
