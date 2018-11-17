@@ -15,7 +15,7 @@
     <parent>
         <artifactId>FXForm2</artifactId>
         <groupId>com.dooapp.fxform2</groupId>
-        <version>9.0.0</version>
+        <version>9.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

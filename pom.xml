@@ -27,7 +27,7 @@
     </parent>
     <groupId>com.dooapp.fxform2</groupId>
     <artifactId>FXForm2</artifactId>
-    <version>9.0.0</version>
+    <version>9.0.1-SNAPSHOT</version>
     <name>FXForm 2</name>
     <description>Dynamic JavaFX 2.0 form generation</description>
     <url>http://dooapp.github.com/FXForm2/</url>
@@ -46,7 +46,7 @@
         <url>git@github.com:dooApp/FXForm2.git</url>
         <connection>scm:git:git@github.com:dooApp/FXForm2.git</connection>
         <developerConnection>scm:git:git@github.com:dooApp/FXForm2.git</developerConnection>
-        <tag>FXForm2-9.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
     <developers>
         <developer>
