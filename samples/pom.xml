@@ -36,16 +36,11 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>1.6.0</version>
                 <configuration>
                     <mainClass>fxsampler.FXSampler</mainClass>
                     <classpathScope>compile</classpathScope>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -53,9 +48,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <mainClass>fxsampler.FXSampler</mainClass>
-                </configuration>
             </plugin>
         </plugins>
         <resources>
