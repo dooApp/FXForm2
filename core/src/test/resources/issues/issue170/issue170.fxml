@@ -13,13 +13,13 @@
             <content>
                 <VBox>
                     <children>
-                        <Label id="firstName-form-label" fx:id="firstNameFormLabel" layoutX="272.0" layoutY="14.0" text="Label"/>
-                        <TextField id="firstName-form-editor" fx:id="firstNameFormEditor" layoutX="199.0" layoutY="36.0" prefWidth="200.0"/>
-                        <Label id="lastName-form-label" fx:id="lastNameFormLabel" layoutX="14.0" layoutY="184.0" text="Label"/>
-                        <TextArea id="lastName-form-editor" fx:id="lastNameFormEditor" layoutX="79.0" layoutY="115.0" prefWidth="200.0"
+                        <Label fx:id="firstNameFormLabel" layoutX="272.0" layoutY="14.0" text="Label"/>
+                        <TextField fx:id="firstNameFormEditor" layoutX="199.0" layoutY="36.0" prefWidth="200.0"/>
+                        <Label fx:id="lastNameFormLabel" layoutX="14.0" layoutY="184.0" text="Label"/>
+                        <TextArea fx:id="lastNameFormEditor" layoutX="79.0" layoutY="115.0" prefWidth="200.0"
                                   wrapText="true"/>
-                        <Label id="age-form-label" fx:id="ageFormLabel" layoutX="334.0" layoutY="326.0" text="Label"/>
-                        <TextField id="age-form-editor" fx:id="ageFormEditor" layoutX="362.0" layoutY="342.0" prefWidth="200.0"/>
+                        <Label fx:id="ageFormLabel" layoutX="334.0" layoutY="326.0" text="Label"/>
+                        <TextField fx:id="ageFormEditor" layoutX="362.0" layoutY="342.0" prefWidth="200.0"/>
                     </children>
                 </VBox>
             </content>
