@@ -40,12 +40,15 @@ public class FXMLSkin extends NodeSkin {
 
     private Initializable controller;
 
+	private final FXForm fxForm;
+
     public FXMLSkin(FXForm fxForm, URL url) {
         this(fxForm, url, null);
     }
 
     public FXMLSkin(FXForm fxForm, URL url, Initializable controller) {
         super(fxForm);
+        this.fxForm = fxForm;
         this.url = url;
         this.controller = controller;
         setOnCreateNode(new Callable<Node>() {
@@ -60,6 +63,7 @@ public class FXMLSkin extends NodeSkin {
     protected Node loadFxml() throws NodeCreationException {
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(url);
+        fxmlLoader.setResources(fxForm.getResourceBundle());
         fxmlLoader.setController(controller);
         try {
             return (Node) fxmlLoader.load();
