@@ -39,7 +39,7 @@ public class ElementController<WrappedType> {
 
     private final ChangeListener<Skin<?>> changeListener;
 
-    private final AbstractFXForm fxForm;
+    protected final AbstractFXForm fxForm;
 
     public ElementController(AbstractFXForm fxForm, Element element) {
         this.element = element;

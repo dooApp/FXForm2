@@ -113,4 +113,12 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
             constraintController.setNode(skin.getConstraint(element));
         }
     }
+
+    @Override
+    public void dispose() {
+        PropertyElementValidator validator = ((PropertyEditorController) editorController).getPropertyElementValidator();
+        fxForm.getConstraintViolations().removeAll(validator.constraintViolationsProperty().get());
+        super.dispose();
+    }
+    
 }
