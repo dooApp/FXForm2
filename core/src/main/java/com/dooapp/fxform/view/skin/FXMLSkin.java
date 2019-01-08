@@ -60,7 +60,7 @@ public class FXMLSkin extends NodeSkin {
     protected Node loadFxml() throws NodeCreationException {
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(url);
-		fxmlLoader.setResources(getSkinnable().getResourceBundle());
+        fxmlLoader.setResources(getSkinnable().getResourceBundle());
         fxmlLoader.setController(controller);
         try {
             return (Node) fxmlLoader.load();
