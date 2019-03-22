@@ -15,4 +15,5 @@ module com.dooapp.fxform {
     exports com.dooapp.fxform.view.factory.impl;
     exports com.dooapp.fxform.view.skin;
     exports com.dooapp.fxform.handler;
+    exports com.dooapp.fxform.validation;
 }
