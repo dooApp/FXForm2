@@ -33,11 +33,11 @@ public class DefaultFXFormValidator implements FXFormValidator {
 
     private final System.Logger logger = System.getLogger(DefaultFXFormValidator.class.getName());
 
-    static ValidatorFactory factory;
+    protected static ValidatorFactory factory;
 
-    Validator validator;
+    protected Validator validator;
 
-    MessageInterpolator messageInterpolator;
+    protected MessageInterpolator messageInterpolator;
 
     /**
      * Initialize the constraint validator. Might be null after that if no implementation has been provided.
