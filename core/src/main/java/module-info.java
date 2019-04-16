@@ -16,4 +16,10 @@ module com.dooapp.fxform {
     exports com.dooapp.fxform.view.skin;
     exports com.dooapp.fxform.handler;
     exports com.dooapp.fxform.validation;
+    exports com.dooapp.fxform.controller;
+    exports com.dooapp.fxform.adapter;
+    exports com.dooapp.fxform.filter;
+    exports com.dooapp.fxform.filter.field;
+    exports com.dooapp.fxform.view.property;
+    exports com.dooapp.fxform.view.control;
 }
