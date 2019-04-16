@@ -1,9 +1,9 @@
 package com.dooapp.fxform.samples;
 
 import com.dooapp.fxform.FXForm;
-import com.dooapp.fxform.FXFormSample;
 import com.dooapp.fxform.annotation.Accessor;
 import com.dooapp.fxform.filter.ExcludeFilter;
+import com.dooapp.fxform.sampler.FXFormSample;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.scene.Node;
@@ -80,6 +80,11 @@ public class DynamicFilteredForm extends FXFormSample {
             }
         });
         return root;
+    }
+
+    @Override
+    public String getControlStylesheetURL() {
+        return null;
     }
 
 }

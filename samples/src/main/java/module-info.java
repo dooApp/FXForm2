@@ -7,6 +7,7 @@ module com.dooapp.fxform.sampler {
     requires java.validation;
     requires com.dooapp.fxform;
     requires fxsampler;
+    requires org.hibernate.validator;
     exports com.dooapp.fxform.sampler;
     exports com.dooapp.fxform.sampler.samples;
 }
