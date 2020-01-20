@@ -3,4 +3,7 @@ jdk:
     - openjdk8
 services:
     - xvfb
+before_install:
+    - sudo apt update
+    - sudo apt install openjfx
 sudo: false
