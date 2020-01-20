@@ -20,6 +20,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WeakChangeListener;
 
 /**
  * Created at 27/09/12 15:33.<br>
@@ -29,7 +30,8 @@ import javafx.beans.value.ObservableValue;
 public abstract class NodeController implements Disposable {
 
     private final ObjectProperty<FXFormNode> node = new SimpleObjectProperty<FXFormNode>();
-    private final ChangeListener<FXFormNode> changeListener;
+    private ChangeListener<FXFormNode> changeListener;
+    private final WeakChangeListener<FXFormNode> weakChangeListener;
     private final Element element;
     private final AbstractFXForm fxForm;
     private boolean disposed = false;
@@ -49,7 +51,8 @@ public abstract class NodeController implements Disposable {
                 }
             }
         };
-        node.addListener(changeListener);
+        weakChangeListener = new WeakChangeListener<>(changeListener);
+        node.addListener(weakChangeListener);
     }
 
     protected abstract void bind(FXFormNode fxFormNode);
@@ -60,7 +63,8 @@ public abstract class NodeController implements Disposable {
 
     public void dispose() {
         setNode(null);
-        node.removeListener(changeListener);
+        node.removeListener(weakChangeListener);
+        changeListener = null;
         disposed = true;
     }
 

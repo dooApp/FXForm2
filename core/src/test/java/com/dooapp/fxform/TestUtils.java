@@ -19,6 +19,7 @@ import com.dooapp.fxform.reflection.impl.ReflectionFieldProvider;
 import javafx.application.Platform;
 import org.junit.Ignore;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,6 +90,19 @@ public class TestUtils {
      */
     public static void syncJavaFXThread() throws ExecutionException, InterruptedException {
         runInJavaFXThreadAndWait(() -> null);
+    }
+
+    /**
+     * This method guarantees that garbage collection is
+     * done unlike <code>{@link System#gc()}</code>
+     */
+    public static void forceGc() {
+        Object obj = new Object();
+        WeakReference ref = new WeakReference<>(obj);
+        obj = null;
+        while (ref.get() != null) {
+            System.gc();
+        }
     }
 
 }

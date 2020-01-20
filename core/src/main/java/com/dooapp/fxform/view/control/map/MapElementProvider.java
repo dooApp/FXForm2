@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.WeakMapChangeListener;
 
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ public class MapElementProvider<K, V> {
                 elements.remove(getElementByKey(change.getKey()));
             }
         };
-        map.addListener(mapChangeListener);
+        map.addListener(new WeakMapChangeListener<>(mapChangeListener));
         init();
     }
 
