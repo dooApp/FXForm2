@@ -1,8 +1,6 @@
 language: java
 jdk:
-    - openjdk9
+    - openjdk12
 services:
     - xvfb
-before_install:
-    - sudo apt update
 sudo: false
