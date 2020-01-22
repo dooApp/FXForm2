@@ -19,6 +19,7 @@ import javafx.beans.binding.Binding;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WeakChangeListener;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +37,30 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
 
     protected List<InvalidationListener> invalidationListeners = new LinkedList<>();
 
+    protected ChangeListener<ObservableValue<WrappedType>> propertyListener = (observableValue, oldValue, newValue) -> {
+        for (InvalidationListener invalidationListener : invalidationListeners) {
+            if (oldValue != null) {
+                oldValue.removeListener(invalidationListener);
+            }
+            if (newValue != null) {
+                newValue.addListener(invalidationListener);
+            }
+            invalidationListener.invalidated(observableValue);
+        }
+        for (ChangeListener<? super WrappedType> changeListener : changeListeners) {
+            if (oldValue != null) {
+                oldValue.removeListener(changeListener);
+            }
+            if (newValue != null) {
+                newValue.addListener(changeListener);
+                changeListener.changed(
+                        observableValue.getValue(),
+                        oldValue != null ? oldValue.getValue() : null,
+                        newValue.getValue());
+            }
+        }
+    };
+
     private Binding<ObservableValue<WrappedType>> value;
 
     private StringProperty category;
@@ -44,29 +69,7 @@ public abstract class AbstractSourceElement<SourceType, WrappedType> implements 
     }
 
     private void listenWrappedProperty() {
-        wrappedProperty().addListener((observableValue, oldValue, newValue) -> {
-            for (InvalidationListener invalidationListener : invalidationListeners) {
-                if (oldValue != null) {
-                    oldValue.removeListener(invalidationListener);
-                }
-                if (newValue != null) {
-                    newValue.addListener(invalidationListener);
-                }
-                invalidationListener.invalidated(observableValue);
-            }
-            for (ChangeListener<? super WrappedType> changeListener : changeListeners) {
-                if (oldValue != null) {
-                    oldValue.removeListener(changeListener);
-                }
-                if (newValue != null) {
-                    newValue.addListener(changeListener);
-                    changeListener.changed(
-                            observableValue.getValue(),
-                            oldValue != null ? oldValue.getValue() : null,
-                            newValue.getValue());
-                }
-            }
-        });
+        wrappedProperty().addListener(new WeakChangeListener<>(propertyListener));
     }
 
     public SourceType getSource() {

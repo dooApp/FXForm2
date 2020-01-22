@@ -21,6 +21,7 @@ import com.dooapp.fxform.view.FXFormNode;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WeakChangeListener;
 
 
 /**
@@ -33,6 +34,7 @@ public class ReadOnlyPropertyEditorController extends NodeController {
     public final static System.Logger logger = System.getLogger(ReadOnlyPropertyEditorController.class.getName());
 
     private ChangeListener changeListener;
+    private WeakChangeListener weakChangeListener;
 
     private final AnnotationAdapterProvider annotationAdapterProvider = new AnnotationAdapterProvider();
 
@@ -60,7 +62,8 @@ public class ReadOnlyPropertyEditorController extends NodeController {
                 }
             }
         };
-        getElement().addListener(changeListener);
+        weakChangeListener = new WeakChangeListener(changeListener);
+        getElement().addListener(weakChangeListener);
         updateView(fxFormNode);
 
     }
@@ -79,6 +82,6 @@ public class ReadOnlyPropertyEditorController extends NodeController {
 
     @Override
     protected void unbind(FXFormNode fxFormNode) {
-        getElement().removeListener(changeListener);
+        getElement().removeListener(weakChangeListener);
     }
 }
