@@ -23,6 +23,7 @@ import com.dooapp.fxform.view.FXFormNode;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WeakChangeListener;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -44,7 +45,9 @@ public class PropertyEditorController extends NodeController {
     private final PropertyElementValidator propertyElementValidator;
 
     private ChangeListener viewChangeListener;
+    private WeakChangeListener weakViewChangeListener;
     private ChangeListener modelChangeListener;
+    private WeakChangeListener weakModelChangeListener;
 
     private final AnnotationAdapterProvider annotationAdapterProvider = new AnnotationAdapterProvider();
 
@@ -90,7 +93,8 @@ public class PropertyEditorController extends NodeController {
                 }
             }
         };
-        fxFormNode.getProperty().addListener(viewChangeListener);
+        weakViewChangeListener = new WeakChangeListener(viewChangeListener);
+        fxFormNode.getProperty().addListener(weakViewChangeListener);
         modelChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
                 if (Platform.isFxApplicationThread()) {
@@ -103,7 +107,8 @@ public class PropertyEditorController extends NodeController {
                 getFxForm().getClassLevelValidator().validate();
             }
         };
-        getElement().addListener(modelChangeListener);
+        weakModelChangeListener = new WeakChangeListener(modelChangeListener);
+        getElement().addListener(weakModelChangeListener);
         updateView(getElement().getValue(), getNode());
     }
 
@@ -141,7 +146,7 @@ public class PropertyEditorController extends NodeController {
 
     @Override
     protected void unbind(FXFormNode fxFormNode) {
-        fxFormNode.getProperty().removeListener(viewChangeListener);
-        getElement().removeListener(modelChangeListener);
+        fxFormNode.getProperty().removeListener(weakViewChangeListener);
+        getElement().removeListener(weakModelChangeListener);
     }
 }

@@ -14,12 +14,7 @@ package com.dooapp.fxform.model.impl;
 import com.dooapp.fxform.model.Element;
 import com.dooapp.fxform.model.FormException;
 import javafx.beans.binding.Binding;
-import javafx.beans.binding.ListBinding;
-import javafx.beans.binding.MapBinding;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -35,93 +30,40 @@ import java.util.Map;
  */
 public abstract class AbstractFieldElement<SourceType, WrappedType> extends AbstractSourceElement<SourceType, WrappedType> implements Element<WrappedType> {
 
-	protected final Field field;
+    protected final Field field;
 
-	public AbstractFieldElement(Field field) throws FormException {
-		super();
-		this.field = field;
-	}
+    public AbstractFieldElement(Field field) throws FormException {
+        super();
+        this.field = field;
+    }
 
-	public Field getField() {
-		return field;
-	}
+    public Field getField() {
+        return field;
+    }
 
-	@Override
-	public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-		return field.getAnnotation(annotationClass);
-	}
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+        return field.getAnnotation(annotationClass);
+    }
 
-	public String getName() {
-		return field.getName();
-	}
+    public String getName() {
+        return field.getName();
+    }
 
-	@Override
-	public Class getDeclaringClass() {
-		return field.getDeclaringClass();
-	}
+    @Override
+    public Class getDeclaringClass() {
+        return field.getDeclaringClass();
+    }
 
-	@Override
-	protected Binding<ObservableValue<WrappedType>> createValue() {
-		if (List.class.isAssignableFrom(field.getType())) {
-			return new ListBinding() {
-				{
-					super.bind(sourceProperty());
-				}
+    @Override
+    protected Binding<ObservableValue<WrappedType>> createValue() {
+        if (List.class.isAssignableFrom(field.getType())) {
+            return new SourceListBinding(this);
+        } else if (Map.class.isAssignableFrom(field.getType())) {
+            return new SourceMapBinding(this);
+        } else {
+            return new SourceObjectBinding<>(this);
+        }
+    }
 
-				@Override
-				protected ObservableList computeValue() {
-					if (getSource() == null) {
-						return null;
-					}
-					return (ObservableList) AbstractFieldElement.this.computeValue();
-				}
-
-				@Override
-				public void dispose() {
-					super.dispose();
-					unbind(sourceProperty());
-				}
-			};
-		} else if (Map.class.isAssignableFrom(field.getType())) {
-			return new MapBinding() {
-				{
-					super.bind(sourceProperty());
-				}
-
-				@Override
-				protected ObservableMap computeValue() {
-					if (getSource() == null) {
-						return null;
-					}
-					return (ObservableMap) AbstractFieldElement.this.computeValue();
-				}
-
-				@Override
-				public void dispose() {
-					super.dispose();
-					unbind(sourceProperty());
-				}
-			};
-		} else {
-			return new ObjectBinding<ObservableValue<WrappedType>>() {
-				{
-					super.bind(sourceProperty());
-				}
-
-				@Override
-				protected ObservableValue<WrappedType> computeValue() {
-					if (getSource() == null) {
-						return null;
-					}
-					return AbstractFieldElement.this.computeValue();
-				}
-
-				@Override
-				public void dispose() {
-					super.dispose();
-					unbind(sourceProperty());
-				}
-			};
-		}
-	}
 }
