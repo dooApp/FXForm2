@@ -94,7 +94,7 @@ public class PropertyEditorController extends NodeController {
             }
         };
         weakViewChangeListener = new WeakChangeListener(viewChangeListener);
-        fxFormNode.getProperty().addListener(new WeakChangeListener(weakViewChangeListener));
+        fxFormNode.getProperty().addListener(weakViewChangeListener);
         modelChangeListener = new ChangeListener() {
             public void changed(ObservableValue observableValue, Object o, Object o1) {
                 if (Platform.isFxApplicationThread()) {
@@ -108,7 +108,7 @@ public class PropertyEditorController extends NodeController {
             }
         };
         weakModelChangeListener = new WeakChangeListener(modelChangeListener);
-        getElement().addListener(new WeakChangeListener(weakModelChangeListener));
+        getElement().addListener(weakModelChangeListener);
         updateView(getElement().getValue(), getNode());
     }
 
