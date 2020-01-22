@@ -18,7 +18,7 @@
         <version>9.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    
+
     <properties>
         <javafx.version>12</javafx.version>
     </properties>
@@ -82,6 +82,12 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
             <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.antkorwin</groupId>
+            <artifactId>common-utils</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
