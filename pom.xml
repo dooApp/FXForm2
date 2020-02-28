@@ -19,6 +19,7 @@
         <module>demo</module>
         <module>samples</module>
         <module>extensions</module>
+        <module>fxreport</module>
     </modules>
     <parent>
         <groupId>org.sonatype.oss</groupId>
