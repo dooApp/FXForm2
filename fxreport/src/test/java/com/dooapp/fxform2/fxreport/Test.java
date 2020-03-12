@@ -1,6 +1,7 @@
 package com.dooapp.fxform2.fxreport;
 
 import com.dooapp.fxform.FXForm;
+import com.dooapp.fxform.view.factory.DefaultFactoryProvider;
 import fr.opensagres.xdocreport.core.XDocReportException;
 import fr.opensagres.xdocreport.document.IXDocReport;
 import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
@@ -27,6 +28,8 @@ public class Test extends Application {
         IXDocReport report = XDocReportRegistry.getRegistry().loadReport(in, TemplateEngineKind.Velocity);
 
         FXForm fxForm = new FXForm();
+        DefaultFactoryProvider.addGlobalFactory(element -> element instanceof ListElementWrapper,
+                new LoopTableViewFactory());
         ReportElementProvider reportElementProvider = new ReportElementProvider(report);
         fxForm.setElementProvider(reportElementProvider);
         fxForm.setSource(report);

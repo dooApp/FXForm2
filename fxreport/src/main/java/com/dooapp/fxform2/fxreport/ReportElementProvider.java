@@ -15,19 +15,18 @@ import javafx.collections.FXCollections;
 import javafx.util.Callback;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ReportElementProvider implements ElementProvider {
 
     final Map<String, Property> properties = new LinkedHashMap<>();
+    final Map<String, List<String>> listFields = new HashMap<>();
 
     public ReportElementProvider(IXDocReport report) throws IOException, XDocReportException {
         FieldsExtractor extractor = new FieldsExtractor();
         report.extractFields(extractor);
         List<FieldExtractor> fields = extractor.getFields();
-        fields.stream().filter(field -> !field.getName().contains("___"))
+        fields.stream().filter(field -> !field.getName().contains("___") && field.getName().startsWith("_"))
                 .forEach(field -> {
                     String[] splitted = field.getName().split("_");
                     if (splitted.length > 1) {
@@ -48,8 +47,20 @@ public class ReportElementProvider implements ElementProvider {
                                     }
                                 });
                     }
-                    properties.put(splitted[0],
-                            new SimpleStringProperty(null, splitted[0]));
+                    if (!field.isList()) {
+                        properties.put(field.getName(),
+                                new SimpleStringProperty(null, splitted[0]));
+                    } else {
+                        String[] loopSplit = splitted[0].split("\\.");
+                        String loopFieldName = loopSplit[0];
+                        if (!properties.containsKey(loopFieldName)) {
+                            ListProperty listProperty = new SimpleListProperty(null, loopFieldName);
+                            listProperty.setValue(FXCollections.observableArrayList());
+                            properties.put(loopFieldName, listProperty);
+                            listFields.put(loopFieldName, new LinkedList<>());
+                        }
+                        listFields.get(loopFieldName).add(loopSplit[1]);
+                    }
                 });
     }
 
@@ -60,8 +71,13 @@ public class ReportElementProvider implements ElementProvider {
     @Override
     public <T> ListProperty<Element> getElements(ObjectProperty<T> source) {
         SimpleListProperty<Element> elements = new SimpleListProperty<>(FXCollections.observableArrayList());
-        properties.keySet().forEach(key ->
-                elements.add(new PropertyElementWrapper(properties.get(key), String.class)));
+        properties.entrySet().forEach(entry -> {
+            if (entry.getValue() instanceof ListProperty) {
+                elements.add(new ListElementWrapper(entry.getValue(), listFields.get(entry.getKey())));
+            } else {
+                elements.add(new PropertyElementWrapper(entry.getValue(), String.class));
+            }
+        });
         return elements;
     }
 
