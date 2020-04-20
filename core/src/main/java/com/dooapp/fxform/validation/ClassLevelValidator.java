@@ -18,8 +18,6 @@ import com.dooapp.fxform.controller.NodeController;
 import com.dooapp.fxform.controller.PropertyEditorController;
 import com.dooapp.fxform.model.Element;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 
 import javax.validation.ConstraintViolation;
@@ -36,26 +34,17 @@ public class ClassLevelValidator {
 
     private final ObjectProperty bean = new SimpleObjectProperty();
 
-    private final ObjectProperty<FXFormValidator> validator = new SimpleObjectProperty<FXFormValidator>();
+    private final ObjectProperty<FXFormValidator> validator = new SimpleObjectProperty<>();
 
-    private final ListProperty<ConstraintViolation> constraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.synchronizedObservableList(FXCollections.<ConstraintViolation>observableArrayList()));
+    private final ListProperty<ConstraintViolation> constraintViolations = new SimpleListProperty(FXCollections.synchronizedObservableList(FXCollections.observableArrayList()));
 
     private AbstractFXForm abstractFXForm;
 
     public ClassLevelValidator(AbstractFXForm abstractFXForm) {
         this.abstractFXForm = abstractFXForm;
-        bean.addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observableValue, Object o, Object o2) {
-                validate();
-            }
-        });
-        validator.addListener(new ChangeListener<FXFormValidator>() {
-            @Override
-            public void changed(ObservableValue<? extends FXFormValidator> observableValue, FXFormValidator validator, FXFormValidator validator2) {
-                validate();
-            }
-        });
+        bean.addListener((observableValue, oldValue, newValue) -> validate());
+        validator.addListener((observableValue, oldValue, newValue) -> validate());
+        abstractFXForm.filteredElementsProperty().addListener((observable, oldValue, newValue) -> validate());
     }
 
     public void validate() {
