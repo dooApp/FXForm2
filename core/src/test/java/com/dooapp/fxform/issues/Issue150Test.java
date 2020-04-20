@@ -19,6 +19,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com>
@@ -94,10 +95,11 @@ public class Issue150Test {
 
     @Test
     public void test150() throws ExecutionException, InterruptedException {
+        AtomicBoolean running = new AtomicBoolean(true);
         TestBean testBean = new TestBean();
         FXForm fxForm = new FXForm(testBean);
         Thread thread1 = new Thread(() -> {
-            while (true) {
+            while (running.get()) {
                 try {
                     testBean.setName("" + Math.random());
                     Thread.sleep(10);
@@ -107,7 +109,7 @@ public class Issue150Test {
             }
         }, "Thread 1");
         Thread thread2 = new Thread(() -> {
-            while (true) {
+            while (running.get()) {
                 try {
                     testBean.setAge((int) (Math.random() * 100));
                     Thread.sleep(10);
@@ -119,6 +121,7 @@ public class Issue150Test {
         thread1.start();
         thread2.start();
         Thread.sleep(1000);
+        running.set(false);
     }
 
 
