@@ -82,9 +82,9 @@ public class PropertyEditorController extends NodeController {
                             && !((PropertyElement) getElement()).isBound()) {
                         // and update the model if no constraint prevent from it
                         ((PropertyElement) getElement()).setValue(newValue);
-                        // and perform a class level validation
-                        getFxForm().getClassLevelValidator().validate();
                     }
+                    // and perform a class level validation
+                    getFxForm().getClassLevelValidator().validate();
                 } catch (AdapterException e) {
                     // The input value can not be adapted as model value
                     // Nothing to do, a constraint violation should have been reported by the PropertyElementValidator
