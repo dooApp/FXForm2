@@ -16,20 +16,28 @@ import com.dooapp.fxform.model.Element;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: Antoine Mischler <antoine@dooapp.com> Date: 12/09/11 Time: 15:10
  */
 public class ExcludeFilter extends AbstractNameFilter implements ElementListFilter {
 
+	public final static Logger logger = Logger.getLogger(ExcludeFilter.class.getName());
+
 	public ExcludeFilter(String... names) {
 		super(names);
 	}
 
 	public List<Element> filter(List<Element> toFilter) throws FilterException {
-		List<Element> filtered = new ArrayList<Element>(toFilter);
+		List<Element> filtered = new ArrayList<>(toFilter);
 		for (String name : names) {
-			extractFieldByName(filtered, name);
+			try {
+				extractFieldByName(filtered, name);
+			} catch (FilterException e) {
+				logger.log(Level.WARNING, e.getMessage(), e);
+			}
 		}
 		return filtered;
 	}
