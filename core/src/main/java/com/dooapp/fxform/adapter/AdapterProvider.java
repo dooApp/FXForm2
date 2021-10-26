@@ -31,6 +31,6 @@ public interface AdapterProvider {
      * @param fxFormNode
      * @return
      */
-    public Adapter getAdapter(Class fromClass, Class toClass, Element element, FXFormNode fxFormNode);
+    Adapter getAdapter(Class fromClass, Class toClass, Element element, FXFormNode fxFormNode);
 
 }

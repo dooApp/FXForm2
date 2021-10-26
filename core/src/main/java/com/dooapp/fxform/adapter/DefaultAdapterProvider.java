@@ -38,7 +38,7 @@ public class DefaultAdapterProvider implements AdapterProvider {
 
     private final Map<AdapterMatcher, Adapter> USER_MAP = new ConcurrentHashMap<>();
 
-    {
+    static {
         // Make sure to not add a new adapter as anonymous inner class in the DEFAULT_MAP.
         // That could cause memory leak since an inner instance keeps a reference to its outer instance.
 
