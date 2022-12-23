@@ -19,8 +19,6 @@ import com.dooapp.fxform.model.PropertyElement;
 import com.dooapp.fxform.validation.PropertyElementValidator;
 import com.dooapp.fxform.view.FXFormSkin;
 import com.dooapp.fxform.view.NodeType;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 
 import javax.validation.ConstraintViolation;
@@ -37,38 +35,36 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
     public PropertyElementController(final AbstractFXForm fxForm, PropertyElement element) {
         super(fxForm, element);
         PropertyElementValidator validator = ((PropertyEditorController) editorController).getPropertyElementValidator();
-        validator.constraintViolationsProperty().addListener(new ListChangeListener<ConstraintViolation>() {
-            @Override
-            public void onChanged(Change<? extends ConstraintViolation> change) {
-                while (change.next()) {
-                    fxForm.getConstraintViolations().addAll(change.getAddedSubList());
-                    fxForm.getConstraintViolations().removeAll(change.getRemoved());
-                }
+        validator.constraintViolationsProperty().addListener((ListChangeListener<ConstraintViolation>) change -> {
+            while (change.next()) {
+                fxForm.getConstraintViolations().addAll(change.getAddedSubList());
+                fxForm.getConstraintViolations().removeAll(change.getRemoved());
             }
         });
         fxForm.getConstraintViolations().addAll(validator.constraintViolationsProperty().get());
         constraintController = new ConstraintController(fxForm, element, validator.constraintViolationsProperty());
         updateSkin((FXFormSkin) fxForm.getSkin());
-        validator.invalidProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2) {
-                if (aBoolean2) {
-                    addStyle(FXForm.INVALID_STYLE);
-                } else {
-                    removeStyle(FXForm.INVALID_STYLE);
-                }
+        validator.invalidProperty().addListener((observableValue, aBoolean, aBoolean2) -> {
+            if (aBoolean2) {
+                addStyle(FXForm.INVALID_STYLE);
+            } else {
+                removeStyle(FXForm.INVALID_STYLE);
             }
         });
-        validator.warningProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2) {
-                if (aBoolean2) {
-                    addStyle(FXForm.WARNING_STYLE);
-                } else {
-                    removeStyle(FXForm.WARNING_STYLE);
-                }
+        if (validator.isInvalid()) {
+            addStyle(FXForm.INVALID_STYLE);
+        }
+
+        validator.warningProperty().addListener((observableValue, aBoolean, aBoolean2) -> {
+            if (aBoolean2) {
+                addStyle(FXForm.WARNING_STYLE);
+            } else {
+                removeStyle(FXForm.WARNING_STYLE);
             }
         });
+        if (validator.isWarning()) {
+            addStyle(FXForm.WARNING_STYLE);
+        }
     }
 
     protected void addStyle(String styleSuffix) {
@@ -120,5 +116,5 @@ public class PropertyElementController<WrappedType> extends ElementController<Wr
         fxForm.getConstraintViolations().removeAll(validator.constraintViolationsProperty().get());
         super.dispose();
     }
-    
+
 }
