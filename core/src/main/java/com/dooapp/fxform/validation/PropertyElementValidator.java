@@ -48,12 +48,7 @@ public class PropertyElementValidator {
 
     public PropertyElementValidator(final PropertyElement element) {
         this.element = element;
-        validator.addListener(new ChangeListener<FXFormValidator>() {
-            @Override
-            public void changed(ObservableValue<? extends FXFormValidator> observableValue, FXFormValidator validator, FXFormValidator validator2) {
-                validate(element.getValue());
-            }
-        });
+        validator.addListener((observableValue, validator, validator2) -> validate(element.getValue()));
     }
 
     public Object adapt(final Object newValue, Adapter adapter) throws AdapterException {
