@@ -15,6 +15,7 @@ package com.dooapp.fxform.validation;
 import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.model.PropertyElement;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -34,11 +35,11 @@ public class PropertyElementValidator {
 
     private final PropertyElement element;
 
-    private final ObjectProperty<FXFormValidator> validator = new SimpleObjectProperty<FXFormValidator>();
+    private final ObjectProperty<FXFormValidator> validator = new SimpleObjectProperty<>();
 
-    private final ListProperty<ConstraintViolation> constraintViolations = new SimpleListProperty<>(FXCollections.synchronizedObservableList(FXCollections.<ConstraintViolation>observableArrayList()));
+    private final ListProperty<ConstraintViolation> constraintViolations = new SimpleListProperty<>(FXCollections.synchronizedObservableList(FXCollections.observableArrayList()));
 
-    private final ListProperty<ConstraintViolation> classLevelConstraintViolations = new SimpleListProperty<ConstraintViolation>(FXCollections.synchronizedObservableList(FXCollections.<ConstraintViolation>observableArrayList()));
+    private final ListProperty<ConstraintViolation> classLevelConstraintViolations = new SimpleListProperty<>(FXCollections.synchronizedObservableList(FXCollections.observableArrayList()));
 
     private final BooleanProperty invalid = new SimpleBooleanProperty(false);
 
@@ -49,6 +50,7 @@ public class PropertyElementValidator {
     public PropertyElementValidator(final PropertyElement element) {
         this.element = element;
         validator.addListener((observableValue, validator, validator2) -> validate(element.getValue()));
+        invalid.bind(Bindings.isNotEmpty(constraintViolations));
     }
 
     public Object adapt(final Object newValue, Adapter adapter) throws AdapterException {
@@ -71,7 +73,6 @@ public class PropertyElementValidator {
         if (validator != null) {
             // Validate strict constraints that prevent the model value from being updated
             constraintViolations.addAll(validator.validate(element, newValue));
-            invalid.set(!constraintViolations.isEmpty());
             // Validate warnings constraints
             List<ConstraintViolation> warningList = validator.validate(element, newValue, Warning.class);
             warning.set(!warningList.isEmpty());
@@ -87,12 +88,10 @@ public class PropertyElementValidator {
      */
     public List<ConstraintViolation> reportClassLevelConstraintViolation(List<ConstraintViolation> violations) {
         constraintViolations.removeAll(classLevelConstraintViolations);
-        invalid.set(!constraintViolations.isEmpty());
         classLevelConstraintViolations.clear();
         for (ConstraintViolation constraintViolation : violations) {
             if (isRelated(constraintViolation)) {
                 classLevelConstraintViolations.add(constraintViolation);
-                invalid.set(true);
             }
         }
         constraintViolations.addAll(classLevelConstraintViolations);
