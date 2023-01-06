@@ -49,12 +49,7 @@ public class PropertyElementValidator {
 
     public PropertyElementValidator(final PropertyElement element) {
         this.element = element;
-        validator.addListener(new ChangeListener<FXFormValidator>() {
-            @Override
-            public void changed(ObservableValue<? extends FXFormValidator> observableValue, FXFormValidator validator, FXFormValidator validator2) {
-                validate(element.getValue());
-            }
-        });
+        validator.addListener((observableValue, validator, validator2) -> validate(element.getValue()));
         invalid.bind(Bindings.isNotEmpty(constraintViolations));
     }
 
