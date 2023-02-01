@@ -15,10 +15,8 @@ package com.dooapp.fxform.validation;
 import com.dooapp.fxform.adapter.Adapter;
 import com.dooapp.fxform.adapter.AdapterException;
 import com.dooapp.fxform.model.PropertyElement;
-import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 
 import javax.validation.ConstraintViolation;
@@ -50,7 +48,20 @@ public class PropertyElementValidator {
     public PropertyElementValidator(final PropertyElement element) {
         this.element = element;
         validator.addListener((observableValue, validator, validator2) -> validate(element.getValue()));
-        invalid.bind(Bindings.isNotEmpty(constraintViolations));
+        invalid.bind(new BooleanBinding() {
+            {
+                super.bind(constraintViolations);
+            }
+
+            @Override
+            protected boolean computeValue() {
+                boolean result = constraintViolations.stream()
+                        .anyMatch(constraintViolation -> constraintViolation instanceof NotAdaptableInputValue
+                                || (constraintViolation.getConstraintDescriptor() != null
+                                && !constraintViolation.getConstraintDescriptor().getGroups().contains(Warning.class)));
+                return result;
+            }
+        });
     }
 
     public Object adapt(final Object newValue, Adapter adapter) throws AdapterException {
