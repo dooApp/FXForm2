@@ -70,7 +70,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>6.2.5.Final</version>
             </dependency>
@@ -157,6 +157,16 @@
             <name>Deployment through GitHub's site deployment plugin</name>
             <url>${project.version}/site</url>
         </site>
+        <repository>
+            <id>dooapp-nexus</id>
+            <name>dooapp-artifactory-releases</name>
+            <url>https://mvnrepository.dooapp.com/repository/dooapp-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>dooapp-nexus</id>
+            <name>dooapp-artifactory-snapshots</name>
+            <url>https://mvnrepository.dooapp.com/repository/dooapp-snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
     <reporting>
         <plugins>
