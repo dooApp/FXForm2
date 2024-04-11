@@ -2,7 +2,7 @@ package com.dooapp.fxform.view.factory.impl;
 
 import com.dooapp.fxform.AbstractFXForm;
 import com.dooapp.fxform.model.Element;
-import com.sun.javafx.scene.control.skin.ChoiceBoxSkin;
+import javafx.scene.control.skin.ChoiceBoxSkin;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
