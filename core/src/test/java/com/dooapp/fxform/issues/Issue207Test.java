@@ -11,8 +11,8 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.assertThat;
-import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
-
+//import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 public class Issue207Test {
 
     @Rule

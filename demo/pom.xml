@@ -44,9 +44,8 @@
             <version>2.3.0</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.0.3.Final</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
