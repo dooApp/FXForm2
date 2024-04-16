@@ -84,7 +84,6 @@ public class Demo extends Application {
                 setFitToWidth(true);
             }
         };
-        //        return ScrollPaneBuilder.create().content(vBox).fitToWidth(true).build();
     }
 
     private Button createSnapshotButton() {
@@ -136,37 +135,7 @@ public class Demo extends Application {
                 });
             }
         };
-//        }
-//        return ButtonBuilder.create().text("Validate")
-//                .defaultButton(true)
-//                .onAction(new EventHandler<ActionEvent>() {
-//                    @Override
-//                    public void handle(ActionEvent actionEvent) {
-//                        ListView<ConstraintViolation> listView = new ListView<ConstraintViolation>();
-//                        listView.setCellFactory(new Callback<ListView<ConstraintViolation>, ListCell<ConstraintViolation>>() {
-//
-//                            @Override
-//                            public ListCell<ConstraintViolation> call(ListView<ConstraintViolation> constraintViolation) {
-//                                return new ListCell<ConstraintViolation>() {
-//                                    @Override
-//                                    protected void updateItem(ConstraintViolation constraintViolation, boolean b) {
-//                                        super.updateItem(constraintViolation, b);
-//                                        if (constraintViolation != null) {
-//                                            setText(constraintViolation.getPropertyPath().toString() + " - " + constraintViolation.getMessage());
-//                                        } else {
-//                                            setText("");
-//                                        }
-//                                    }
-//                                };
-//                            }
-//                        });
-//                        listView.getItems().setAll(fxForm.getConstraintViolations());
-//                        Scene scene = new Scene(listView);
-//                        Stage stage = new Stage();
-//                        stage.setScene(scene);
-//                        stage.show();
-//                    }
-//                }).build();
+
     }
 
     private Node createCSSNode() {
@@ -223,8 +192,6 @@ public class Demo extends Application {
         stage.setTitle("FXForm Demo");
         stage.setScene(
          new Scene(root)
-//                SceneBuilder.create().root(root).build()
-
         );
         stage.setHeight(600);
         stage.setWidth(490);

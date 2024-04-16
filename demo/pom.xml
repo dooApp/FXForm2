@@ -42,7 +42,6 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.3.0</version>
-<!--            <scope>test</scope>-->
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -95,8 +94,6 @@
                 <configuration>
                     <mainClass>com.dooapp.fxform.Demo</mainClass>
                     <options>
-                        <!--                        <option>-verbose</option>-->
-                        <option>-Dprism.maxvram=2G</option>
                         <option>--add-exports</option>
                         <option>javafx.controls/com.sun.javafx.scene.control=ALL-UNNAMED</option>
                         <option>--add-exports</option>
