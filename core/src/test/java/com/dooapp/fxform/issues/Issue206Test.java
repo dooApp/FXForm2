@@ -14,7 +14,6 @@ import javax.validation.constraints.Max;
 
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
-//import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 
 public class Issue206Test {
 
