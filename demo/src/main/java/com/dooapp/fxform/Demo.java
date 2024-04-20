@@ -24,7 +24,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.SceneBuilder;
 import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
@@ -79,7 +78,12 @@ public class Demo extends Application {
     private Node createNode() {
         VBox vBox = new VBox();
         vBox.getChildren().addAll(createSkinSelector(), createCSSNode(), createSnapshotButton(), fxForm, createConstraintNode());
-        return ScrollPaneBuilder.create().content(vBox).fitToWidth(true).build();
+       return new ScrollPane(){
+            {
+                setContent(vBox);
+                setFitToWidth(true);
+            }
+        };
     }
 
     private Button createSnapshotButton() {
@@ -98,9 +102,10 @@ public class Demo extends Application {
     }
 
     private Node createConstraintNode() {
-        return ButtonBuilder.create().text("Validate")
-                .defaultButton(true)
-                .onAction(new EventHandler<ActionEvent>() {
+        return new Button(){
+            {
+                setText("Validate");
+                setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent actionEvent) {
                         ListView<ConstraintViolation> listView = new ListView<ConstraintViolation>();
@@ -127,7 +132,10 @@ public class Demo extends Application {
                         stage.setScene(scene);
                         stage.show();
                     }
-                }).build();
+                });
+            }
+        };
+
     }
 
     private Node createCSSNode() {
@@ -182,7 +190,9 @@ public class Demo extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("FXForm Demo");
-        stage.setScene(SceneBuilder.create().root(root).build());
+        stage.setScene(
+         new Scene(root)
+        );
         stage.setHeight(600);
         stage.setWidth(490);
         setup();
