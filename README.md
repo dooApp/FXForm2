@@ -1,6 +1,8 @@
 FXForm 2
 ========
 
+[![Maven Central](http://img.shields.io/maven-central/v/com.dooapp.fxform2/core)](https://search.maven.org/search?q=g:com.dooapp.fxform2%20AND%20a:core)
+
 **Stop coding forms: FXForm 2 can do it for you!**
 
 About
