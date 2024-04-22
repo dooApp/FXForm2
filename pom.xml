@@ -100,7 +100,7 @@
             <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
-                <version>0.9</version>
+                <version>0.12</version>
                 <configuration>
                     <message>Creating site for ${project.artifactId}, ${project.version}</message>
                     <!-- this does the trick to place every module in the correct subfolder -->
@@ -122,9 +122,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.12.1</version>
                 <configuration>
-                    <skip>true</skip>
                     <skipDeploy>true</skipDeploy>
                 </configuration>
             </plugin>
@@ -143,9 +142,9 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9.1</version>
+                    <version>3.6.3</version>
                     <configuration>
-                        <additionalparam>-Xdoclint:none</additionalparam>
+                        <doclint>none</doclint>
                     </configuration>
                 </plugin>
             </plugins>
@@ -163,10 +162,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>3.6.3</version>
                 <configuration>
                     <show>public</show>
-                    <additionalparam>-Xdoclint:none</additionalparam>
+                    <doclint>none</doclint>
                 </configuration>
             </plugin>
         </plugins>
