@@ -1,6 +1,5 @@
 package com.dooapp.fxform.issues;
 
-import com.antkorwin.commonutils.gc.GcUtils;
 import com.dooapp.fxform.FXForm;
 import com.dooapp.fxform.JavaFXRule;
 import javafx.beans.property.*;
@@ -85,13 +84,21 @@ public class MemoryLeakTest {
         nodeWeakReference = new WeakReference(fxForm
                 .getController(fxForm.getElements().get(0))
                 .getEditorController().getNode());
-        GcUtils.fullFinalization();
         Assert.assertNotNull(fxFormWeakReference.get());
         Assert.assertNotNull(nodeWeakReference.get());
         fxForm = null;
-        GcUtils.fullFinalization();
-        Assert.assertNull(fxFormWeakReference.get());
+        forceGc(fxFormWeakReference, 1000);
+        Assert.assertTrue(fxFormWeakReference.refersTo(null));
         Assert.assertNull(nodeWeakReference.get());
+    }
+
+    private void forceGc(WeakReference fxFormWeakReference, int timeout) throws InterruptedException {
+        long startTime = System.currentTimeMillis();
+        while (fxFormWeakReference.get() != null) {
+            System.gc();
+            Thread.sleep(100);
+            if (System.currentTimeMillis() - startTime > timeout) break;
+        }
     }
 
 }
