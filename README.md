@@ -1,7 +1,7 @@
 FXForm 2
 ========
 
-[![Maven Central](http://img.shields.io/maven-central/v/com.dooapp.fxform2/core)](https://search.maven.org/search?q=g:com.dooapp.fxform2%20AND%20a:core)
+[![Maven Central](https://img.shields.io/maven-central/v/com.dooapp.fxform2/core)](https://search.maven.org/search?q=g:com.dooapp.fxform2%20AND%20a:core)
 
 **Stop coding forms: FXForm 2 can do it for you!**
 
@@ -88,4 +88,4 @@ FXForm2 is licensed under the Lesser GPL license.
 
 Build status
 ------------
-[![Build Status](https://travis-ci.org/dooApp/FXForm2.svg?branch=master)](https://travis-ci.org/dooApp/FXForm2)
+[![Build status](https://github.com/dooApp/FXForm2/actions/workflows/maven.yml/badge.svg)](https://github.com/dooApp/FXForm2/actions/workflows/maven.yml)
