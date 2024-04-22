@@ -66,16 +66,12 @@ Keep in touch
 
 Reports
 -------
-* [Javadoc](http://dooapp.github.io/FXForm2/2.2.6/site/core/apidocs/index.html)
 * [Javadoc for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.7-SNAPSHOT/site/core/apidocs/index.html)
-* [Maven site](http://dooapp.github.io/FXForm2/2.2.6/site)
 * [Maven site for 8.0 branch](http://dooapp.github.io/FXForm2/8.0.7-SNAPSHOT/site)
 
 Links
 -----
 Articles about FXForm2 on [dooApp technical blog](http://blog.dooapp.com/search/label/fxform).
-
-A video by Betrand Goetzmann with [Grezi](https://bitbucket.org/bgoetzmann/grezi/wiki/Home) and FXForm2: [http://screenr.com/GvDs]
 
 JavaFX [Third Party Tools and Utilities](http://www.oracle.com/technetwork/java/javafx/community/3rd-party-1844355.html)
 
