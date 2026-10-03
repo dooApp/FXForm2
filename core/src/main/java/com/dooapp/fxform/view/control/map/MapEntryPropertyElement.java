@@ -24,9 +24,15 @@ public class MapEntryPropertyElement<K, V> extends MapEntryElement<K, V> impleme
     @Override
     public void bind(ObservableValue<? extends V> observable) {
         if (observable == null) {
-            this.observable = observable;
-            observable.addListener(changeListener);
+            throw new NullPointerException("observable cannot be null");
         }
+        if (observable == this.observable) {
+            return;
+        }
+        unbind();
+        this.observable = observable;
+        observable.addListener(changeListener);
+        map.put(key, observable.getValue());
     }
 
     @Override
