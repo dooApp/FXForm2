@@ -46,8 +46,8 @@ public class AlgoliaAddressSuggestionProvider implements AddressSuggestionProvid
 
     }
 
-    private String executeQuery(String address) throws UnsupportedEncodingException {
-        String urlParameters = "{\"query\": \"" + address + "\"}";
+    private String executeQuery(String address) throws IOException {
+        byte[] requestBody = mapper.writeValueAsBytes(Collections.singletonMap("query", address));
         HttpURLConnection connection = null;
         try {
             //Create connection
@@ -55,18 +55,18 @@ public class AlgoliaAddressSuggestionProvider implements AddressSuggestionProvid
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-            connection.setRequestProperty("Content-Length", Integer.toString(urlParameters.getBytes().length));
             connection.setUseCaches(false);
             connection.setDoOutput(true);
+            connection.setFixedLengthStreamingMode(requestBody.length);
 
             //Send request
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(connection.getOutputStream(), "UTF-8");
-            outputStreamWriter.write(urlParameters);
-            outputStreamWriter.close();
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                outputStream.write(requestBody);
+            }
 
             //Get Response
             InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = rd.readLine()) != null) {
