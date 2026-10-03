@@ -69,24 +69,8 @@ public class MapEntryElement<K, V> implements Element<V> {
         this.map = map;
         this.key = key;
         this.valueType = valueType;
-        map.addListener(new MapChangeListener<K, V>() {
-            @Override
-            public void onChanged(Change<? extends K, ? extends V> change) {
-                if (key.equals(change.getKey())) {
-                    for (ChangeListener changeListener : changeListeners) {
-                        changeListener.changed(MapEntryElement.this, null, map.get(key));
-                    }
-                }
-            }
-        });
-        map.addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                for (InvalidationListener invalidationListener : invalidationListeners) {
-                    invalidationListener.invalidated(MapEntryElement.this);
-                }
-            }
-        });
+        map.addListener(changeListener);
+        map.addListener(invalidationListener);
     }
 
     public K getKey() {
@@ -131,7 +115,7 @@ public class MapEntryElement<K, V> implements Element<V> {
     @Override
     public void dispose() {
         map.removeListener(changeListener);
-        //map.removeListener(invalidationListener);
+        map.removeListener(invalidationListener);
     }
 
     @Override
